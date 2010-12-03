@@ -1,5 +1,3 @@
-sc2replay-csharp is a C# project for importing information from a Starcraft 2 Replay File. This project is provided under the MIT license, meaning you can use it freely.
-
 The MIT License
 
 Copyright (c) 2010 William Eddins
