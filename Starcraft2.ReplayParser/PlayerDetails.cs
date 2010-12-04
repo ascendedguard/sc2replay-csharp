@@ -30,6 +30,11 @@ namespace Starcraft2.ReplayParser
         public Color Color { get; set; }
 
         /// <summary>
+        /// Gets or sets the player's handicap.
+        /// </summary>
+        public int Handicap { get; set; }
+
+        /// <summary>
         /// Gets or sets the player's team number.
         /// </summary>
         public int Team { get; set; }
@@ -87,6 +92,7 @@ namespace Starcraft2.ReplayParser
                 Color =
                     Color.FromArgb((byte)keys[0].Value, (byte)keys[1].Value, (byte)keys[2].Value,
                                    (byte)keys[3].Value),
+                Handicap = keys[6].Value,
                 Team = keys[8].Value,
             };
         }
