@@ -77,7 +77,7 @@ namespace Starcraft2.ReplayParser
             string race = new String(reader.ReadChars(raceLength));
 
             reader.ReadBytes(3); // unknown5
-
+            
             var keys = new KeyValueStruct[9];
             // paramList - This contains the player's color and should eventually be parsed.
             for (int i = 0; i < 9; i++)

@@ -15,44 +15,24 @@ namespace Starcraft2.ReplayParser
         public string Map { get; private set; }
         public DateTime Timestamp { get; private set; }
 
-        private static readonly string mpqExtractorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MPQEditor.exe");
-
         /// <summary>
         /// Parses a .SC2Replay file and returns relevant replay information.
         /// </summary>
         /// <param name="fileName">Full path to a .SC2Replay file.</param>
-        /// <exception cref="FileNotFoundException">Thrown if MPQEditor.exe is not found in the application directory.</exception>
         public static Replay Parse(string fileName)
         {
-            if (File.Exists(mpqExtractorPath) == false)
-            {
-                throw new FileNotFoundException("MPQEditor.exe was not found in the current directory.", "MPQEditor.exe");
-            }
-
             string tempDirectory = Path.Combine(Path.GetTempPath(), "SC2ReplayParser");
 
             Directory.CreateDirectory(tempDirectory);
 
-            // Writes the MPQ Script to extract replay.details from the .sc2replay archive.
-            string mpqScriptPath = Path.Combine(tempDirectory, "mpqScript.txt");
-            string mpqScript = "e \"" + fileName + "\" replay.details \"" + tempDirectory + "\"";
-
-            // The process tries to bring up a console window for a second. I hide this using the WindowStyle.
-            File.WriteAllText(mpqScriptPath, mpqScript);
-            ProcessStartInfo info = new ProcessStartInfo(mpqExtractorPath, "/console \"" + mpqScriptPath + "\"")
-                                        {
-                                            CreateNoWindow = true,
-                                            WindowStyle = ProcessWindowStyle.Hidden
-                                        };
-
-            Process p = Process.Start(info);
-            p.WaitForExit();
-
-            File.Delete(mpqScriptPath);
-
-            // Path to the extracted replay.details file.
             string replayDetailsPath = Path.Combine(tempDirectory, "replay.details");
             
+            using (var archive = new MpqLib.Mpq.CArchive(fileName))
+            {
+                archive.ExportFile("replay.details", replayDetailsPath);
+            }
+
+            // Path to the extracted replay.details file.
             Replay replay = ParseReplayDetails(replayDetailsPath);
 
             File.Delete(replayDetailsPath);
@@ -70,7 +50,7 @@ namespace Starcraft2.ReplayParser
             {
                 using (var reader = new BinaryReader(fileStream))
                 {
-                    reader.ReadBytes(6); // unknownHeader
+                    byte[] version = reader.ReadBytes(6); // unknownHeader
                     byte doublePlayerCount = reader.ReadByte(); // doublePlayerCount;
                     int playerCount = (doublePlayerCount / 2);
 
