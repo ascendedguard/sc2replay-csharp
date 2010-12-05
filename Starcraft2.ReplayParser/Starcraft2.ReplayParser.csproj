@@ -50,8 +50,12 @@
     <Compile Include="KeyValueStruct.cs" />
     <Compile Include="PlayerDetails.cs" />
     <Compile Include="PlayerType.cs" />
+    <Compile Include="replay.attributes.events\ReplayAttribute.cs" />
     <Compile Include="Replay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="replay.attributes.events\ReplayAttributeEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

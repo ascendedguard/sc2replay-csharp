@@ -15,6 +15,8 @@ namespace Starcraft2.ReplayParser
         public string Map { get; private set; }
         public DateTime Timestamp { get; private set; }
 
+        public ReplayAttributeEvents ReplayAttributeEvents { get; set; }
+
         /// <summary>
         /// Parses a .SC2Replay file and returns relevant replay information.
         /// </summary>
@@ -26,18 +28,21 @@ namespace Starcraft2.ReplayParser
             Directory.CreateDirectory(tempDirectory);
 
             string replayDetailsPath = Path.Combine(tempDirectory, "replay.details");
-            
+            string replayAttributeEventsPath = Path.Combine(tempDirectory, "replay.attributes.events");
             using (var archive = new MpqLib.Mpq.CArchive(fileName))
             {
                 archive.ExportFile("replay.details", replayDetailsPath);
+                archive.ExportFile("replay.attributes.events", replayAttributeEventsPath);
             }
 
             // Path to the extracted replay.details file.
             Replay replay = ParseReplayDetails(replayDetailsPath);
-
-            File.Delete(replayDetailsPath);
-
+            replay.ReplayAttributeEvents = ReplayAttributeEvents.Parse(replayAttributeEventsPath);
             replay.Timestamp = File.GetCreationTime(fileName);
+            
+            // Clean-up
+            File.Delete(replayDetailsPath);
+            File.Delete(replayAttributeEventsPath);
 
             return replay;
         }
