@@ -47,6 +47,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Difficulty.cs" />
+    <Compile Include="GameSpeed.cs" />
+    <Compile Include="GameType.cs" />
     <Compile Include="KeyValueStruct.cs" />
     <Compile Include="PlayerDetails.cs" />
     <Compile Include="PlayerType.cs" />

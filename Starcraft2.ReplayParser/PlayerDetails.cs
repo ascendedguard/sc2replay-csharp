@@ -25,6 +25,12 @@ namespace Starcraft2.ReplayParser
         public PlayerType PlayerType { get; set; }
 
         /// <summary>
+        /// Gets or sets the difficulty of a computer player. 
+        /// Human players will default to either Unknown or Medium.
+        /// </summary>
+        public Difficulty Difficulty { get; set; }
+
+        /// <summary>
         /// Gets or sets the player's color.
         /// </summary>
         public Color Color { get; set; }

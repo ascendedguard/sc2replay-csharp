@@ -14,8 +14,9 @@ namespace Starcraft2.ReplayParser
         public PlayerDetails[] Players { get; private set; }
         public string Map { get; private set; }
         public DateTime Timestamp { get; private set; }
-
-        public ReplayAttributeEvents ReplayAttributeEvents { get; set; }
+        public GameSpeed GameSpeed { get; set; }
+        public string TeamSize { get; set; }
+        public GameType GameType { get; set; }
 
         /// <summary>
         /// Parses a .SC2Replay file and returns relevant replay information.
@@ -37,9 +38,11 @@ namespace Starcraft2.ReplayParser
 
             // Path to the extracted replay.details file.
             Replay replay = ParseReplayDetails(replayDetailsPath);
-            replay.ReplayAttributeEvents = ReplayAttributeEvents.Parse(replayAttributeEventsPath);
             replay.Timestamp = File.GetCreationTime(fileName);
             
+            var replayAttributes = ReplayAttributeEvents.Parse(replayAttributeEventsPath);
+            replayAttributes.ApplyAttributes(replay);
+
             // Clean-up
             File.Delete(replayDetailsPath);
             File.Delete(replayAttributeEventsPath);
