@@ -10,21 +10,17 @@ namespace Starcraft2.ReplayParser
         public int PlayerId { get; set; }
         public byte[] Value { get; set; }
 
-        /// <summary>
-        /// Parses a single ReplayAttribute at the current position of the reader
-        /// and advances the reader forward.
-        /// </summary>
-        /// <param name="reader">BinaryReader at the position to read the object</param>
-        /// <returns>A ReplayAttribute containing the attribute found.</returns>
-        public static ReplayAttribute Parse(BinaryReader reader)
+        public static ReplayAttribute Parse(byte[] buffer, int offset)
         {
             var attribute = new ReplayAttribute
             {
-                Header = BitConverter.ToInt32(reader.ReadBytes(4), 0),
-                AttributeId = BitConverter.ToInt32(reader.ReadBytes(4), 0),
-                PlayerId = reader.ReadByte(),
-                Value = reader.ReadBytes(4)
+                Header = BitConverter.ToInt32(buffer, offset),
+                AttributeId = BitConverter.ToInt32(buffer, offset + 4),
+                PlayerId = buffer[offset + 8],
+                Value = new byte[4],
             };
+
+            Array.Copy(buffer, offset + 9, attribute.Value, 0, 4);
 
             return attribute;
         }

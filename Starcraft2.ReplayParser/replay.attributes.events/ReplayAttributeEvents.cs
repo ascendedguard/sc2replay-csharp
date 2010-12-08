@@ -9,29 +9,19 @@ namespace Starcraft2.ReplayParser
     {
         public ReplayAttribute[] Attributes { get; set; }
 
-        public static ReplayAttributeEvents Parse(string filePath)
+        public static ReplayAttributeEvents Parse(byte[] buffer)
         {
-            // All of the values in this format are in little-endian, and the arrays must first be reversed.
+            var numAttributes = BitConverter.ToInt32(buffer, 4);
 
-            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            var attributes = new ReplayAttribute[numAttributes];
+
+            for (int i = 0; i < numAttributes; i++)
             {
-                using (var reader = new BinaryReader(fileStream))
-                {
-                    reader.ReadBytes(4); // File Header, usually 00 00 00 00
-
-                    var numAttributes = BitConverter.ToInt32(reader.ReadBytes(4), 0);
-
-                    var attributes = new ReplayAttribute[numAttributes];
-                    
-                    for(int i = 0; i < numAttributes; i++)
-                    {
-                        attributes[i] = ReplayAttribute.Parse(reader);    
-                    }
-
-                    var rae = new ReplayAttributeEvents {Attributes = attributes};
-                    return rae;
-                }
+                attributes[i] = ReplayAttribute.Parse(buffer, 8 + (i*13)); // attributes[i] = ReplayAttribute.Parse(reader);
             }
+
+            var rae = new ReplayAttributeEvents { Attributes = attributes };
+            return rae;
         }
 
         /// <summary>
@@ -50,6 +40,12 @@ namespace Starcraft2.ReplayParser
 
             foreach (var playerType in playerTypes)
             {
+                if (playerType.PlayerId > replay.Players.Length)
+                {
+                    // Player doesn't exist for some reason...
+                    continue;
+                }
+
                 string type = encoding.GetString(playerType.Value.Reverse().ToArray());
                 
                 // "Comp" for computer, "Humn" for human.
@@ -97,6 +93,12 @@ namespace Starcraft2.ReplayParser
 
             foreach (var diff in difficulties)
             {
+                if (diff.PlayerId > replay.Players.Length)
+                {
+                    // Player doesn't exist for some reason...
+                    continue;
+                }
+
                 string diffLevel = encoding.GetString(diff.Value.Reverse().ToArray());
                 diffLevel = diffLevel.ToLower();
 

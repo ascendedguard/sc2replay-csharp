@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media;
+using System.Linq;
 
 namespace Starcraft2.ReplayParser
 {
@@ -24,64 +25,87 @@ namespace Starcraft2.ReplayParser
         /// <param name="fileName">Full path to a .SC2Replay file.</param>
         public static Replay Parse(string fileName)
         {
-            string tempDirectory = Path.Combine(Path.GetTempPath(), "SC2ReplayParser");
+            Replay replay;
 
-            Directory.CreateDirectory(tempDirectory);
-
-            string replayDetailsPath = Path.Combine(tempDirectory, "replay.details");
-            string replayAttributeEventsPath = Path.Combine(tempDirectory, "replay.attributes.events");
             using (var archive = new MpqLib.Mpq.CArchive(fileName))
             {
-                archive.ExportFile("replay.details", replayDetailsPath);
-                archive.ExportFile("replay.attributes.events", replayAttributeEventsPath);
-            }
+                var files = archive.FindFiles("replay.*");
 
-            // Path to the extracted replay.details file.
-            Replay replay = ParseReplayDetails(replayDetailsPath);
+                // Local scope allows the byte[] to be GC sooner, and prevents misreferences
+                {
+                    const string curFile = "replay.details";
+
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    replay = ParseReplayDetails(buffer);
+                }
+                
+                {
+                    const string curFile = "replay.attributes.events";
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    var replayAttributes = ReplayAttributeEvents.Parse(buffer);
+                    replayAttributes.ApplyAttributes(replay);
+                } 
+            }
             replay.Timestamp = File.GetCreationTime(fileName);
             
-            var replayAttributes = ReplayAttributeEvents.Parse(replayAttributeEventsPath);
-            replayAttributes.ApplyAttributes(replay);
+            return replay;
+        }
 
-            // Clean-up
-            File.Delete(replayDetailsPath);
-            File.Delete(replayAttributeEventsPath);
+        private static Replay ParseReplayDetails(byte[] buffer)
+        {
+            Replay replay;
+            using (var stream = new MemoryStream(buffer, false))
+            {
+                replay = ParseReplayDetails(stream);
+
+                stream.Close();
+            }
 
             return replay;
         }
 
-        public static Replay ParseReplayDetails(string fileName)
+        private static Replay ParseReplayDetails(Stream stream)
         {
-            var replay = new Replay();
+            Replay replay = new Replay();
 
-            using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (var reader = new BinaryReader(stream))
             {
-                using (var reader = new BinaryReader(fileStream))
+                byte[] version = reader.ReadBytes(6); // unknownHeader
+                byte doublePlayerCount = reader.ReadByte(); // doublePlayerCount;
+                int playerCount = (doublePlayerCount / 2);
+
+                // Parsing Player Info
+                var players = new PlayerDetails[playerCount];
+
+                for (int i = 0; i < playerCount; i++)
                 {
-                    byte[] version = reader.ReadBytes(6); // unknownHeader
-                    byte doublePlayerCount = reader.ReadByte(); // doublePlayerCount;
-                    int playerCount = (doublePlayerCount / 2);
-
-                    // Parsing Player Info
-                    var players = new PlayerDetails[playerCount];
-
-                    for (int i = 0; i < playerCount; i++)
-                    {
-                        players[i] = PlayerDetails.Parse(reader);
-                    }
-
-                    replay.Players = players;
-
-                    reader.ReadBytes(2); // unknown1
-                    byte doubleMapNameLength = reader.ReadByte();
-                    int mapNameLength = (doubleMapNameLength/2);
-
-                    replay.Map = new string(reader.ReadChars(mapNameLength));
-
-                    reader.Close();
+                    players[i] = PlayerDetails.Parse(reader);
                 }
 
-                fileStream.Close();
+                replay.Players = players;
+
+                reader.ReadBytes(2); // unknown1
+                byte doubleMapNameLength = reader.ReadByte();
+                int mapNameLength = (doubleMapNameLength/2);
+
+                replay.Map = new string(reader.ReadChars(mapNameLength));
+
+                reader.Close();
             }
 
             return replay;
