@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser", "Starcraft2.ReplayParser\Starcraft2.ReplayParser.csproj", "{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser", "Starcraft2.ReplayParser\Starcraft2.ReplayParser.VS2010.csproj", "{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.TestApplication", "Starcraft2.ReplayParser.TestApplication\Starcraft2.ReplayParser.TestApplication.csproj", "{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.TestApplication", "Starcraft2.ReplayParser.TestApplication\Starcraft2.ReplayParser.TestApplication.VS2010.csproj", "{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
