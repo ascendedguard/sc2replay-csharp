@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Windows.Media;
 
 namespace Starcraft2.ReplayParser
 {
@@ -33,7 +32,7 @@ namespace Starcraft2.ReplayParser
         /// <summary>
         /// Gets or sets the player's color.
         /// </summary>
-        public Color Color { get; set; }
+        public string Color { get; set; }
 
         /// <summary>
         /// Gets or sets the player's handicap.
@@ -92,12 +91,15 @@ namespace Starcraft2.ReplayParser
             }
 
             return new PlayerDetails
-            {
-                Name = shortName,
-                Race = race,
-                Color =
-                    Color.FromArgb((byte)keys[0].Value, (byte)keys[1].Value, (byte)keys[2].Value,
-                                   (byte)keys[3].Value),
+                       {
+                           Name = shortName,
+                           Race = race,
+                           Color = string.Format("#{0}{1}{2}{3}", keys[0].Value.ToString("X2"),
+                                                 keys[1].Value.ToString("X2"),
+                                                 keys[2].Value.ToString("X2"),
+                                                 keys[3].Value.ToString("X2")),
+//                    Color.FromArgb((byte)keys[0].Value, (byte)keys[1].Value, (byte)keys[2].Value,
+//                                   (byte)keys[3].Value),
                 Handicap = keys[6].Value,
                 Team = keys[8].Value,
             };

@@ -67,7 +67,7 @@ namespace Starcraft2.ReplayParser.TestApplication
             Replay replay = Replay.Parse(filePath);
 
             Console.Out.Write("Replay players: ");
-
+            
             foreach (var player in replay.Players)
             {
                 Console.Out.Write(player.Name + " ");
