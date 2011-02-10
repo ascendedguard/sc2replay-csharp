@@ -12,6 +12,9 @@ namespace Starcraft2.ReplayParser
         {
         }
 
+        public string ReplayVersion { get; set; }
+        public int ReplayBuild { get; set; }
+
         public PlayerDetails[] Players { get; private set; }
         public string Map { get; private set; }
         public DateTime Timestamp { get; private set; }
@@ -20,15 +23,118 @@ namespace Starcraft2.ReplayParser
         public GameType GameType { get; set; }
 
         /// <summary>
+        /// Parses the MPQ header on a file to determine version and build numbers.
+        /// </summary>
+        /// <param name="replay">Replay object to store </param>
+        /// <param name="filename"></param>
+        public static void ParseHeader(Replay replay, string filename)
+        {
+            using (BinaryReader reader = new BinaryReader(new FileStream(filename, FileMode.Open)))
+            {
+                byte[] magic = reader.ReadBytes(3);
+                byte format = reader.ReadByte();
+
+                byte[] buffer = reader.ReadBytes(4);
+                int uDataMaxSize = BitConverter.ToInt32(buffer, 0);
+
+                buffer = reader.ReadBytes(4);
+                int headerOffset = BitConverter.ToInt32(buffer, 0);
+
+                buffer = reader.ReadBytes(4);
+                int userDataHeaderSize = BitConverter.ToInt32(buffer, 0);
+
+                int dataType = reader.ReadByte(); // Should be 0x05 = Array w/ Keys
+
+                int numElements = ParseVLFNumber(reader);
+
+                // The first value is always the version, lets extract it.
+                int index = ParseVLFNumber(reader);
+
+                int type = reader.ReadByte(); // Should be 0x02 = binary data
+
+                int numValues = ParseVLFNumber(reader); //reader.ReadByte();
+                byte[] starcraft2 = reader.ReadBytes(numValues);
+
+                int index2 = ParseVLFNumber(reader);
+                int type2 = reader.ReadByte(); // Should be 0x05 = Array w/ Keys
+
+                int numElementsVersion = ParseVLFNumber(reader);
+                var version = new int[numElementsVersion];
+
+                while (numElementsVersion > 0)
+                {
+                    int i = ParseVLFNumber(reader);
+                    int t = reader.ReadByte(); // Type;
+
+                    if (t == 0x09) //VLF
+                    {
+                        version[i] = ParseVLFNumber(reader);
+                    }
+                    else if (t == 0x06) //Byte
+                    {
+                        version[i] = reader.ReadByte();
+                    }
+                    else if (t == 0x07) //4 Bytes
+                    {
+                        version[i] = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+                    }
+
+                    numElementsVersion--;
+                }
+
+                // We now have the version. Just parse.
+                replay.ReplayVersion = string.Format("{0}.{1}.{2}.{3}", version[0], version[1], version[2], version[3]);
+                replay.ReplayBuild = version[4];
+
+                reader.Close();                
+            }
+        }
+
+        private static int ParseVLFNumber(BinaryReader reader)
+        {
+            var bytes = 0;
+            var first = true;
+            var number = 0;
+            var multiplier = 1;
+
+            while(true)
+            {
+                var i = reader.ReadByte();
+
+                number += (i & 0x7F)*(int)Math.Pow(2, bytes*7);
+                
+                if(first)
+                {
+                    if ((number & 1) != 0)
+                    {
+                        multiplier = -1;
+                        number--;
+                    }
+                    first = false;
+                }
+
+                if ((i & 0x80) == 0) break;
+
+                bytes++;
+            }
+
+            return (number/2)*multiplier;
+        }
+
+        /// <summary>
         /// Parses a .SC2Replay file and returns relevant replay information.
         /// </summary>
         /// <param name="fileName">Full path to a .SC2Replay file.</param>
         public static Replay Parse(string fileName)
         {
-            Replay replay;
+            var replay = new Replay();
+
+            // File in the version numbers for later use.
+            ParseHeader(replay, fileName);
 
             using (var archive = new MpqLib.Mpq.CArchive(fileName))
             {
+                //archive.ToString
                 var files = archive.FindFiles("replay.*");
 
                 // Local scope allows the byte[] to be GC sooner, and prevents misreferences
@@ -44,7 +150,7 @@ namespace Starcraft2.ReplayParser
 
                     archive.ExportFile(curFile, buffer);
 
-                    replay = ParseReplayDetails(buffer);
+                    ParseReplayDetails(replay, buffer);
                 }
                 
                 {
@@ -57,8 +163,7 @@ namespace Starcraft2.ReplayParser
 
                     archive.ExportFile(curFile, buffer);
 
-                    var replayAttributes = ReplayAttributeEvents.Parse(buffer);
-                    replayAttributes.ApplyAttributes(replay);
+                    ReplayAttributeEvents.Parse(replay, buffer);
                 } 
             }
             replay.Timestamp = File.GetCreationTime(fileName);
@@ -66,23 +171,18 @@ namespace Starcraft2.ReplayParser
             return replay;
         }
 
-        private static Replay ParseReplayDetails(byte[] buffer)
+        private static void ParseReplayDetails(Replay replay, byte[] buffer)
         {
-            Replay replay;
             using (var stream = new MemoryStream(buffer, false))
             {
-                replay = ParseReplayDetails(stream);
+                ParseReplayDetails(replay, stream);
 
                 stream.Close();
             }
-
-            return replay;
         }
 
-        private static Replay ParseReplayDetails(Stream stream)
+        private static void ParseReplayDetails(Replay replay, Stream stream)
         {
-            Replay replay = new Replay();
-
             using (var reader = new BinaryReader(stream))
             {
                 byte[] version = reader.ReadBytes(6); // unknownHeader
@@ -107,8 +207,6 @@ namespace Starcraft2.ReplayParser
 
                 reader.Close();
             }
-
-            return replay;
         }
     }
 }

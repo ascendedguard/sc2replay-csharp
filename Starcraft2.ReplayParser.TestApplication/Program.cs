@@ -8,20 +8,67 @@ namespace Starcraft2.ReplayParser.TestApplication
 {
     class Program
     {
-        private const string ReplayLocation = @"C:\Users\Will\Documents\StarCraft II\Accounts\1300563\1-S2-1-268325\Replays\Unsaved";
-
         static void Main()
         {
             string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             appPath = Path.GetDirectoryName(appPath);
 
-            string replayPath = Path.Combine(appPath, "testReplay.SC2Replay");
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.SC2Replay"));
 
-            Replay replay = Replay.Parse(replayPath);
+            // Replace this with your local Starcraft 2's replay folder to  test parallel parsing.
+            const string replayLocation = @"C:\Users\Will\Documents\StarCraft II\Accounts\1300563\1-S2-1-268325\Replays\Unsaved\Multiplayer";
+            
+            if (Directory.Exists(replayLocation))
+            {
+                BenchmarkParallel(replayLocation);    
+            }
+            else
+            {
+                Console.WriteLine("Cannot test parallel parsing - Directory does not exist.");
+            }
+
+            Console.WriteLine("Press enter to quit.");
+            Console.ReadLine();
+        }
+
+        private static void BenchmarkParallel(string replayLocation)
+        {
+            var watch = new Stopwatch();
+
+            string[] replayFiles = Directory.GetFiles(replayLocation);
+
+            Console.Out.WriteLine("Testing Parallel Parsing Speed: {0} Replay Files", replayFiles.Length);
+
+            object replayLock = new object();
+            var replays = new List<Replay>();
+
+            watch.Reset();
+            watch.Start();
+
+            Parallel.ForEach(replayFiles, replayFilename =>
+            {
+                var rep = Replay.Parse(replayFilename);
+
+                lock (replayLock)
+                {
+                    replays.Add(rep);
+                }
+            });
+
+            watch.Stop();
+
+            Console.Out.WriteLine("Total time: {0}ms. Average: {1}ms.",
+                                  watch.ElapsedMilliseconds, watch.ElapsedMilliseconds / (double)replayFiles.Length);
+        }
+
+        private static void BenchmarkReplay(string filePath)
+        {
+            Replay replay = Replay.Parse(filePath);
 
             Console.Out.Write("Replay players: ");
 
-            foreach(var player in replay.Players)
+            foreach (var player in replay.Players)
             {
                 Console.Out.Write(player.Name + " ");
             }
@@ -33,44 +80,15 @@ namespace Starcraft2.ReplayParser.TestApplication
             var watch = new Stopwatch();
             watch.Start();
 
-            for(int i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
             {
-                Replay.Parse(replayPath);
+                Replay.Parse(filePath);
             }
 
             watch.Stop();
 
-            Console.Out.WriteLine("Total time: {0}ms. Average: {1}ms.", 
-                                  watch.ElapsedMilliseconds, watch.ElapsedMilliseconds / 1000.0);
-
-            string[] replayFiles = Directory.GetFiles(ReplayLocation);
-
-            Console.Out.WriteLine("Testing Parallel Parsing Speed: {0} Replay Files", replayFiles.Length);
-
-            object replayLock = new object();
-            var replays = new List<Replay>();
-
-            watch.Reset();
-            watch.Start();
-
-            Parallel.ForEach(replayFiles, replayFilename =>
-                                              {
-                                                  var rep = Replay.Parse(replayFilename);
-
-                                                  lock (replayLock)
-                                                  {
-                                                      replays.Add(rep);
-                                                  }
-                                              });
-
-            watch.Stop();
-
             Console.Out.WriteLine("Total time: {0}ms. Average: {1}ms.",
-                                  watch.ElapsedMilliseconds, watch.ElapsedMilliseconds / (double)replayFiles.Length);
-
-
-            Console.WriteLine("Press enter to quit.");
-            Console.ReadLine();
+                                  watch.ElapsedMilliseconds, watch.ElapsedMilliseconds / 1000.0);
         }
     }
 }

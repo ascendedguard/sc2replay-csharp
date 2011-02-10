@@ -9,19 +9,28 @@ namespace Starcraft2.ReplayParser
     {
         public ReplayAttribute[] Attributes { get; set; }
 
-        public static ReplayAttributeEvents Parse(byte[] buffer)
+        public static void Parse(Replay replay, byte[] buffer)
         {
-            var numAttributes = BitConverter.ToInt32(buffer, 4);
+            int headerSize = 4;
+
+            if (replay.ReplayBuild >= 17326) // 1.2.0
+            {
+                headerSize = 5;
+            }
+
+            var numAttributes = BitConverter.ToInt32(buffer, headerSize);
 
             var attributes = new ReplayAttribute[numAttributes];
 
+            int initialOffset = 4 + headerSize;
+
             for (int i = 0; i < numAttributes; i++)
             {
-                attributes[i] = ReplayAttribute.Parse(buffer, 8 + (i*13)); // attributes[i] = ReplayAttribute.Parse(reader);
+                attributes[i] = ReplayAttribute.Parse(buffer, initialOffset + (i*13)); // attributes[i] = ReplayAttribute.Parse(reader);
             }
 
             var rae = new ReplayAttributeEvents { Attributes = attributes };
-            return rae;
+            rae.ApplyAttributes(replay);
         }
 
         /// <summary>
