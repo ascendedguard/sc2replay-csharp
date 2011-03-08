@@ -11,16 +11,51 @@ namespace Starcraft2.ReplayParser
         {
         }
 
-        public string ReplayVersion { get; set; }
-        public int ReplayBuild { get; set; }
+        /// <summary>
+        /// Gets the version number of the replay.
+        /// </summary>
+        public string ReplayVersion { get; internal set; }
 
+        /// <summary>
+        /// Gets the build number of the Starcraft 2 version used in creating the replay.
+        /// </summary>
+        public int ReplayBuild { get; internal set; }
+
+        /// <summary>
+        /// Gets the details of all players in the replay.
+        /// </summary>
         public PlayerDetails[] Players { get; private set; }
+        
+        /// <summary>
+        /// Gets the map the game was played on.
+        /// </summary>
         public string Map { get; private set; }
+
+        /// <summary>
+        /// Gets the Time at which the game took place.
+        /// </summary>
         public DateTime Timestamp { get; private set; }
-        public GameSpeed GameSpeed { get; set; }
-        public string TeamSize { get; set; }
-        public GameType GameType { get; set; }
-        public IList<ChatMessage> ChatMessages { get; set; }
+
+        /// <summary>
+        /// Gets the speed the game was played at.
+        /// </summary>
+        public GameSpeed GameSpeed { get; internal set; }
+
+        /// <summary>
+        /// Gets the team size of the selected gametype.
+        /// </summary>
+        /// <example>1v1, 2v2, 3v3, 4v4</example>
+        public string TeamSize { get; internal set; }
+
+        /// <summary>
+        /// Gets the type of game this replay covers, whether it was a private or open match.
+        /// </summary>
+        public GameType GameType { get; internal set; }
+
+        /// <summary>
+        /// Gets a list of all chat messages which took place during the game.
+        /// </summary>
+        public IList<ChatMessage> ChatMessages { get; internal set; }
 
         /// <summary>
         /// Parses a .SC2Replay file and returns relevant replay information.
