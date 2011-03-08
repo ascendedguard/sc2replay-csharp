@@ -57,6 +57,39 @@ namespace Starcraft2.ReplayParser
         /// </summary>
         public IList<ChatMessage> ChatMessages { get; internal set; }
 
+        public static void AddChatMessage(string fileName, string message, int playerId, int numSeconds)
+        {
+            var replay = new Replay();
+
+            // File in the version numbers for later use.
+            MpqHeader.ParseHeader(replay, fileName);
+
+            using (var archive = new MpqLib.Mpq.CArchive(fileName))
+            {
+                //archive.
+                //archive.ToString
+                var files = archive.FindFiles("replay.*");
+
+                {
+                    const string curFile = "replay.message.events";
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    var arr = ReplayMessageEvents.GenerateChatMessage(buffer, message, playerId, numSeconds);                 
+                    archive.ImportFile("replay.message.events", arr.ToArray());
+
+                    //replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
+                }
+
+                archive.Close();
+            }
+        }
+
         /// <summary>
         /// Parses a .SC2Replay file and returns relevant replay information.
         /// </summary>
