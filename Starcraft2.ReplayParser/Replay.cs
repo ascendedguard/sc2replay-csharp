@@ -45,7 +45,7 @@ namespace Starcraft2.ReplayParser
 
                 int numElements = ParseVLFNumber(reader);
 
-                // The first value is always the version, lets extract it.
+                // The first value is the words: "Starcraft II Replay 11"
                 int index = ParseVLFNumber(reader);
 
                 int type = reader.ReadByte(); // Should be 0x02 = binary data
@@ -125,6 +125,11 @@ namespace Starcraft2.ReplayParser
         /// <param name="fileName">Full path to a .SC2Replay file.</param>
         public static Replay Parse(string fileName)
         {
+            if (File.Exists(fileName) == false)
+            {
+                throw new FileNotFoundException("The specified file does not exist.", fileName);
+            }
+
             var replay = new Replay();
 
             // File in the version numbers for later use.
