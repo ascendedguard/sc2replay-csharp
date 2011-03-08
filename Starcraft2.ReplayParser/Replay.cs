@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -19,6 +20,7 @@ namespace Starcraft2.ReplayParser
         public GameSpeed GameSpeed { get; set; }
         public string TeamSize { get; set; }
         public GameType GameType { get; set; }
+        public IList<ChatMessage> ChatMessages { get; set; }
 
         /// <summary>
         /// Parses the MPQ header on a file to determine version and build numbers.
@@ -167,6 +169,19 @@ namespace Starcraft2.ReplayParser
                     archive.ExportFile(curFile, buffer);
 
                     ReplayAttributeEvents.Parse(replay, buffer);
+                } 
+                
+                {
+                    const string curFile = "replay.message.events";
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
                 } 
             }
             replay.Timestamp = File.GetCreationTime(fileName);

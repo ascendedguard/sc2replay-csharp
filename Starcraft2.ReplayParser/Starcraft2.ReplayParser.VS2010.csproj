@@ -60,6 +60,8 @@
     <Compile Include="replay.attributes.events\ReplayAttributeEvents.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="replay.messages.events\ChatMessage.cs" />
+    <Compile Include="replay.messages.events\ReplayMessageEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
