@@ -6,7 +6,7 @@ namespace Starcraft2.ReplayParser
     {
         public TimeSpan Timestamp { get; set; }
         public int PlayerId { get; set; }
-        public int MessageTarget { get; set; }
+        public ChatMessageTarget MessageTarget { get; set; }
         public string Message { get; set; }
 
         public override string ToString()

@@ -43,7 +43,7 @@ namespace Starcraft2.ReplayParser
                         }
                         else if ((opCode & 0x80) == 0)
                         {
-                            message.MessageTarget = opCode & 3;
+                            message.MessageTarget = (ChatMessageTarget)(opCode & 3);
                             var length = reader.ReadByte();
 
                             if ((opCode & 8) == 8) length += 64;
@@ -56,7 +56,7 @@ namespace Starcraft2.ReplayParser
                         
                         if (message.Message != null)
                         {
-                            message.Timestamp = new TimeSpan(0,0,(int)Math.Ceiling(totalTime / 16.0));
+                            message.Timestamp = new TimeSpan(0,0,(int)Math.Round(totalTime / 16.0));
                             messages.Add(message);                            
                         }
                     }
