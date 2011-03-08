@@ -4,6 +4,12 @@ sc2replay-csharp
 
 This is an easy-to-use library to quickly parse and extract information from the undocumented .sc2replay format.
 
+Current Abilities
+================
+* Parses basic player and matchup information.
+* Parses entire chat log.
+* Can insert lines of text into the chat log for any player.
+
 Benchmark
 =========
 Replay players: InflowMini ViBE
