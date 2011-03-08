@@ -4,14 +4,14 @@ namespace Starcraft2.ReplayParser
 {
     public class ChatMessage
     {
-        public int Timestamp { get; set; }
+        public TimeSpan Timestamp { get; set; }
         public int PlayerId { get; set; }
         public int MessageTarget { get; set; }
         public string Message { get; set; }
 
         public override string ToString()
         {
-            return string.Format("[{0}] Player {1}: {2}", MessageTarget, PlayerId, Message);
+            return string.Format("({0}) [{1}] Player {2}: {3}", Timestamp, MessageTarget, PlayerId, Message);
         }
     }
 }

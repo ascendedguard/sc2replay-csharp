@@ -21,13 +21,16 @@ namespace Starcraft2.ReplayParser
             {
                 using (var reader = new BinaryReader(stream))
                 {
+                    int totalTime = 0;
+
                     while (reader.BaseStream.Position < reader.BaseStream.Length) // While not EOF
                     {
                         var message = new ChatMessage();
 
-                        message.Timestamp = ParseTimestamp(reader);
+                        var time = ParseTimestamp(reader);
                         message.PlayerId = reader.ReadByte();
 
+                        totalTime += time;
                         var opCode = reader.ReadByte();
 
                         if (opCode == 0x80)
@@ -48,13 +51,12 @@ namespace Starcraft2.ReplayParser
 
                             byte[] msg = reader.ReadBytes(length);
 
-                            Encoding enc = Encoding.ASCII;
-                            message.Message = enc.GetString(msg);
- 
+                            message.Message = Encoding.ASCII.GetString(msg);
                         }
                         
                         if (message.Message != null)
                         {
+                            message.Timestamp = new TimeSpan(0,0,(int)Math.Ceiling(totalTime / 16.0));
                             messages.Add(message);                            
                         }
                     }
@@ -87,7 +89,7 @@ namespace Starcraft2.ReplayParser
                 return two;
             }
 
-            return one;
+            return (one >> 2);
         }
     }
 }

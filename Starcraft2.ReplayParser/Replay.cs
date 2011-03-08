@@ -77,7 +77,7 @@ namespace Starcraft2.ReplayParser
             {
                 //archive.ToString
                 var files = archive.FindFiles("replay.*");
-
+               
                 // Local scope allows the byte[] to be GC sooner, and prevents misreferences
                 {
                     const string curFile = "replay.details";
