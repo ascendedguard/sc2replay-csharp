@@ -52,6 +52,7 @@
     <Compile Include="GameSpeed.cs" />
     <Compile Include="GameType.cs" />
     <Compile Include="KeyValueStruct.cs" />
+    <Compile Include="MPQHeader.cs" />
     <Compile Include="PlayerDetails.cs" />
     <Compile Include="PlayerType.cs" />
     <Compile Include="replay.attributes.events\ReplayAttribute.cs" />
