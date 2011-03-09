@@ -62,6 +62,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="replay.messages.events\ChatMessage.cs" />
+    <Compile Include="replay.messages.events\ChatMessageTarget.cs" />
     <Compile Include="replay.messages.events\ReplayMessageEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

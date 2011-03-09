@@ -68,7 +68,7 @@ namespace Starcraft2.ReplayParser
 
         public static byte[] GenerateChatMessage(byte[] buffer, string message, int playerId, int seconds)
         {
-            if (message.Length > 64)
+            if (message.Length >= 64)
             {
                 throw new NotSupportedException("This call does not support strings longer than 64 characters yet.");
             }
@@ -120,7 +120,7 @@ namespace Starcraft2.ReplayParser
                         }
                         else
                         {
-                            completeFile.AddRange(CreateTimestamp(timestamp));                            
+                            completeFile.AddRange(CreateTimestamp(timestamp));
                         }
 
                         completeFile.Add(reader.ReadByte()); // PlayerID
@@ -149,6 +149,22 @@ namespace Starcraft2.ReplayParser
                             completeFile.AddRange(reader.ReadBytes(length));
                         }
                     }
+
+                    // If we reach the end and the message still hasn't been entered...
+                    if (hasBeenWritten == false)
+                    {
+                        var shiftTimestamp = CreateTimestamp(targetValue - totalTime);
+
+                        var bytes = new List<byte>();
+
+                        bytes.AddRange(shiftTimestamp);
+                        bytes.Add((byte)playerId); //playerid
+                        bytes.Add(0); //opcode
+                        bytes.Add((byte)message.Length);
+                        bytes.AddRange(Encoding.ASCII.GetBytes(message));
+
+                        completeFile.AddRange(bytes);
+                    }
                 }
             }
 
@@ -170,8 +186,16 @@ namespace Starcraft2.ReplayParser
             bytes[bytesNeeded] = (byte)((bytes[bytesNeeded] << 2) | bytesNeeded);
             
             //bytes[0] = (byte)((bytes[0] << 2) | bytesNeeded);
+            var final = new byte[bytesNeeded + 1];
+            
+            int index = bytesNeeded;
+            for (int i = 0; i < bytesNeeded + 1; i++)
+            {
+                final[i] = bytes[index];
+                index--;
+            }
 
-            return bytes.Where((i) => i > 0).Reverse().ToArray();
+            return final;
         }
 
         public static int ParseTimestamp(BinaryReader reader)
