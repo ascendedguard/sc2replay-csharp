@@ -9,5 +9,6 @@ Current Abilities
 * Parses basic player and matchup information.
 * Parses entire chat log.
 * Can insert lines of text into the chat log for any player.
+* Can clear the in-game chat for a "clean" replay.
 
 You can find and contribute information in deconstructing the file format in the wiki: <https://github.com/ascendedguard/sc2replay-csharp/wiki>
