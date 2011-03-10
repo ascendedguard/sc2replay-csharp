@@ -75,8 +75,6 @@ namespace Starcraft2.ReplayParser
 
             using (var archive = new MpqLib.Mpq.CArchive(fileName))
             {
-                //archive.
-                //archive.ToString
                 var files = archive.FindFiles("replay.*");
 
                 {
@@ -90,12 +88,95 @@ namespace Starcraft2.ReplayParser
                     archive.ExportFile(curFile, buffer);
 
                     var arr = GenerateChatMessage(buffer, message, playerId, numSeconds);
-                    archive.ImportFile("replay.message.events", arr.ToArray());
+                    archive.ImportFile("replay.message.events", arr);
 
                 }
 
                 archive.Close();
             }
+        }
+
+        public static void ClearChatLog(string fileName)
+        {
+            var replay = new Replay();
+
+            // File in the version numbers for later use.
+            MpqHeader.ParseHeader(replay, fileName);
+
+            using (var archive = new MpqLib.Mpq.CArchive(fileName))
+            {
+                var files = archive.FindFiles("replay.*");
+
+                {
+                    const string curFile = "replay.message.events";
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    var arr = ClearChatLog(buffer);
+                    archive.ImportFile("replay.message.events", arr);
+
+                }
+
+                archive.Close();
+            }
+        }
+
+        private static byte[] ClearChatLog(byte[] buffer)
+        {
+            var completeFile = new List<byte>();
+
+            using (var stream = new MemoryStream(buffer))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    while (reader.BaseStream.Position < reader.BaseStream.Length) // While not EOF
+                    {
+                        int timestamp = ParseTimestamp(reader);
+
+                        // Erase any entires after timestamp > 0. This may not work if a chat has been
+                        // inserted at time 0, but I'm not entirely sure if it would display in-game in that case.
+                        if (timestamp > 0)
+                        {
+                            break;
+                        }
+
+                        completeFile.AddRange(CreateTimestamp(timestamp));
+
+                        completeFile.Add(reader.ReadByte()); // PlayerID
+
+                        var opCode = reader.ReadByte();
+
+                        completeFile.Add(opCode);
+
+                        if (opCode == 0x80)
+                        {
+                            completeFile.AddRange(reader.ReadBytes(4));
+                        }
+                        else if (opCode == 0x83)
+                        {
+                            completeFile.AddRange(reader.ReadBytes(8));
+                        }
+                        else if ((opCode & 0x80) == 0)
+                        {
+                            var length = reader.ReadByte();
+
+                            completeFile.Add(length);
+
+                            if ((opCode & 8) == 8) length += 64;
+                            if ((opCode & 16) == 16) length += 128;
+
+                            completeFile.AddRange(reader.ReadBytes(length));
+                        }
+                    }
+                }
+            }
+
+            return completeFile.ToArray();
         }
 
         private static byte[] GenerateChatMessage(byte[] buffer, string message, int playerId, int seconds)
@@ -122,7 +203,7 @@ namespace Starcraft2.ReplayParser
                     while (reader.BaseStream.Position < reader.BaseStream.Length) // While not EOF
                     {
                         int timestamp = ParseTimestamp(reader);
-
+                        
                         totalTime += timestamp;
 
                         if (hasBeenWritten == false && totalTime > targetValue)
@@ -217,7 +298,6 @@ namespace Starcraft2.ReplayParser
             var bytes = BitConverter.GetBytes(value);//.Where((i) => i > 0).ToArray();
             bytes[bytesNeeded] = (byte)((bytes[bytesNeeded] << 2) | bytesNeeded);
             
-            //bytes[0] = (byte)((bytes[0] << 2) | bytesNeeded);
             var final = new byte[bytesNeeded + 1];
             
             int index = bytesNeeded;
