@@ -66,7 +66,39 @@ namespace Starcraft2.ReplayParser
             return messages;
         }
 
-        public static byte[] GenerateChatMessage(byte[] buffer, string message, int playerId, int seconds)
+        public static void AddChatMessageToReplay(string fileName, string message, int playerId, int numSeconds)
+        {
+            var replay = new Replay();
+
+            // File in the version numbers for later use.
+            MpqHeader.ParseHeader(replay, fileName);
+
+            using (var archive = new MpqLib.Mpq.CArchive(fileName))
+            {
+                //archive.
+                //archive.ToString
+                var files = archive.FindFiles("replay.*");
+
+                {
+                    const string curFile = "replay.message.events";
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    var arr = GenerateChatMessage(buffer, message, playerId, numSeconds);
+                    archive.ImportFile("replay.message.events", arr.ToArray());
+
+                }
+
+                archive.Close();
+            }
+        }
+
+        private static byte[] GenerateChatMessage(byte[] buffer, string message, int playerId, int seconds)
         {
             if (message.Length >= 64)
             {
@@ -171,7 +203,7 @@ namespace Starcraft2.ReplayParser
             return completeFile.ToArray();
         }
 
-        public static byte[] CreateTimestamp(int value)
+        private static byte[] CreateTimestamp(int value)
         {
             int bytesNeeded = 0;
 
@@ -198,7 +230,7 @@ namespace Starcraft2.ReplayParser
             return final;
         }
 
-        public static int ParseTimestamp(BinaryReader reader)
+        private static int ParseTimestamp(BinaryReader reader)
         {
             byte one = reader.ReadByte();
             if ((one & 3) > 0)
