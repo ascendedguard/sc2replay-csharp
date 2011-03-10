@@ -13,11 +13,8 @@ namespace Starcraft2.ReplayParser.TestApplication
             string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             appPath = Path.GetDirectoryName(appPath);
 
-            Replay.AddChatMessage("badreplay.SC2replay", "Welcome to AscendTV.", 1, 5);
-            var replay = Replay.Parse("badreplay.SC2replay");
-            
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.SC2Replay"));
 
             // Replace this with your local Starcraft 2's replay folder to  test parallel parsing.
             const string replayLocation = @"C:\Users\Will\Documents\StarCraft II\Accounts\1300563\1-S2-1-268325\Replays\Unsaved\Multiplayer";
