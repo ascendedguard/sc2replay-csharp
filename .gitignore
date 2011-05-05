@@ -1,0 +1,8 @@
+_Resharper.sc2replay-csharp.VS2010/*
+Starcraft2.ReplayParser/bin
+Starcraft2.ReplayParser/obj
+Starcraft2.ReplayParser.TestApplication/bin
+Starcraft2.ReplayParser.TestApplication/obj
+*.suo
+*.ReSharper.user
+*StyleCop.Cache
