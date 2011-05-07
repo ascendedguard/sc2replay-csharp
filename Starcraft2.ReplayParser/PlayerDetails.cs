@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace Starcraft2.ReplayParser
+﻿namespace Starcraft2.ReplayParser
 {
+    using System;
+    using System.IO;
+
     /// <summary>
     /// Class describing an individual player in a match.
     /// </summary>
