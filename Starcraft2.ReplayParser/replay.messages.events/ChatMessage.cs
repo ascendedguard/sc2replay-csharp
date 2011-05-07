@@ -1,7 +1,16 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ChatMessage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ChatMessage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
+    using System;
+
     public class ChatMessage
     {
         public TimeSpan Timestamp { get; set; }
