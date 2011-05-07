@@ -86,10 +86,8 @@ namespace Starcraft2.ReplayParser
 
         /// <summary> Adds a single chat message to a replay. </summary>
         /// <param name="fileName"> The file name. </param>
-        /// <param name="message"> The message. </param>
-        /// <param name="playerId"> The player id. </param>
-        /// <param name="numSeconds"> The number of in-game seconds to insert the message at. </param>
-        public static void AddChatMessageToReplay(string fileName, string message, int playerId, int numSeconds)
+        /// <param name="messages"> The messages to add. </param>
+        public static void AddChatMessageToReplay(string fileName, IEnumerable<ChatMessage> messages)
         {
             var replay = new Replay();
 
@@ -110,7 +108,45 @@ namespace Starcraft2.ReplayParser
 
                     archive.ExportFile(CurFile, buffer);
 
-                    var arr = GenerateChatMessage(buffer, message, playerId, numSeconds);
+                    foreach (var message in messages)
+                    {
+                        buffer = GenerateChatMessage(buffer, message.Message, message.MessageTarget, message.PlayerId, (int)message.Timestamp.TotalSeconds);                        
+                    }
+
+                    archive.ImportFile("replay.message.events", buffer);
+                }
+
+                archive.Close();
+            }
+        }
+
+        /// <summary> Adds a single chat message to a replay. </summary>
+        /// <param name="fileName"> The file name. </param>
+        /// <param name="message"> The message. </param>
+        /// <param name="playerId"> The player id. </param>
+        /// <param name="numSeconds"> The number of in-game seconds to insert the message at. </param>
+        public static void AddChatMessageToReplay(string fileName, string message, ChatMessageTarget target, int playerId, int numSeconds)
+        {
+            var replay = new Replay();
+
+            // File in the version numbers for later use.
+            MpqHeader.ParseHeader(replay, fileName);
+
+            using (var archive = new MpqLib.Mpq.CArchive(fileName))
+            {
+                var files = archive.FindFiles("replay.*");
+
+                {
+                    const string CurFile = "replay.message.events";
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(CurFile)
+                                    select f).Single().Size;
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(CurFile, buffer);
+
+                    var arr = GenerateChatMessage(buffer, message, target, playerId, numSeconds);
                     archive.ImportFile("replay.message.events", arr);
                 }
 
@@ -220,7 +256,7 @@ namespace Starcraft2.ReplayParser
         /// <param name="seconds"> The number of in-game seconds to insert the message. </param>
         /// <returns> The final buffer with the inserted message. </returns>
         /// <exception cref="NotSupportedException"> Thrown if the message is longer than 64 character. </exception>
-        private static byte[] GenerateChatMessage(byte[] buffer, string message, int playerId, int seconds)
+        private static byte[] GenerateChatMessage(byte[] buffer, string message, ChatMessageTarget target, int playerId, int seconds)
         {
             if (message.Length >= 64)
             {
@@ -260,7 +296,9 @@ namespace Starcraft2.ReplayParser
 
                             bytes.AddRange(shiftTimestamp);
                             bytes.Add((byte)playerId); // playerid
-                            bytes.Add(0); // opcode
+
+                            var opcode = (byte)target;
+                            bytes.Add(opcode); // opcode
                             bytes.Add((byte)message.Length);
                             bytes.AddRange(Encoding.ASCII.GetBytes(message));
 
@@ -314,7 +352,10 @@ namespace Starcraft2.ReplayParser
 
                         bytes.AddRange(shiftTimestamp);
                         bytes.Add((byte)playerId); // playerid
-                        bytes.Add(0); // opcode
+                        
+                        var opcode = (byte)target;
+                        bytes.Add(opcode); // opcode
+
                         bytes.Add((byte)message.Length);
                         bytes.AddRange(Encoding.ASCII.GetBytes(message));
 
