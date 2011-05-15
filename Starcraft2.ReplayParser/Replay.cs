@@ -24,7 +24,7 @@ namespace Starcraft2.ReplayParser
         /// <summary>
         /// Gets the details of all players in the replay.
         /// </summary>
-        public PlayerDetails[] Players { get; private set; }
+        public Player[] Players { get; private set; }
         
         /// <summary>
         /// Gets the map the game was played on.
@@ -52,10 +52,26 @@ namespace Starcraft2.ReplayParser
         /// </summary>
         public GameType GameType { get; internal set; }
 
+        public Player Winner { get; internal set; }
+
         /// <summary>
         /// Gets a list of all chat messages which took place during the game.
         /// </summary>
         public IList<ChatMessage> ChatMessages { get; internal set; }
+
+        public List<IGameEvent> PlayerEvents { get; internal set; }
+
+        public Player GetPlayerById(int playerId)
+        {
+            int playerIndex = playerId - 1;
+
+            if (playerId < this.Players.Length)
+            {
+                return this.Players[playerIndex];
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// Parses a .SC2Replay file and returns relevant replay information.
@@ -118,8 +134,23 @@ namespace Starcraft2.ReplayParser
                     archive.ExportFile(curFile, buffer);
 
                     replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
-                } 
+                }
+
+                {
+                    const string curFile = "replay.game.events";
+                    
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    replay.PlayerEvents = ReplayGameEvents.Parse(replay, buffer);
+                }
             }
+
             replay.Timestamp = File.GetCreationTime(fileName);
             
             return replay;
@@ -144,7 +175,7 @@ namespace Starcraft2.ReplayParser
                 int playerCount = (doublePlayerCount / 2);
 
                 // Parsing Player Info
-                var players = new PlayerDetails[playerCount];
+                var players = new Player[playerCount];
 
                 for (int i = 0; i < playerCount; i++)
                 {

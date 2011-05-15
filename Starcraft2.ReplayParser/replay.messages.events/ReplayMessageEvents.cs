@@ -413,7 +413,7 @@ namespace Starcraft2.ReplayParser
         /// <summary> Reads a Timestamp object, returning the value and incrementing the reader. </summary>
         /// <param name="reader"> The reader, at the position of the Timestamp object. </param>
         /// <returns> The integer value in the timestamp object. </returns>
-        private static int ParseTimestamp(BinaryReader reader)
+        internal static int ParseTimestamp(BinaryReader reader)
         {
             byte one = reader.ReadByte();
             if ((one & 3) > 0)
