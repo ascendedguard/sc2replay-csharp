@@ -50,7 +50,7 @@
     <Content Include="testReplay.1.2.SC2Replay">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="testReplay.1.3.3.SC2Replay">
+    <Content Include="testReplay.1.3.4.SC2Replay">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
