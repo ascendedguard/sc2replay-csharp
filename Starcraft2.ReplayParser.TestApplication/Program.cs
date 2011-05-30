@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace Starcraft2.ReplayParser.TestApplication
+﻿namespace Starcraft2.ReplayParser.TestApplication
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+
     class Program
     {
         static void Main()
@@ -15,56 +14,41 @@ namespace Starcraft2.ReplayParser.TestApplication
 
             BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.SC2Replay"));
             BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.3.SC2Replay"));
 
             // Replace this with your local Starcraft 2's replay folder to  test parallel parsing.
-            const string replayLocation = @"C:\Users\Will\Documents\StarCraft II\Accounts\1300563\1-S2-1-268325\Replays\Unsaved\Multiplayer";
+            const string replayLocation = @"C:\Users\Will\Documents\StarCraft II\Accounts\1300563\1-S2-1-268325\Replays\Multiplayer";
+
+            string[] replayFiles = Directory.GetFiles(replayLocation);
+
+            int filesTotal = replayFiles.Length;
+            int filesSucceeded = 0;
             
-            if (Directory.Exists(replayLocation))
+
+            foreach (string replay in replayFiles)
             {
-                BenchmarkParallel(replayLocation);    
+                try
+                {
+                    BenchmarkReplay(replay);
+                    filesSucceeded++;
+                }
+                catch
+                {
+                    Console.WriteLine("Failed to parse: " + Path.GetFileName(replay));
+                }
             }
-            else
-            {
-                Console.WriteLine("Cannot test parallel parsing - Directory does not exist.");
-            }
+
+            Console.WriteLine(string.Format("Total Parsed: {0}/{1} ({2}%)", filesSucceeded, filesTotal, filesSucceeded * 100 / filesTotal));
 
             Console.WriteLine("Press enter to quit.");
             Console.ReadLine();
         }
 
-        private static void BenchmarkParallel(string replayLocation)
-        {
-            var watch = new Stopwatch();
-
-            string[] replayFiles = Directory.GetFiles(replayLocation);
-
-            Console.Out.WriteLine("Testing Parallel Parsing Speed: {0} Replay Files", replayFiles.Length);
-
-            object replayLock = new object();
-            var replays = new List<Replay>();
-
-            watch.Reset();
-            watch.Start();
-
-            Parallel.ForEach(replayFiles, replayFilename =>
-            {
-                var rep = Replay.Parse(replayFilename);
-
-                lock (replayLock)
-                {
-                    replays.Add(rep);
-                }
-            });
-
-            watch.Stop();
-
-            Console.Out.WriteLine("Total time: {0}ms. Average: {1}ms.",
-                                  watch.ElapsedMilliseconds, watch.ElapsedMilliseconds / (double)replayFiles.Length);
-        }
-
         private static void BenchmarkReplay(string filePath)
         {
             Replay replay = Replay.Parse(filePath);
+
+            CalculateAPM(replay);
 
             Console.Out.Write("Replay players: ");
             
@@ -74,21 +58,35 @@ namespace Starcraft2.ReplayParser.TestApplication
             }
 
             Console.Out.WriteLine();
+        }
 
-            Console.Out.WriteLine("Testing Parsing Speed: 1000 Replay Files");
+        private static void CalculateAPM(Replay replay)
+        {
+            var events = replay.PlayerEvents;
 
-            var watch = new Stopwatch();
-            watch.Start();
-
-            for (int i = 0; i < 1000; i++)
+            if (events == null)
             {
-                Replay.Parse(filePath);
+                // This is experimental. With older replays, it appears to return a close approximation.
+                return;
             }
 
-            watch.Stop();
+            var eventGroups = events.Where(r => r.Player != null)
+                                    .Where(r => r.EventType != GameEventType.Inactive)
+                                    .GroupBy((r) => r.Player);
 
-            Console.Out.WriteLine("Total time: {0}ms. Average: {1}ms.",
-                                  watch.ElapsedMilliseconds, watch.ElapsedMilliseconds / 1000.0);
+            foreach (var group in eventGroups)
+            {
+                var order = group.OrderBy((r) => r.Time);
+                var last = order.Last();
+                var count = group.Count();
+
+                // Calculates APM per second.
+                var apm = count / last.Time.TimeSpan.TotalSeconds;
+
+                apm *= 60;
+                
+                Debug.WriteLine(last.Player.Name + "'s APM: " + apm);
+            }
         }
     }
 }

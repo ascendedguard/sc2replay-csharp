@@ -136,6 +136,7 @@ namespace Starcraft2.ReplayParser
                     replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
                 }
 
+                /*
                 {
                     const string curFile = "replay.game.events";
                     
@@ -149,6 +150,7 @@ namespace Starcraft2.ReplayParser
 
                     replay.PlayerEvents = ReplayGameEvents.Parse(replay, buffer);
                 }
+                 */
             }
 
             replay.Timestamp = File.GetCreationTime(fileName);

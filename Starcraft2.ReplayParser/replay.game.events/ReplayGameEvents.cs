@@ -100,50 +100,144 @@
                                     case 0x8B:
                                     case 0x9B:
                                     case 0x0B: // player uses an ability
-                                        var firstByte = reader.ReadByte();
-                                        var temp = reader.ReadByte();
-                                        var ability = (reader.ReadByte() << 16) | 
-                                                        (reader.ReadByte() << 8) |
-                                                        (reader.ReadByte() & 0x3F);
+                                        int ability = -1;
+                                        byte firstByte = reader.ReadByte();
+                                        byte temp = reader.ReadByte();
 
-                                        if (temp == 0x20 || temp == 0x22)
+                                        if (replay.ReplayBuild >= 18317)
                                         {
-                                            var nByte = ability & 0xFF;
-                                                
-                                            if (nByte > 0x07)
-                                            {
-                                                if (firstByte == 0x29 || firstByte == 0x19)
-                                                {
-                                                    reader.ReadBytes(4); // Advance 4 bytes.
-                                                    break;
-                                                }
+                                            byte lastTemp;
 
-                                                reader.ReadBytes(9);
-                                                    
-                                                if ((nByte & 0x20) > 0)
+                                            ability = reader.Read() << 16 | reader.ReadByte() << 8
+                                                      | (lastTemp = reader.ReadByte());
+
+                                            // 18574 should be the correct build? not sure
+                                            if ((firstByte & 0x0c) == 0x0c && (firstByte & 1) == 0)
+                                            {
+                                                reader.ReadBytes(4);
+                                            }
+                                            else if (temp == 64 || temp == 66)
+                                            {
+                                                if (lastTemp > 14)
                                                 {
-                                                    reader.ReadBytes(9);
+                                                    if ((lastTemp & 0x40) != 0)
+                                                    {
+                                                        reader.ReadBytes(2);
+                                                        reader.ReadBytes(4);
+
+                                                        reader.ReadBytes(2);
+                                                    }
+                                                    else
+                                                    {
+                                                        reader.ReadBytes(6);
+                                                    }
                                                 }
                                             }
-                                        }
-                                        else if (temp == 0x48 || temp == 0x4A)
-                                        {
-                                            reader.ReadBytes(7);
-                                        }
-                                        else if (temp == 0x88 || temp == 0x8A)
-                                        {
-                                            reader.ReadBytes(15);
+                                            else if (temp == 8 || temp == 10)
+                                            {
+                                                reader.ReadBytes(7);
+                                            }
+                                            else if (temp == 136 || temp == 138)
+                                            {
+                                                reader.ReadBytes(15);
+                                            }
+                                            /*
+                                            {
+                                                    if ((temp & 0x80) == 0x80)
+                                                    {
+                                                        reader.ReadBytes(8);
+                                                    }
+
+                                                    reader.ReadBytes(10);
+                                                    ability = 0;
+                                                }
+                                                else
+                                                {
+                                                    byte lastTemp;
+
+                                                    ability = reader.Read() << 16 | reader.ReadByte() << 8
+                                                              | (lastTemp = reader.ReadByte());
+
+                                                    if ((temp & 0x60) == 0x60)
+                                                    {
+                                                        reader.ReadBytes(4);
+                                                    }
+                                                    else
+                                                    {
+                                                        var flaga = ability & 0xF0; // some kind of flag
+                                                        if ((flaga & 0x20) == 0x20)
+                                                        {
+                                                            reader.ReadBytes(9);
+                                                            if ((firstByte & 8) == 8)
+                                                            {
+                                                                reader.ReadBytes(9);
+                                                            }
+                                                        }
+                                                        else if ((flaga & 0x10) == 0x10)
+                                                        {
+                                                            reader.ReadBytes(9);
+                                                        }
+                                                        else if ((flaga & 0x40) == 0x40)
+                                                        {
+                                                            reader.ReadBytes(18);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            */
+                                            if (ability != -1)
+                                            {
+                                                events.Add(
+                                                    new GameEventBase(
+                                                        replay.GetPlayerById(playerId), Timestamp.Create(currentTime)));
+                                            }
                                         }
 
-                                        if ((temp & 0x20) != 0)
+                                        if (ability == -1)
                                         {
-                                            // TODO: Record player ability.
-                                            // This is wrong, right?
+                                            ability = (reader.ReadByte() << 16) |
+                                                            (reader.ReadByte() << 8) |
+                                                            (reader.ReadByte() & 0x3F);
+
+                                            if (temp == 0x20 || temp == 0x22)
+                                            {
+                                                var nByte = ability & 0xFF;
+
+                                                if (nByte > 0x07)
+                                                {
+                                                    if (firstByte == 0x29 || firstByte == 0x19)
+                                                    {
+                                                        reader.ReadBytes(4); // Advance 4 bytes.
+                                                        break;
+                                                    }
+
+                                                    reader.ReadBytes(9);
+
+                                                    if ((nByte & 0x20) > 0)
+                                                    {
+                                                        reader.ReadBytes(9);
+                                                    }
+                                                }
+                                            }
+                                            else if (temp == 0x48 || temp == 0x4A)
+                                            {
+                                                reader.ReadBytes(7);
+                                            }
+                                            else if (temp == 0x88 || temp == 0x8A)
+                                            {
+                                                reader.ReadBytes(15);
+                                            }
+
+                                            if ((temp & 0x20) != 0)
+                                            {
+                                                // TODO: Record player ability.
+                                                // This is wrong, right?
+                                                events.Add(new GameEventBase(replay.GetPlayerById(playerId), Timestamp.Create(currentTime)));
+                                            }
+
                                             events.Add(new GameEventBase(replay.GetPlayerById(playerId), Timestamp.Create(currentTime)));
                                         }
-
-                                        // Could potentially re-determine the race here. Look at if initial workers are build.
-                                        events.Add(new GameEventBase(replay.GetPlayerById(playerId), Timestamp.Create(currentTime)));
+                                        
                                         break;
                                     case 0x0C: // automatic update of hotkey?
                                     case 0x1C:

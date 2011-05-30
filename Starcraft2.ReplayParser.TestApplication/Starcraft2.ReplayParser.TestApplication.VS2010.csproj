@@ -50,6 +50,9 @@
     <Content Include="testReplay.1.2.SC2Replay">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="testReplay.1.3.3.SC2Replay">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Starcraft2.ReplayParser\Starcraft2.ReplayParser.VS2010.csproj">
