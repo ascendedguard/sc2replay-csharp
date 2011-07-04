@@ -483,11 +483,11 @@
                                         var receiver = (eventCode & 0xF0) >> 4;
                                         // sent minerals
                                         var bytes = reader.ReadBytes(4);
-                                        var mineralValue = (((bytes[0] << 20) | (bytes[1] << 12) | bytes[2] << 4 ) >> 1) + (bytes[4] & 0x0F);
+                                        var mineralValue = (((bytes[0] << 20) | (bytes[1] << 12) | bytes[2] << 4 ) >> 1) + (bytes[3] & 0x0F);
 
                                         // sent gas
                                         bytes = reader.ReadBytes(4);
-                                        var gasValue = (((bytes[0] << 20) | (bytes[1] << 12) | bytes[2] << 4 ) >> 1) + (bytes[4] & 0x0F);
+                                        var gasValue = (((bytes[0] << 20) | (bytes[1] << 12) | bytes[2] << 4 ) >> 1) + (bytes[3] & 0x0F);
 
                                         // last 8 bytes are unknown
                                         reader.ReadBytes(8);
