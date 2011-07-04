@@ -37,5 +37,14 @@
         /// Gets or sets the player's team number.
         /// </summary>
         public int Team { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the player won the game.
+        /// </summary>
+        public bool IsWinner { get; set; }
+
+        public int BattleNetId { get; set; }
+
+        public int BattleNetSubId { get; set; }
     }
 }

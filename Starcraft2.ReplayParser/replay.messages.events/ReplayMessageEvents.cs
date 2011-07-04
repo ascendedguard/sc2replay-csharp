@@ -69,7 +69,7 @@ namespace Starcraft2.ReplayParser
 
                             byte[] msg = reader.ReadBytes(length);
                             
-                            message.Message = Encoding.ASCII.GetString(msg);
+                            message.Message = Encoding.UTF8.GetString(msg);
                         }
                         
                         if (message.Message != null)

@@ -3,6 +3,7 @@
     public enum GameType
     {
         Private,
-        Open
+        Open,
+        SinglePlayer
     }
 }

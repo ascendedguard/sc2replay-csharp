@@ -10,7 +10,7 @@ namespace Starcraft2.ReplayParser
     public struct KeyValueStruct
     {
         public byte[] Key { get; set; }
-        public short Value { get; set; }
+        public int Value { get; set; }
 
         /// <summary>
         /// Overrides the ToString method, showing the Key and Value pairs in an appropriate format.
@@ -43,27 +43,29 @@ namespace Starcraft2.ReplayParser
         /// <returns>The KeyValueStruct found at the current reader position.</returns>
         public static KeyValueStruct Parse(BinaryReader reader)
         {
-            var kv = new KeyValueStruct { Key = reader.ReadBytes(2) };
-
-            byte firstByte = reader.ReadByte();
-
-            if ((firstByte & 0x80) > 0)
-            {
-                firstByte <<= 1; // Knock off the insignificant bit
-                byte secondByte = reader.ReadByte();
-
-                short value = BitConverter.ToInt16(new[] { firstByte, secondByte }, 0);
-
-                value >>= 1; // Shift to the right to accomodate for the signal bit to get the true value.
-
-                kv.Value = (short)(value / 2);
-            }
-            else
-            {
-                kv.Value = (short)(firstByte / 2);
-            }
+            var kv = new KeyValueStruct
+                {
+                    Key = reader.ReadBytes(2), 
+                    Value = ParseValueStruct(reader)
+                };
 
             return kv;
+        }
+
+        public static int ParseValueStruct(BinaryReader reader)
+        {
+            int j = 0;
+
+            for (int k = 0;; k += 7)
+            {
+                int i = reader.ReadByte();
+
+                j |= (i & 0x7F) << k;
+                if ((i & 0x80) == 0)
+                {
+                    return (j & 0x1) > 0 ? -(j >> 1) : j >> 1;
+                }
+            }
         }
     }
 }

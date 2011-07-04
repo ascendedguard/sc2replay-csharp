@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Starcraft2.ReplayParser
 {
+    using Starcraft2.ReplayParser.replay.initData;
+
     public class Replay
     {
         internal Replay()
@@ -46,6 +48,8 @@ namespace Starcraft2.ReplayParser
         /// </summary>
         /// <example>1v1, 2v2, 3v3, 4v4</example>
         public string TeamSize { get; internal set; }
+
+        public string Gateway { get; internal set; }
 
         /// <summary>
         /// Gets the type of game this replay covers, whether it was a private or open match.
@@ -91,9 +95,24 @@ namespace Starcraft2.ReplayParser
 
             using (var archive = new MpqLib.Mpq.CArchive(fileName))
             {
-                //archive.ToString
+                // archive.ToString
                 var files = archive.FindFiles("replay.*");
-               
+
+                {
+                    const string curFile = "replay.initData";
+
+                    var fileSize = (from f in files
+                                    where f.FileName.Equals(curFile)
+                                    select f).Single().Size;
+
+
+                    var buffer = new byte[fileSize];
+
+                    archive.ExportFile(curFile, buffer);
+
+                    ReplayInitData.Parse(replay, buffer);
+                }
+
                 // Local scope allows the byte[] to be GC sooner, and prevents misreferences
                 {
                     const string curFile = "replay.details";
@@ -173,8 +192,7 @@ namespace Starcraft2.ReplayParser
             using (var reader = new BinaryReader(stream))
             {
                 byte[] version = reader.ReadBytes(6); // unknownHeader
-                byte doublePlayerCount = reader.ReadByte(); // doublePlayerCount;
-                int playerCount = (doublePlayerCount / 2);
+                var playerCount = reader.ReadByte() >> 1; 
 
                 // Parsing Player Info
                 var players = new Player[playerCount];
@@ -185,10 +203,7 @@ namespace Starcraft2.ReplayParser
                 }
 
                 replay.Players = players;
-
-                reader.ReadBytes(2); // unknown1
-                byte doubleMapNameLength = reader.ReadByte();
-                int mapNameLength = (doubleMapNameLength/2);
+                int mapNameLength = KeyValueStruct.ParseValueStruct(reader);
 
                 replay.Map = new string(reader.ReadChars(mapNameLength));
 

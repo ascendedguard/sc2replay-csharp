@@ -68,6 +68,7 @@
     <Compile Include="replay.game.events\IGameEvent.cs" />
     <Compile Include="replay.game.events\PlayerLeftEvent.cs" />
     <Compile Include="replay.game.events\ReplayGameEvents.cs" />
+    <Compile Include="replay.initData\ReplayInitData.cs" />
     <Compile Include="replay.messages.events\ChatMessage.cs" />
     <Compile Include="replay.messages.events\ChatMessageTarget.cs" />
     <Compile Include="replay.messages.events\ReplayMessageEvents.cs" />
