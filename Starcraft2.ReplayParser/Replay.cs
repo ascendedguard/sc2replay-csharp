@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Starcraft2.ReplayParser
 {
+    using System.Text;
+
     using MpqLib.Mpq;
 
     public class Replay
@@ -215,9 +217,12 @@ namespace Starcraft2.ReplayParser
                 }
 
                 replay.Players = players;
-                int mapNameLength = KeyValueStruct.ParseValueStruct(reader);
 
-                replay.Map = new string(reader.ReadChars(mapNameLength));
+                var mapNameLength = KeyValueStruct.Parse(reader).Value;
+
+                var mapBytes = reader.ReadBytes(mapNameLength);
+
+                replay.Map = Encoding.UTF8.GetString(mapBytes);
 
                 reader.Close();
             }

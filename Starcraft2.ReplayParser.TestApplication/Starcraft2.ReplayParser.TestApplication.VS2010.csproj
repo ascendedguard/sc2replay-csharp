@@ -53,7 +53,7 @@
     <Content Include="testReplay.1.3.4.SC2Replay">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="testReplay.korean.1.3.4.SC2replay">
+    <Content Include="testReplay.korean.1.3.4.SC2Replay">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
