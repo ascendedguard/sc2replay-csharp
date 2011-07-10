@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Starcraft2.ReplayParser
 {
+    using MpqLib.Mpq;
+
     public class Replay
     {
         internal Replay()
@@ -90,18 +92,31 @@ namespace Starcraft2.ReplayParser
 
             // File in the version numbers for later use.
             MpqHeader.ParseHeader(replay, fileName);
+            
+            CArchive archive;
 
-            using (var archive = new MpqLib.Mpq.CArchive(fileName))
+            try
             {
-                // archive.ToString
+                archive = new CArchive(fileName);
+            }
+            catch (IOException)
+            {
+                // Usually thrown if the archive name contains korean. Copy it to a local file and open.
+                var tmpPath = Path.GetTempFileName();
+
+                File.Copy(fileName, tmpPath, true);
+
+                archive = new CArchive(tmpPath);
+            }
+
+            try
+            {
                 var files = archive.FindFiles("replay.*");
 
                 {
                     const string curFile = "replay.initData";
 
-                    var fileSize = (from f in files
-                                    where f.FileName.Equals(curFile)
-                                    select f).Single().Size;
+                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
 
 
                     var buffer = new byte[fileSize];
@@ -115,9 +130,7 @@ namespace Starcraft2.ReplayParser
                 {
                     const string curFile = "replay.details";
 
-                    var fileSize = (from f in files
-                                    where f.FileName.Equals(curFile)
-                                    select f).Single().Size;
+                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
 
 
                     var buffer = new byte[fileSize];
@@ -126,25 +139,21 @@ namespace Starcraft2.ReplayParser
 
                     ParseReplayDetails(replay, buffer);
                 }
-                
+
                 {
                     const string curFile = "replay.attributes.events";
-                    var fileSize = (from f in files
-                                    where f.FileName.Equals(curFile)
-                                    select f).Single().Size;
+                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
 
                     var buffer = new byte[fileSize];
 
                     archive.ExportFile(curFile, buffer);
 
                     ReplayAttributeEvents.Parse(replay, buffer);
-                } 
-                
+                }
+
                 {
                     const string curFile = "replay.message.events";
-                    var fileSize = (from f in files
-                                    where f.FileName.Equals(curFile)
-                                    select f).Single().Size;
+                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
 
                     var buffer = new byte[fileSize];
 
@@ -168,6 +177,11 @@ namespace Starcraft2.ReplayParser
                     replay.PlayerEvents = ReplayGameEvents.Parse(replay, buffer);
                 }
                  */
+                //}
+            }
+            finally
+            {
+                archive.Dispose();
             }
 
             replay.Timestamp = File.GetCreationTime(fileName);
