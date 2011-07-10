@@ -5,8 +5,6 @@ using System.Linq;
 
 namespace Starcraft2.ReplayParser
 {
-    using Starcraft2.ReplayParser.replay.initData;
-
     public class Replay
     {
         internal Replay()

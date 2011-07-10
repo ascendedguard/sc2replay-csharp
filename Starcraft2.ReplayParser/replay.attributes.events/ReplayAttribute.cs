@@ -1,8 +1,16 @@
-﻿using System;
-using System.IO;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ReplayAttribute.cs" company="Ascend">
+//   Copyright © 2011 All Rights Reserved
+// </copyright>
+// <summary>
+//   Defines the ReplayAttribute type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
+    using System;
+
     public class ReplayAttribute
     {
         public int Header { get; set; }

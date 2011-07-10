@@ -1,20 +1,15 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ReplayInitData.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="ReplayInitData.cs" company="Ascend">
+//   Copyright © 2011 All Rights Reserved
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Starcraft2.ReplayParser.replay.initData
+namespace Starcraft2.ReplayParser
 {
-    using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Text;
 
-    /// <summary>
-    /// TODO: Update summary.
-    /// </summary>
+    /// <summary> Parses the replay.Initdata file in the replay file. </summary>
     public class ReplayInitData
     {
         public static void Parse(Replay replay, byte[] buffer)
