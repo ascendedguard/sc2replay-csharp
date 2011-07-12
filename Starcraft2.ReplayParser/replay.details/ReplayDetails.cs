@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ReplayDetails.cs" company="">
+// <copyright file="ReplayDetails.cs" company="SC2ReplayParser">
 //   Copyright © 2011 All Rights Reserved
 // </copyright>
 // <summary>
-//   TODO: Update summary.
+//   Parses the replay.details file in the MPQ Archive
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ namespace Starcraft2.ReplayParser
     using System.Text;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// Parses the replay.details file in the MPQ Archive
     /// </summary>
     public class ReplayDetails
     {
@@ -52,9 +52,10 @@ namespace Starcraft2.ReplayParser
                 replay.Map = Encoding.UTF8.GetString(mapBytes);
 
                 var stringLength = KeyValueStruct.Parse(reader).Value;
+                
+                // This is typically an empty string, no need to decode.
                 var unknownString = reader.ReadBytes(stringLength);
-                var unknown = Encoding.UTF8.GetString(unknownString);
-
+                
                 reader.ReadBytes(3);
 
                 var mapPreviewNameLength = KeyValueStruct.Parse(reader).Value;

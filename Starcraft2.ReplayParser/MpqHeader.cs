@@ -1,24 +1,34 @@
-﻿using System;
-using System.IO;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MpqHeader.cs" company="SC2ReplayParser">
+//   Copyright © 2011 All Rights Reserved
+// </copyright>
+// <summary>
+//   Defines the MpqHeader type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
+    using System;
+    using System.IO;
+
+    /// <summary> Parses the header at the beginning of the MPQ file structure. </summary>
     public class MpqHeader
     {
         /// <summary>
         /// Parses the MPQ header on a file to determine version and build numbers.
         /// </summary>
         /// <param name="replay">Replay object to store </param>
-        /// <param name="filename"></param>
+        /// <param name="filename">Filename of the file to open.</param>
         public static void ParseHeader(Replay replay, string filename)
         {
-            using (BinaryReader reader = new BinaryReader(new FileStream(filename, FileMode.Open)))
+            using (var reader = new BinaryReader(new FileStream(filename, FileMode.Open)))
             {
                 byte[] magic = reader.ReadBytes(3);
                 byte format = reader.ReadByte();
 
                 byte[] buffer = reader.ReadBytes(4);
-                int uDataMaxSize = BitConverter.ToInt32(buffer, 0);
+                var dataMaxSize = BitConverter.ToInt32(buffer, 0);
 
                 buffer = reader.ReadBytes(4);
                 int headerOffset = BitConverter.ToInt32(buffer, 0);
@@ -28,37 +38,40 @@ namespace Starcraft2.ReplayParser
 
                 int dataType = reader.ReadByte(); // Should be 0x05 = Array w/ Keys
 
-                int numElements = ParseVLFNumber(reader);
+                int numElements = ParseVlfNumber(reader);
 
                 // The first value is the words: "Starcraft II Replay 11"
-                int index = ParseVLFNumber(reader);
+                int index = ParseVlfNumber(reader);
 
                 int type = reader.ReadByte(); // Should be 0x02 = binary data
 
-                int numValues = ParseVLFNumber(reader); //reader.ReadByte();
+                int numValues = ParseVlfNumber(reader);
                 byte[] starcraft2 = reader.ReadBytes(numValues);
 
-                int index2 = ParseVLFNumber(reader);
+                int index2 = ParseVlfNumber(reader);
                 int type2 = reader.ReadByte(); // Should be 0x05 = Array w/ Keys
 
-                int numElementsVersion = ParseVLFNumber(reader);
+                int numElementsVersion = ParseVlfNumber(reader);
                 var version = new int[numElementsVersion];
 
                 while (numElementsVersion > 0)
                 {
-                    int i = ParseVLFNumber(reader);
+                    int i = ParseVlfNumber(reader);
                     int t = reader.ReadByte(); // Type;
 
-                    if (t == 0x09) //VLF
+                    if (t == 0x09)
                     {
-                        version[i] = ParseVLFNumber(reader);
+                        // VLF
+                        version[i] = ParseVlfNumber(reader);
                     }
-                    else if (t == 0x06) //Byte
+                    else if (t == 0x06) 
                     {
+                        // Byte
                         version[i] = reader.ReadByte();
                     }
-                    else if (t == 0x07) //4 Bytes
+                    else if (t == 0x07) 
                     {
+                        // 4 Bytes
                         version[i] = BitConverter.ToInt32(reader.ReadBytes(4), 0);
                     }
 
@@ -73,7 +86,10 @@ namespace Starcraft2.ReplayParser
             }
         }
 
-        private static int ParseVLFNumber(BinaryReader reader)
+        /// <summary> Parses a single VLF number using a reader object. </summary>
+        /// <param name="reader"> The BinaryReader to read the object from. </param>
+        /// <returns> Returns an integer value, representing the VLF number parsed. </returns>
+        private static int ParseVlfNumber(BinaryReader reader)
         {
             var bytes = 0;
             var first = true;
@@ -93,10 +109,14 @@ namespace Starcraft2.ReplayParser
                         multiplier = -1;
                         number--;
                     }
+
                     first = false;
                 }
 
-                if ((i & 0x80) == 0) break;
+                if ((i & 0x80) == 0)
+                {
+                    break;
+                }
 
                 bytes++;
             }
