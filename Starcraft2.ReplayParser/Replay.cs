@@ -28,17 +28,17 @@ namespace Starcraft2.ReplayParser
         /// <summary>
         /// Gets the details of all players in the replay.
         /// </summary>
-        public Player[] Players { get; private set; }
+        public Player[] Players { get; internal set; }
         
         /// <summary>
         /// Gets the map the game was played on.
         /// </summary>
-        public string Map { get; private set; }
+        public string Map { get; internal set; }
 
         /// <summary>
         /// Gets the Time at which the game took place.
         /// </summary>
-        public DateTime Timestamp { get; private set; }
+        public DateTime Timestamp { get; internal set; }
 
         /// <summary>
         /// Gets the speed the game was played at.
@@ -51,14 +51,13 @@ namespace Starcraft2.ReplayParser
         /// <example>1v1, 2v2, 3v3, 4v4</example>
         public string TeamSize { get; internal set; }
 
+        /// <summary> Gets the Gateway (KR, NA, etc.) that the game was played in. </summary>
         public string Gateway { get; internal set; }
 
         /// <summary>
         /// Gets the type of game this replay covers, whether it was a private or open match.
         /// </summary>
         public GameType GameType { get; internal set; }
-
-        public Player Winner { get; internal set; }
 
         /// <summary>
         /// Gets a list of all chat messages which took place during the game.
@@ -139,7 +138,7 @@ namespace Starcraft2.ReplayParser
 
                     archive.ExportFile(curFile, buffer);
 
-                    ParseReplayDetails(replay, buffer);
+                    ReplayDetails.Parse(replay, buffer);
                 }
 
                 {
@@ -163,8 +162,8 @@ namespace Starcraft2.ReplayParser
 
                     replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
                 }
-
-                /*
+                
+                try
                 {
                     const string curFile = "replay.game.events";
                     
@@ -177,9 +176,13 @@ namespace Starcraft2.ReplayParser
                     archive.ExportFile(curFile, buffer);
 
                     replay.PlayerEvents = ReplayGameEvents.Parse(replay, buffer);
+                }  
+                catch(Exception)
+                {
+                    // In the current state, the parsing commonly fails.
+                    // Incase of failing, we should probably just ignore the results of the parse
+                    // And return.
                 }
-                 */
-                //}
             }
             finally
             {
@@ -189,43 +192,6 @@ namespace Starcraft2.ReplayParser
             replay.Timestamp = File.GetCreationTime(fileName);
             
             return replay;
-        }
-
-        private static void ParseReplayDetails(Replay replay, byte[] buffer)
-        {
-            using (var stream = new MemoryStream(buffer, false))
-            {
-                ParseReplayDetails(replay, stream);
-
-                stream.Close();
-            }
-        }
-
-        private static void ParseReplayDetails(Replay replay, Stream stream)
-        {
-            using (var reader = new BinaryReader(stream))
-            {
-                byte[] version = reader.ReadBytes(6); // unknownHeader
-                var playerCount = reader.ReadByte() >> 1; 
-
-                // Parsing Player Info
-                var players = new Player[playerCount];
-
-                for (int i = 0; i < playerCount; i++)
-                {
-                    players[i] = PlayerDetails.Parse(reader);
-                }
-
-                replay.Players = players;
-
-                var mapNameLength = KeyValueStruct.Parse(reader).Value;
-
-                var mapBytes = reader.ReadBytes(mapNameLength);
-
-                replay.Map = Encoding.UTF8.GetString(mapBytes);
-
-                reader.Close();
-            }
         }
     }
 }

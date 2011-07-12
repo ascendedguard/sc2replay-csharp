@@ -20,19 +20,11 @@
                     "Replay builds under 16561 are not supported for parsing GameEvent log.");
             }
 
-            // Populate the remaining players list. We can track the winner this way.
-            List<Player> remainingPlayers = new List<Player>();
+            var events = new List<IGameEvent>();
 
-            foreach (var player in replay.Players)
+            using (var stream = new MemoryStream(buffer))
             {
-                remainingPlayers.Add(player);
-            }
-
-            List<IGameEvent> events = new List<IGameEvent>();
-
-            using (MemoryStream stream = new MemoryStream(buffer))
-            {
-                using (BinaryReader reader = new BinaryReader(stream))
+                using (var reader = new BinaryReader(stream))
                 {
                     var currentTime = 0;
                     var numEvents = 0;
@@ -88,7 +80,6 @@
                                 {
                                     case 0x09: // player quits the game
                                         events.Add(new PlayerLeftEvent(player, time));
-                                        TrackLeavingPlayer(remainingPlayers, player);
                                         break;
                                     case 0x1B:
                                     case 0x2B:
@@ -639,15 +630,8 @@
                         if (knownEvent == false)
                         {
                             Debug.WriteLine("Unknown Event: " + eventCode + "," + currentTime + "," + eventType);
-                            throw new FormatException(
-                                "An unknown event prevented the events file from being correctly parsed.");
+                            throw new FormatException("An unknown event prevented the events file from being correctly parsed.");
                         }
-                    }
-
-                    // Calculate the winner with known information.
-                    if (remainingPlayers.Count == 1)
-                    {
-                        replay.Winner = remainingPlayers[0];
                     }
                 }
             }

@@ -6,3 +6,4 @@ Starcraft2.ReplayParser.TestApplication/obj
 *.suo
 *.ReSharper.user
 *StyleCop.Cache
+*.Resharper

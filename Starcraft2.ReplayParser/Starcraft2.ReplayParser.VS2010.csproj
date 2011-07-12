@@ -48,13 +48,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyLongValueStruct.cs" />
     <Compile Include="Difficulty.cs" />
     <Compile Include="GameSpeed.cs" />
     <Compile Include="GameType.cs" />
     <Compile Include="KeyValueStruct.cs" />
     <Compile Include="MpqHeader.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="PlayerDetails.cs" />
+    <Compile Include="replay.details\PlayerDetails.cs" />
     <Compile Include="PlayerType.cs" />
     <Compile Include="replay.attributes.events\ReplayAttribute.cs" />
     <Compile Include="Replay.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="replay.attributes.events\ReplayAttributeEvents.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="replay.details\ReplayDetails.cs" />
     <Compile Include="replay.game.events\GameEventBase.cs" />
     <Compile Include="replay.game.events\GameEventType.cs" />
     <Compile Include="replay.game.events\HotkeyEvent.cs" />
