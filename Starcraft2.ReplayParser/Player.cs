@@ -8,9 +8,14 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the player's race.
+        /// Gets or sets the player's race. This race is usually in the replay's native language, and should be the actual race they spawned as.
         /// </summary>
         public string Race { get; set; }
+
+        /// <summary>
+        /// Gets or sets the race selected in the lobby. This includes whether the player selected Random.
+        /// </summary>
+        public Race SelectedRace { get; set; }
 
         /// <summary>
         /// Gets or sets the type of player, whether he is human or computer. 

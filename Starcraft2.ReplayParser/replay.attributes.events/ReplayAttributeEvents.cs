@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Starcraft2.ReplayParser
 {
+    using System.Collections.Generic;
+
     public class ReplayAttributeEvents
     {
         public ReplayAttribute[] Attributes { get; set; }
@@ -26,7 +28,7 @@ namespace Starcraft2.ReplayParser
 
             for (int i = 0; i < numAttributes; i++)
             {
-                attributes[i] = ReplayAttribute.Parse(buffer, initialOffset + (i*13)); // attributes[i] = ReplayAttribute.Parse(reader);
+                attributes[i] = ReplayAttribute.Parse(buffer, initialOffset + (i*13));
             }
 
             var rae = new ReplayAttributeEvents { Attributes = attributes };
@@ -40,132 +42,219 @@ namespace Starcraft2.ReplayParser
         public void ApplyAttributes(Replay replay)
         {
             // I'm not entirely sure this is the right encoding here. Might be unicode...
-            Encoding encoding = Encoding.ASCII;
+            Encoding encoding = Encoding.UTF8;
 
-            // Player Types (Human, Computer)
-            var playerTypes = from a in Attributes
-                              where a.AttributeId == PlayerTypeAttribute
-                              select a;
+            var attributes1 = new List<ReplayAttribute>();
+            var attributes2 = new List<ReplayAttribute>();
+            var attributes3 = new List<ReplayAttribute>();
+            var attributes4 = new List<ReplayAttribute>();
+            var attributesffa = new List<ReplayAttribute>();
 
-            foreach (var playerType in playerTypes)
+            foreach (var attribute in this.Attributes)
             {
-                if (playerType.PlayerId > replay.Players.Length)
+                switch (attribute.AttributeId)
                 {
-                    // Player doesn't exist for some reason...
-                    continue;
-                }
+                    case PlayerTypeAttribute: // 500
+                        {
+                            string type = encoding.GetString(attribute.Value.Reverse().ToArray());
 
-                string type = encoding.GetString(playerType.Value.Reverse().ToArray());
-                
-                // "Comp" for computer, "Humn" for human.
-                if (type.ToLower().Equals("comp"))
-                {
-                    replay.Players[playerType.PlayerId - 1].PlayerType = PlayerType.Computer;    
-                }
-                else
-                {
-                    replay.Players[playerType.PlayerId - 1].PlayerType = PlayerType.Human;    
+                            if (type.ToLower().Equals("comp"))
+                            {
+                                replay.Players[attribute.PlayerId].PlayerType = PlayerType.Computer;
+                            }
+                            else if (type.ToLower().Equals("humn"))
+                            {
+                                replay.Players[attribute.PlayerId].PlayerType = PlayerType.Human;
+                            }
+                            else
+                            {
+                                throw new Exception("Unexpected value");
+                            }
+
+                            break;
+                        }
+
+                    case TeamSizeAttribute:
+                        {
+                            // This fixes issues with reversing the string before encoding. Without this, you get "\01v1"
+                            var teamSizeChar = encoding.GetString(attribute.Value, 0, 3).Reverse().ToArray();
+
+                            replay.TeamSize = new string(teamSizeChar);
+                            break;
+                        }
+
+                    case DifficultyLevelAttribute:
+                        {
+                            string diffLevel = encoding.GetString(attribute.Value.Reverse().ToArray());
+                            diffLevel = diffLevel.ToLower();
+
+                            var player = replay.Players[attribute.PlayerId];
+
+                            switch (diffLevel)
+                            {
+                                case "vyey":
+                                    player.Difficulty = Difficulty.VeryEasy;
+                                    break;
+                                case "easy":
+                                    player.Difficulty = Difficulty.Easy;
+                                    break;
+                                case "medi":
+                                    player.Difficulty = Difficulty.Medium;
+                                    break;
+                                case "hard":
+                                    player.Difficulty = Difficulty.Hard;
+                                    break;
+                                case "vyhd":
+                                    player.Difficulty = Difficulty.VeryHard;
+                                    break;
+                                case "insa":
+                                    player.Difficulty = Difficulty.Insane;
+                                    break;
+                            }
+
+                            break;
+                        }
+
+                    case GameSpeedAttribute:
+                        {
+                            string speed = encoding.GetString(attribute.Value.Reverse().ToArray());
+                            speed = speed.ToLower();
+                            switch (speed)
+                            {
+                                case "slor":
+                                    replay.GameSpeed = GameSpeed.Slower;
+                                    break;
+                                case "slow":
+                                    replay.GameSpeed = GameSpeed.Slow;
+                                    break;
+                                case "norm":
+                                    replay.GameSpeed = GameSpeed.Normal;
+                                    break;
+                                case "fast":
+                                    replay.GameSpeed = GameSpeed.Fast;
+                                    break;
+                                case "fasr":
+                                    replay.GameSpeed = GameSpeed.Faster;
+                                    break;
+
+                                // Otherwise, Game Speed will remain "Unknown"
+                            }
+
+                            break;
+                        }
+
+                    case PlayerRaceAttribute:
+                        {
+                            var race = encoding.GetString(attribute.Value.Reverse().ToArray()).ToLower();
+                            var player = replay.Players[attribute.PlayerId];
+
+                            switch (race)
+                            {
+                                case "prot":
+                                    player.SelectedRace = Race.Protoss;
+                                    break;
+                                case "zerg":
+                                    player.SelectedRace = Race.Zerg;
+                                    break;
+                                case "terr":
+                                    player.SelectedRace = Race.Terran;
+                                    break;
+                                case "rand":
+                                    player.SelectedRace = Race.Random;
+                                    break;
+                            }
+
+                            break;
+                        }
+
+                    case PlayerTeam1v1Attribute:
+                        {
+                            attributes1.Add(attribute);
+                            break;
+                        }
+
+                    case PlayerTeam2v2Attribute:
+                        {
+                            attributes2.Add(attribute);
+                            break;
+                        }
+
+                    case PlayerTeam3v3Attribute:
+                        {
+                            attributes3.Add(attribute);
+                            break;
+                        }
+
+                    case PlayerTeam4v4Attribute:
+                        {
+                            attributes4.Add(attribute);
+                            break;
+                        }
+
+                    case PlayerTeamFFAAttribute:
+                        {
+                            attributesffa.Add(attribute);
+                            break;
+                        }
+
+
+                    case GameTypeAttribute:
+                        {
+                            string gameTypeStr = encoding.GetString(attribute.Value.Reverse().ToArray());
+                            gameTypeStr = gameTypeStr.ToLower().Trim('\0');
+
+                            switch (gameTypeStr)
+                            {
+                                case "priv":
+                                    replay.GameType = GameType.Private;
+                                    break;
+                                case "amm":
+                                    replay.GameType = GameType.Open;
+                                    break;
+                            }
+
+                            break;
+                        }
+                        
                 }
             }
 
-            // Game Speed
-            var gameSpeed = (from a in Attributes
-                             where a.AttributeId == GameSpeedAttribute
-                             select a).Single();
+            List<ReplayAttribute> currentList = null;
 
-            string speed = encoding.GetString(gameSpeed.Value.Reverse().ToArray());
-            speed = speed.ToLower();
-            switch(speed)
+            if (replay.TeamSize.Equals("1v1"))
             {
-                case "slor":
-                    replay.GameSpeed = GameSpeed.Slower;
-                    break;
-                case "slow":
-                    replay.GameSpeed = GameSpeed.Slow;
-                    break;
-                case "norm":
-                    replay.GameSpeed = GameSpeed.Normal;
-                    break;
-                case "fast":
-                    replay.GameSpeed = GameSpeed.Fast;
-                    break;
-                case "fasr":
-                    replay.GameSpeed = GameSpeed.Faster;
-                    break;
-                // Otherwise, Game Speed will remain "Unknown"
+                currentList = attributes1;
+            }
+            else if (replay.TeamSize.Equals("2v2"))
+            {
+                currentList = attributes2;
+            }
+            else if (replay.TeamSize.Equals("3v3"))
+            {
+                currentList = attributes3;                
+            }
+            else if (replay.TeamSize.Equals("4v4"))
+            {
+                currentList = attributes4;
+            }
+            else if (replay.TeamSize.Equals("FFA"))
+            {
+                currentList = attributesffa;
             }
 
-            // Difficulty
-            var difficulties = from a in Attributes
-                               where a.AttributeId == DifficultyLevelAttribute
-                               select a;
-
-            foreach (var diff in difficulties)
+            if (currentList != null)
             {
-                if (diff.PlayerId > replay.Players.Length)
+                foreach (var att in currentList)
                 {
-                    // Player doesn't exist for some reason...
-                    continue;
-                }
-
-                string diffLevel = encoding.GetString(diff.Value.Reverse().ToArray());
-                diffLevel = diffLevel.ToLower();
-
-                var player = replay.Players[diff.PlayerId - 1];
-
-                switch(diffLevel)
-                {
-                    case "vyey":
-                        player.Difficulty = Difficulty.VeryEasy;
-                        break;
-                    case "easy":
-                        player.Difficulty = Difficulty.Easy;
-                        break;
-                    case "medi":
-                        player.Difficulty = Difficulty.Medium;
-                        break;
-                    case "hard":
-                        player.Difficulty = Difficulty.Hard;
-                        break;
-                    case "vyhd":
-                        player.Difficulty = Difficulty.VeryHard;
-                        break;
-                    case "insa":
-                        player.Difficulty = Difficulty.Insane;
-                        break;
+                    // Reverse the values then parse, you don't notice the effects of this until theres 10+ teams o.o
+                    var team = encoding.GetString(att.Value.Reverse().ToArray()).Trim('\0', 'T');
+                    replay.Players[att.PlayerId].Team = int.Parse(team);
                 }
             }
 
-            // Team Size
-            var teamSize = (from a in Attributes
-                             where a.AttributeId == TeamSizeAttribute
-                             select a).Single();
-
-            // This fixes issues with reversing the string before encoding. Without this, you get "\01v1"
-            var teamSizeChar = encoding.GetString(teamSize.Value, 0, 3).Reverse().ToArray();
-
-            replay.TeamSize = new string(teamSizeChar);
-
-            var gameType = (from a in Attributes
-                             where a.AttributeId == GameTypeAttribute
-                             select a).Single();
-
-            string gameTypeStr = encoding.GetString(gameType.Value.Reverse().ToArray());
-            gameTypeStr = gameTypeStr.ToLower();
-
-            switch(gameTypeStr)
-            {
-                case "priv":
-                    replay.GameType = GameType.Private;
-                    break;
-                case "amm":
-                    replay.GameType = GameType.Open;
-                    break;
-            }
-
-            // We may parse the player Teams if this file turns out to be more reliable for finding a player's team number.
-            // Skipping parsing the handicap, player teams, colors, and handicap since this is parsed elsewhere.
+            // Skipping parsing the handicap, colors, and handicap since this is parsed elsewhere.
         }
+             
 
         public const int PlayerTypeAttribute = 500;
         public const int TeamSizeAttribute = 2001;

@@ -55,6 +55,7 @@
     <Compile Include="KeyValueStruct.cs" />
     <Compile Include="MpqHeader.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Race.cs" />
     <Compile Include="replay.details\PlayerDetails.cs" />
     <Compile Include="PlayerType.cs" />
     <Compile Include="replay.attributes.events\ReplayAttribute.cs" />

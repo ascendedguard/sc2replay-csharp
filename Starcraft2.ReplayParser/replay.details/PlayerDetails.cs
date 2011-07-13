@@ -51,7 +51,10 @@
                                    keys[3].Value.ToString("X2")),
                            Handicap = keys[6].Value,
                            IsWinner = keys[7].Value == 1,
-                           Team = keys[8].Value,
+                           
+                           //// Ignoring the team here because it's unreliable in many replays. Parsed in replay.attributes.events
+                           //// Team = keys[8].Value,
+                           
                            BattleNetId = battlenetId,
                            BattleNetSubId = subId,
             };

@@ -51,7 +51,7 @@
             CalculateAPM(replay);
 
             Console.Out.Write("Replay players: ");
-            
+        
             foreach (var player in replay.Players)
             {
                 Console.Out.Write(player.Name + " ");
