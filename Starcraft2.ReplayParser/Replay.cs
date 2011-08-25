@@ -70,7 +70,7 @@ namespace Starcraft2.ReplayParser
         {
             int playerIndex = playerId - 1;
 
-            if (playerId < this.Players.Length)
+            if (playerIndex < this.Players.Length)
             {
                 return this.Players[playerIndex];
             }
