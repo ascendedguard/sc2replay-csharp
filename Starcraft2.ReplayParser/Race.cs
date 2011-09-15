@@ -1,24 +1,37 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="Race.cs" company="Microsoft">
-// TODO: Update copyright text.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Race.cs" company="SC2ReplayParser">
+//   Copyright © 2011 All Rights Reserved
 // </copyright>
-// -----------------------------------------------------------------------
+// <summary>
+//   Describes the four race possibilities in Starcraft 2.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-
     /// <summary>
-    /// TODO: Update summary.
+    /// Describes the four race possibilities in Starcraft 2.
     /// </summary>
     public enum Race
     {
-        Terran,
-        Protoss,
-        Zerg,
+        /// <summary>
+        /// Terran Race.
+        /// </summary>
+        Terran, 
+
+        /// <summary>
+        /// Protoss Race.
+        /// </summary>
+        Protoss, 
+
+        /// <summary>
+        /// Zerg Race.
+        /// </summary>
+        Zerg, 
+
+        /// <summary>
+        /// Random Race.
+        /// </summary>
         Random
     }
 }
