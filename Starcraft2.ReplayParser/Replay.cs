@@ -1,87 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Replay.cs" company="SC2ReplayParser">
+//   Copyright © 2011 All Rights Reserved
+// </copyright>
+// <summary>
+//   Contains information about a Starcraft 2 Replay, and functions for parsing one.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
-    using System.Text;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
 
     using MpqLib.Mpq;
 
+    /// <summary>
+    /// Contains information about a Starcraft 2 Replay, and functions for parsing one.
+    /// </summary>
     public class Replay
     {
+        #region Constructors and Destructors
+
+        /// <summary> Initializes a new instance of the <see cref = "Replay" /> class. </summary>
         internal Replay()
         {
         }
 
-        /// <summary>
-        /// Gets the version number of the replay.
-        /// </summary>
-        public string ReplayVersion { get; internal set; }
+        #endregion
 
-        /// <summary>
-        /// Gets the build number of the Starcraft 2 version used in creating the replay.
-        /// </summary>
-        public int ReplayBuild { get; internal set; }
+        #region Public Properties
 
-        /// <summary>
-        /// Gets the details of all players in the replay.
-        /// </summary>
-        public Player[] Players { get; internal set; }
-        
-        /// <summary>
-        /// Gets the map the game was played on.
-        /// </summary>
-        public string Map { get; internal set; }
+        /// <summary> Gets a list of all chat messages which took place during the game. </summary>
+        public IList<ChatMessage> ChatMessages { get; internal set; }
 
-        /// <summary>
-        /// Gets the Time at which the game took place.
-        /// </summary>
-        public DateTime Timestamp { get; internal set; }
-
-        /// <summary>
-        /// Gets the speed the game was played at.
-        /// </summary>
+        /// <summary> Gets the speed the game was played at. </summary>
         public GameSpeed GameSpeed { get; internal set; }
 
-        /// <summary>
-        /// Gets the team size of the selected gametype.
-        /// </summary>
-        /// <example>1v1, 2v2, 3v3, 4v4</example>
-        public string TeamSize { get; internal set; }
+        /// <summary> Gets the type of game this replay covers, whether it was a private or open match. </summary>
+        public GameType GameType { get; internal set; }
 
         /// <summary> Gets the Gateway (KR, NA, etc.) that the game was played in. </summary>
         public string Gateway { get; internal set; }
 
-        /// <summary>
-        /// Gets the type of game this replay covers, whether it was a private or open match.
-        /// </summary>
-        public GameType GameType { get; internal set; }
+        /// <summary> Gets the map the game was played on. </summary>
+        public string Map { get; internal set; }
 
-        /// <summary>
-        /// Gets a list of all chat messages which took place during the game.
-        /// </summary>
-        public IList<ChatMessage> ChatMessages { get; internal set; }
-
+        /// <summary> Gets the list of game events occuring during the course of the replay. </summary>
         public List<IGameEvent> PlayerEvents { get; internal set; }
 
-        public Player GetPlayerById(int playerId)
-        {
-            int playerIndex = playerId - 1;
+        /// <summary> Gets the details of all players in the replay. </summary>
+        public Player[] Players { get; internal set; }
 
-            if (playerId < this.Players.Length)
-            {
-                return this.Players[playerIndex];
-            }
+        /// <summary> Gets the build number of the Starcraft 2 version used in creating the replay. </summary>
+        public int ReplayBuild { get; internal set; }
 
-            return null;
-        }
+        /// <summary> Gets the version number of the replay. </summary>
+        public string ReplayVersion { get; internal set; }
 
-        /// <summary>
-        /// Parses a .SC2Replay file and returns relevant replay information.
-        /// </summary>
-        /// <param name="fileName">Full path to a .SC2Replay file.</param>
+        /// <summary> Gets the team size of the selected gametype. </summary>
+        public string TeamSize { get; internal set; }
+
+        /// <summary> Gets the Time at which the game took place. </summary>
+        public DateTime Timestamp { get; internal set; }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary> Parses a .SC2Replay file and returns relevant replay information.  </summary>
+        /// <param name="fileName"> Full path to a .SC2Replay file.  </param>
+        /// <returns> Returns the fully parsed Replay object. </returns>
         public static Replay Parse(string fileName)
         {
             if (File.Exists(fileName) == false)
@@ -93,7 +83,7 @@ namespace Starcraft2.ReplayParser
 
             // File in the version numbers for later use.
             MpqHeader.ParseHeader(replay, fileName);
-            
+
             CArchive archive;
 
             try
@@ -113,71 +103,66 @@ namespace Starcraft2.ReplayParser
             try
             {
                 var files = archive.FindFiles("replay.*");
-
                 {
-                    const string curFile = "replay.initData";
+                    const string CurFile = "replay.initData";
 
-                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
-
+                    var fileSize = (from f in files where f.FileName.Equals(CurFile) select f).Single().Size;
 
                     var buffer = new byte[fileSize];
 
-                    archive.ExportFile(curFile, buffer);
+                    archive.ExportFile(CurFile, buffer);
 
                     ReplayInitData.Parse(replay, buffer);
                 }
 
-                // Local scope allows the byte[] to be GC sooner, and prevents misreferences
                 {
-                    const string curFile = "replay.details";
+                    // Local scope allows the byte[] to be GC sooner, and prevents misreferences
+                    const string CurFile = "replay.details";
 
-                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
-
+                    var fileSize = (from f in files where f.FileName.Equals(CurFile) select f).Single().Size;
 
                     var buffer = new byte[fileSize];
 
-                    archive.ExportFile(curFile, buffer);
+                    archive.ExportFile(CurFile, buffer);
 
                     ReplayDetails.Parse(replay, buffer);
                 }
 
                 {
-                    const string curFile = "replay.attributes.events";
-                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
+                    const string CurFile = "replay.attributes.events";
+                    var fileSize = (from f in files where f.FileName.Equals(CurFile) select f).Single().Size;
 
                     var buffer = new byte[fileSize];
 
-                    archive.ExportFile(curFile, buffer);
+                    archive.ExportFile(CurFile, buffer);
 
                     ReplayAttributeEvents.Parse(replay, buffer);
                 }
 
                 {
-                    const string curFile = "replay.message.events";
-                    var fileSize = (from f in files where f.FileName.Equals(curFile) select f).Single().Size;
+                    const string CurFile = "replay.message.events";
+                    var fileSize = (from f in files where f.FileName.Equals(CurFile) select f).Single().Size;
 
                     var buffer = new byte[fileSize];
 
-                    archive.ExportFile(curFile, buffer);
+                    archive.ExportFile(CurFile, buffer);
 
                     replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
                 }
-                
+
                 try
                 {
-                    const string curFile = "replay.game.events";
-                    
-                    var fileSize = (from f in files
-                                    where f.FileName.Equals(curFile)
-                                    select f).Single().Size;
+                    const string CurFile = "replay.game.events";
+
+                    var fileSize = (from f in files where f.FileName.Equals(CurFile) select f).Single().Size;
 
                     var buffer = new byte[fileSize];
 
-                    archive.ExportFile(curFile, buffer);
+                    archive.ExportFile(CurFile, buffer);
 
                     replay.PlayerEvents = ReplayGameEvents.Parse(replay, buffer);
-                }  
-                catch(Exception)
+                }
+                catch (Exception)
                 {
                     // In the current state, the parsing commonly fails.
                     // Incase of failing, we should probably just ignore the results of the parse
@@ -190,8 +175,25 @@ namespace Starcraft2.ReplayParser
             }
 
             replay.Timestamp = File.GetCreationTime(fileName);
-            
+
             return replay;
         }
+
+        /// <summary> Retrieves a player based on their player ID in a replay file. Used to reduce redundency when looking up players. </summary>
+        /// <param name="playerId"> The player's ID. </param>
+        /// <returns> Returns the appropriate Player from the Players array. </returns>
+        public Player GetPlayerById(int playerId)
+        {
+            int playerIndex = playerId - 1;
+
+            if (playerId < this.Players.Length)
+            {
+                return this.Players[playerIndex];
+            }
+
+            return null;
+        }
+
+        #endregion
     }
 }
