@@ -1,13 +1,27 @@
-﻿namespace Starcraft2.ReplayParser
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PlayerDetails.cs" company="SC2ReplayParser">
+//   Copyright © 2011 All Rights Reserved
+// </copyright>
+// <summary>
+//   Parses the PlayerDetails structure inside the replay.details file.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Starcraft2.ReplayParser
 {
     using System.IO;
     using System.Text;
 
     /// <summary>
-    /// Class describing an individual player in a match.
+    /// Parses the PlayerDetails structure inside the replay.details file.
     /// </summary>
     public class PlayerDetails
     {
+        #region Public Methods
+
+        /// <summary> Parses a single PlayerDetail structure from the current position of a BinaryReader object. </summary>
+        /// <param name="reader"> The reader, at the position containing the start of the PlayerDetail structure. </param>
+        /// <returns> Returns a Player filled with the parsed information. </returns>
         public static Player Parse(BinaryReader reader)
         {
             reader.ReadBytes(2); // playerHeader
@@ -29,7 +43,7 @@
             var race = Encoding.UTF8.GetString(raceBytes);
 
             reader.ReadBytes(3); // unknown5
-            
+
             var keys = new KeyValueStruct[9];
 
             // paramList - This contains the player's color and should eventually be parsed.
@@ -39,25 +53,26 @@
             }
 
             return new Player
-                       {
-                           Name = shortName,
-                           Race = race,
-                           Color =
-                               string.Format(
-                                   "#{0}{1}{2}{3}",
-                                   keys[0].Value.ToString("X2"),
-                                   keys[1].Value.ToString("X2"),
-                                   keys[2].Value.ToString("X2"),
-                                   keys[3].Value.ToString("X2")),
-                           Handicap = keys[6].Value,
-                           IsWinner = keys[7].Value == 1,
+                {
+                    Name = shortName, 
+                    Race = race, 
+                    Color =
+                        string.Format(
+                            "#{0}{1}{2}{3}", 
+                            keys[0].Value.ToString("X2"), 
+                            keys[1].Value.ToString("X2"), 
+                            keys[2].Value.ToString("X2"), 
+                            keys[3].Value.ToString("X2")), 
+                    Handicap = keys[6].Value, 
+                    IsWinner = keys[7].Value == 1, 
+                    //// Ignoring the team here because it's unreliable in many replays. Parsed in replay.attributes.events
+                    //// Team = keys[8].Value,
                            
-                           //// Ignoring the team here because it's unreliable in many replays. Parsed in replay.attributes.events
-                           //// Team = keys[8].Value,
-                           
-                           BattleNetId = battlenetId,
-                           BattleNetSubId = subId,
-            };
+                    BattleNetId = battlenetId, 
+                    BattleNetSubId = subId, 
+                };
         }
+
+        #endregion
     }
 }
