@@ -1,25 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GameEventType.cs" company="SC2ReplayParser">
+//   Copyright © 2011 All Rights Reserved
+// </copyright>
+// <summary>
+//   Describes a classification of events.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
+    /// <summary>
+    /// Describes a classification of events.
+    /// </summary>
     public enum GameEventType
     {
-        /// <summary> The event type is unknown. </summary>
-        Unknown = 0,
+        /// <summary>
+        /// Unknown event.
+        /// </summary>
+        Unknown = 0, 
 
-        Macro,
+        /// <summary>
+        /// The event is considered macro, or pertaining to a player's economy building.
+        /// </summary>
+        Macro, 
 
-        Micro,
+        /// <summary>
+        /// The event is considered micro, or pertaining to a player's unit control.
+        /// </summary>
+        Micro, 
 
-        Selection,
+        /// <summary>
+        /// Unit selection.
+        /// </summary>
+        Selection, 
 
-        Other,
+        /// <summary>
+        /// Other event type.
+        /// </summary>
+        Other, 
 
-        /// <summary> A static event that does not contribute towards APM. </summary>
-        Inactive,
-        
+        /// <summary>
+        /// A static event that does not contribute towards APM.
+        /// </summary>
+        Inactive, 
     }
 }
