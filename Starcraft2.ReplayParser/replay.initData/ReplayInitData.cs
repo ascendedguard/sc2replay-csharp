@@ -1,8 +1,11 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="ReplayInitData.cs" company="Ascend">
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ReplayInitData.cs" company="SC2ReplayParser">
 //   Copyright © 2011 All Rights Reserved
 // </copyright>
-// -----------------------------------------------------------------------
+// <summary>
+//   Parses the replay.Initdata file in the replay file.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
@@ -12,6 +15,11 @@ namespace Starcraft2.ReplayParser
     /// <summary> Parses the replay.Initdata file in the replay file. </summary>
     public class ReplayInitData
     {
+        #region Public Methods
+
+        /// <summary> Parses the replay.initdata file in a replay file. </summary>
+        /// <param name="replay"> The replay file to apply the parsed data to. </param>
+        /// <param name="buffer"> The buffer containing the replay.initdata file. </param>
         public static void Parse(Replay replay, byte[] buffer)
         {
             using (var stream = new MemoryStream(buffer))
@@ -29,7 +37,7 @@ namespace Starcraft2.ReplayParser
                         reader.ReadBytes(5);
                     }
 
-                    if (positionAfter(reader, new byte[] { 115, 50, 109, 97 }))
+                    if (PositionAfter(reader, new byte[] { 115, 50, 109, 97 }))
                     {
                         reader.ReadBytes(2);
                         var gatewayStr = reader.ReadBytes(2);
@@ -41,19 +49,19 @@ namespace Starcraft2.ReplayParser
                     {
                         replay.GameType = GameType.SinglePlayer;
                     }
-                }                
+                }
             }
         }
 
-        private static string ReadString(BinaryReader reader)
-        {
-            var numBytes = reader.ReadByte();
-            var strArr = reader.ReadBytes(numBytes);
+        #endregion
 
-            return Encoding.UTF8.GetString(strArr);
-        }
+        #region Methods
 
-        protected static bool positionAfter(BinaryReader reader, byte[] paramArrayOfByte)
+        /// <summary> Advances the position of the reader to the bytes following the expected array of bytes. </summary>
+        /// <param name="reader"> The reader, which will be advanced. </param>
+        /// <param name="paramArrayOfByte"> The array of bytes expected to be found in the reader. </param>
+        /// <returns> Returns a value indicating whether the array of bytes were found (and whether the reader was advanced). </returns>
+        protected static bool PositionAfter(BinaryReader reader, byte[] paramArrayOfByte)
         {
             var i = reader.BaseStream.Position;
 
@@ -63,10 +71,10 @@ namespace Starcraft2.ReplayParser
 
             var arr = reader.ReadBytes((int)k);
 
-            int j = 0;
+            int j;
             for (j = 0; j < k; j++)
             {
-                int l = 0;
+                int l;
                 for (l = 0; l < paramArrayOfByte.Length; l++)
                 {
                     if (arr[j + l] != paramArrayOfByte[l])
@@ -88,7 +96,20 @@ namespace Starcraft2.ReplayParser
             }
 
             reader.BaseStream.Position = i;
-            return false;            
+            return false;
         }
+
+        /// <summary> Reads a UTF-8 string from the current position of the BinaryReader. </summary>
+        /// <param name="reader"> The reader. </param>
+        /// <returns> The read string. </returns>
+        private static string ReadString(BinaryReader reader)
+        {
+            var numBytes = reader.ReadByte();
+            var strArr = reader.ReadBytes(numBytes);
+
+            return Encoding.UTF8.GetString(strArr);
+        }
+
+        #endregion
     }
 }
