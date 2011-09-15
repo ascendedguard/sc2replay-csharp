@@ -53,8 +53,15 @@ namespace Starcraft2.ReplayParser
         /// <summary> Gets the details of all players in the replay. </summary>
         public Player[] Players { get; internal set; }
 
+<<<<<<< HEAD
         /// <summary> Gets the build number of the Starcraft 2 version used in creating the replay. </summary>
         public int ReplayBuild { get; internal set; }
+=======
+            if (playerIndex < this.Players.Length)
+            {
+                return this.Players[playerIndex];
+            }
+>>>>>>> f1091ff29af7c9d01fae953d907b921ea84e13db
 
         /// <summary> Gets the version number of the replay. </summary>
         public string ReplayVersion { get; internal set; }
