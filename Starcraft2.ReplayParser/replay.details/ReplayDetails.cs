@@ -18,6 +18,11 @@ namespace Starcraft2.ReplayParser
     /// </summary>
     public class ReplayDetails
     {
+        #region Public Methods
+
+        /// <summary> Parses the replay.details file, applying it to a Replay object. </summary>
+        /// <param name="replay"> The replay object to apply the parsed information to. </param>
+        /// <param name="buffer"> The buffer containing the replay.details file. </param>
         public static void Parse(Replay replay, byte[] buffer)
         {
             using (var stream = new MemoryStream(buffer, false))
@@ -28,6 +33,9 @@ namespace Starcraft2.ReplayParser
             }
         }
 
+        /// <summary> Parses the replay.details file, applying it to a Replay object. </summary>
+        /// <param name="replay"> The replay object to apply the parsed information to. </param>
+        /// <param name="stream"> The stream containing the replay.details file. </param>
         public static void Parse(Replay replay, Stream stream)
         {
             using (var reader = new BinaryReader(stream))
@@ -52,10 +60,10 @@ namespace Starcraft2.ReplayParser
                 replay.Map = Encoding.UTF8.GetString(mapBytes);
 
                 var stringLength = KeyValueStruct.Parse(reader).Value;
-                
+
                 // This is typically an empty string, no need to decode.
                 var unknownString = reader.ReadBytes(stringLength);
-                
+
                 reader.ReadBytes(3);
 
                 var mapPreviewNameLength = KeyValueStruct.Parse(reader).Value;
@@ -75,12 +83,14 @@ namespace Starcraft2.ReplayParser
 
                 // Subtract the timezone to get the appropriate UTC time.
                 time = time.Subtract(new TimeSpan(saveTimeZone));
-                
+
                 // We create a new timestamp so we can properly set this as UTC time.
                 replay.Timestamp = new DateTime(time.Ticks, DateTimeKind.Utc);
 
                 reader.Close();
             }
         }
+
+        #endregion
     }
 }
