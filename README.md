@@ -4,6 +4,8 @@ sc2replay-csharp
 
 This is an easy-to-use library to quickly parse and extract information from the undocumented .sc2replay format. The project has a side goal of creating an in-depth wiki with replay file documentation.
 
+**Requirements:** Visual C++ 2010 Runtime Redistributable as a requirement to MpqLib.dll
+
 Current Abilities
 ================
 * Parses basic player and matchup information.
