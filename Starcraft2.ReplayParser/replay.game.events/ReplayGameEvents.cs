@@ -21,6 +21,9 @@
             }
 
             var events = new List<IGameEvent>();
+            
+            // Keep a reference to know the game length.
+            Timestamp time = null;
 
             using (var stream = new MemoryStream(buffer))
             {
@@ -50,8 +53,8 @@
 
                         currentTime += timestamp;
 
-                        var time = Timestamp.Create(currentTime);
-
+                        time = Timestamp.Create(currentTime);
+                        
                         numEvents++;
 
                         switch (eventType)
@@ -634,6 +637,11 @@
                         }
                     }
                 }
+            }
+
+            if (time != null)
+            {
+                replay.GameLength = time.TimeSpan;
             }
 
             return events;

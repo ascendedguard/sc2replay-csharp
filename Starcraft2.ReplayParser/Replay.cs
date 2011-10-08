@@ -65,6 +65,9 @@ namespace Starcraft2.ReplayParser
         /// <summary> Gets the Time at which the game took place. </summary>
         public DateTime Timestamp { get; internal set; }
 
+        /// <summary> Gets the length of the game. </summary>
+        public TimeSpan GameLength { get; internal set; }
+
         #endregion
 
         #region Public Methods
