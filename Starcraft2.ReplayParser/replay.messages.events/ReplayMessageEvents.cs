@@ -380,7 +380,7 @@ namespace Starcraft2.ReplayParser
                             var opcode = (byte)target;
                             bytes.Add(opcode); // opcode
                             bytes.Add((byte)message.Length);
-                            bytes.AddRange(Encoding.ASCII.GetBytes(message));
+                            bytes.AddRange(Encoding.UTF8.GetBytes(message));
 
                             completeFile.AddRange(bytes);
                             hasBeenWritten = true;
@@ -437,8 +437,10 @@ namespace Starcraft2.ReplayParser
                         var opcode = (byte)target;
                         bytes.Add(opcode); // opcode
 
-                        bytes.Add((byte)message.Length);
-                        bytes.AddRange(Encoding.ASCII.GetBytes(message));
+                        var messageOut = Encoding.UTF8.GetBytes(message);
+
+                        bytes.Add((byte)messageOut.Length);
+                        bytes.AddRange(messageOut);
 
                         completeFile.AddRange(bytes);
                     }
