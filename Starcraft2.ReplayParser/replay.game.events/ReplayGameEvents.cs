@@ -106,7 +106,7 @@
                                                       | (lastTemp = reader.ReadByte());
 
                                             // 18574 should be the correct build? not sure
-                                            if ((firstByte & 0x0c) == 0x0c && (firstByte & 1) == 0)
+                                            if (firstByte == 12 || firstByte == 20)
                                             {
                                                 reader.ReadBytes(4);
                                             }
@@ -120,10 +120,14 @@
                                                         reader.ReadBytes(4);
 
                                                         reader.ReadBytes(2);
+
+                                                        // If version > 1.4
+                                                        reader.ReadBytes(replay.ReplayBuild >= 19679 ? 11 : 10);
                                                     }
                                                     else
                                                     {
-                                                        reader.ReadBytes(6);
+                                                        // This seems wrong :(
+                                                        reader.ReadBytes(9);
                                                     }
                                                 }
                                             }
@@ -133,7 +137,9 @@
                                             }
                                             else if (temp == 136 || temp == 138)
                                             {
-                                                reader.ReadBytes(15);
+                                                reader.ReadBytes(6);
+
+                                                reader.ReadBytes(replay.ReplayBuild >= 19679 ? 10 : 9);
                                             }
                                             /*
                                             {

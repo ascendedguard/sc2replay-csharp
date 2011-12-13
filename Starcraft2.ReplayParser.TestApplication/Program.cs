@@ -72,7 +72,7 @@
 
             var eventGroups = events.Where(r => r.Player != null)
                                     .Where(r => r.EventType != GameEventType.Inactive)
-                                    .GroupBy((r) => r.Player);
+                                    .GroupBy(r => r.Player);
 
             foreach (var group in eventGroups)
             {
