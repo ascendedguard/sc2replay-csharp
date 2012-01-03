@@ -68,6 +68,14 @@ namespace Starcraft2.ReplayParser
         /// <summary> Gets the length of the game. </summary>
         public TimeSpan GameLength { get; internal set; }
 
+        /// <summary>
+        /// Gets the list of clients connected to the game.
+        /// </summary>
+        /// <remarks>
+        /// The list of observers can be determined by removing any players from the Players array.
+        /// </remarks>
+        public string[] ClientList { get; internal set; }
+
         #endregion
 
         #region Public Methods

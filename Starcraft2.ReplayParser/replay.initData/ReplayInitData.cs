@@ -37,6 +37,9 @@ namespace Starcraft2.ReplayParser
                         reader.ReadBytes(5);
                     }
 
+                    // Save the full list of clients.
+                    replay.ClientList = playerList;
+
                     if (PositionAfter(reader, new byte[] { 115, 50, 109, 97 }))
                     {
                         reader.ReadBytes(2);
