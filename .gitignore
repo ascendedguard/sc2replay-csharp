@@ -8,3 +8,5 @@ Starcraft2.ReplayParser.TestApplication/obj
 *StyleCop.Cache
 *.Resharper
 *.dotCover
+*.DotSettings
+*.DotSettings.*
