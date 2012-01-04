@@ -373,19 +373,6 @@ namespace Starcraft2.ReplayParser
                             var shiftTimestamp = CreateTimestamp(shiftValue);
 
                             #region Writing the chat message
-                            /*
-                            var bytes = new List<byte>();
-
-                            bytes.AddRange(shiftTimestamp);
-                            bytes.Add((byte)playerId); // playerid
-
-                            var opcode = (byte)target;
-                            bytes.Add(opcode); // opcode
-                            bytes.Add((byte)message.Length);
-                            bytes.AddRange(Encoding.UTF8.GetBytes(message));
-
-                            completeFile.AddRange(bytes);
-                            */
 
                             var bytes = new List<byte>();
 
