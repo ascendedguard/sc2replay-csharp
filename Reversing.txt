@@ -1,0 +1,42 @@
+Event bitstream
+
+
+#bits   Function
+
+2       Timestamp length
+6       Timestamp 1st byte
+(8)     (2nd byte)
+(8)     (3rd byte)
+(8)     (4th byte)
+5       Player index
+7       Event type
+4       Event subtype
+{ type: 1Ch, subtype: 0Ah: // select units
+            Scenarios:
+        single SCV click with 1 SCV already selected
+    8       ?? (0)
+    2       ?? (3) // selection flags?
+    8       ?? (0) // dependent of selection flags
+    8       ?? (1) // length of type array
+    16      Unit Type (49h)
+    8       ?? (1)
+    8       ?? (1)
+    8       ?? (1) // length of id array
+    32      Unit id: the one at SUnit[0]
+    (byte align)
+        5 SCV drag-select with 1 SCV already selected
+    8       ?? (0)
+    2       ?? (0) // selection flags?
+    8       ?? (1)
+    16      Unit type (49h)
+    8       ?? (1)
+    8       ?? (1)
+    8       ?? (4)
+    32      Unit id 1 (86h)
+    32      Unit id 2 (87h)
+    32      Unit id 3 (88h)
+    32      Unit id 4 (89h)
+    (byte align)
+        deselect single SCV from 5 selected using wireframe
+    
+}
