@@ -1,0 +1,1867 @@
+Event bitstream
+
+
+#bits   Function
+
+2       Timestamp length
+6       Timestamp 1st byte
+(8)     (2nd byte)
+(8)     (3rd byte)
+(8)     (4th byte)
+5       Player index (10h => global event)
+7       Event type
+{ type: 1Ch: // select units
+    4       Type (0Ah)
+            Scenarios:
+        single SCV click with 1 SCV already selected
+    8       ?? (0)
+    2       ?? (3) // selection flags?
+    8       ?? (0) // dependent of selection flags
+    8       ?? (1) // length of type array
+    16      Unit Type (49h)
+    8       ?? (1)
+    8       ?? (1)
+    8       ?? (1) // length of id array
+    32      Unit id: the one at SUnit[0]
+    (byte align)
+        5 SCV drag-select with 1 SCV already selected
+    8       ?? (0)
+    2       ?? (0) // selection flags?
+    8       ?? (1)
+    16      Unit type (49h)
+    8       ?? (1)
+    8       ?? (1)
+    8       ?? (4)
+    32      Unit id 1 (86h)
+    32      Unit id 2 (87h)
+    32      Unit id 3 (88h)
+    32      Unit id 4 (89h)
+    (byte align)
+        deselect single SCV from 5 selected using wireframe
+    8       ?? (0)
+    2       ?? (1)
+    8       ?? (4)
+    8       ?? (4)
+    8       ?? (0)
+    8       ?? (0)
+    (byte align)
+        shift-click command center into 4 scv wireframe
+    8       ?? (0)
+    2       ?? (0)
+    8       ?? (1)
+    16      Unit type (2Dh)
+    8       ?? (1)
+    8       ?? (1)
+    8       ?? (1)
+    32      Unit id 1 (85h)
+    (byte align)
+        pressing tab in 4 scv + 1 command center wireframe with first subgroup selected
+    8       ?? (1) // subgroup
+    2       ?? (0)
+    8       ?? (0)
+    (byte align)
+        pressing tab with second subgroup
+    8       subgroup (0)
+    2       flags (0)
+    8       ?? (0)
+    8       ?? (0)
+    (byte align)
+        selecting 1 scv from the 4scv+1cc group using left click
+    8       0
+    2       flags (1)
+    8       
+
+}
+{ type: 4Ch: // is slowing down the game,
+    // maybe because of conditional break points on
+    // a very popular serialization subproc.
+    // Lesson learned: use hardware bps.
+    4       1h
+}
+{ type: 1Bh: // alt-r on scv; ability use?
+        Toggle auto-repair on 4 scvs
+    18      ?? (1c0h)
+    1       ?? (1)
+    16      CAbil id (72h)
+    8       ?? (0)
+}
+
+// select single scv
+[replay.game.events]cursor: 6c0 / bits: 2, val: 1
+[replay.game.events]cursor: 6c2 / bits: 14, val: 86
+[replay.game.events]cursor: 6d0 / bits: 5, val: 1
+[replay.game.events]cursor: 6d5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 6dc / bits: 4, val: a
+[replay.game.events]cursor: 6e0 / bits: 8, val: 0
+[replay.game.events]cursor: 6e8 / bits: 2, val: 1 // select flags replace?
+[replay.game.events]cursor: 6ea / bits: 8, val: 5
+[replay.game.events]cursor: 6f2 / bits: 5, val: 1b
+[replay.game.events]cursor: 6f7 / bits: 8, val: 0
+[replay.game.events]cursor: 6ff / bits: 8, val: 0
+
+// attack unit (scv)
+[replay.game.events]cursor: 708 / bits: 2, val: 0
+[replay.game.events]cursor: 70a / bits: 6, val: 21
+[replay.game.events]cursor: 710 / bits: 5, val: 1
+[replay.game.events]cursor: 715 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 71c / bits: 18, val: 100 // flags?
+[replay.game.events]cursor: 72e / bits: 1, val: 1 // abil is not default
+[replay.game.events]cursor: 72f / bits: 16, val: 2a // CAbilAttack attack
+[replay.game.events]cursor: 73f / bits: 5, val: 0 // button id
+[replay.game.events]cursor: 744 / bits: 1, val: 0 // something?
+[replay.game.events]cursor: 745 / bits: 2, val: 2 // enum target information, perhaps target and target is not default?
+[replay.game.events]cursor: 747 / bits: 8, val: 37 // tends to be 37
+[replay.game.events]cursor: 74f / bits: 8, val: 0 // something?
+[replay.game.events]cursor: 757 / bits: 32, val: 2280001 // Target unit id
+[replay.game.events]cursor: 777 / bits: 16, val: 49 // CUnit SCV
+[replay.game.events]cursor: 787 / bits: 1, val: 1 // player?
+[replay.game.events]cursor: 788 / bits: 4, val: 1 // player
+[replay.game.events]cursor: 78c / bits: 1, val: 1 // alliance?
+[replay.game.events]cursor: 78d / bits: 4, val: 1 // alliance
+[replay.game.events]cursor: 791 / bits: 20, val: 7fd8e // target x (location required?)
+[replay.game.events]cursor: 7a5 / bits: 20, val: a1813 // target y
+[replay.game.events]cursor: 7b9 / bits: 32, val: 8000bfc0 // target z (fixed32)
+[replay.game.events]cursor: 7d9 / bits: 1, val: 0 // something else?
+
+// stop
+[replay.game.events]cursor: 7e0 / bits: 2, val: 1
+[replay.game.events]cursor: 7e2 / bits: 14, val: 8a
+[replay.game.events]cursor: 7f0 / bits: 5, val: 1
+[replay.game.events]cursor: 7f5 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 7fc / bits: 18, val: 100
+[replay.game.events]cursor: 80e / bits: 1, val: 1
+[replay.game.events]cursor: 80f / bits: 16, val: 24 // CAbilStop stop
+[replay.game.events]cursor: 81f / bits: 5, val: 0
+[replay.game.events]cursor: 824 / bits: 1, val: 0
+[replay.game.events]cursor: 825 / bits: 2, val: 0
+[replay.game.events]cursor: 827 / bits: 1, val: 0
+
+// hold position
+[replay.game.events]cursor: 828 / bits: 2, val: 1
+[replay.game.events]cursor: 82a / bits: 14, val: 2dc
+[replay.game.events]cursor: 838 / bits: 5, val: 1
+[replay.game.events]cursor: 83d / bits: 7, val: 1b
+
+[replay.game.events]cursor: 844 / bits: 18, val: 100
+[replay.game.events]cursor: 856 / bits: 1, val: 1 // Is not default
+[replay.game.events]cursor: 857 / bits: 16, val: 26 // CAbilMove move
+[replay.game.events]cursor: 867 / bits: 5, val: 2 // CmdButtonArray[2] => MoveHoldPosition
+[replay.game.events]cursor: 86c / bits: 1, val: 0
+[replay.game.events]cursor: 86d / bits: 2, val: 0
+[replay.game.events]cursor: 86f / bits: 1, val: 0
+
+// mine mineral field 47@130,163.5
+[replay.game.events]cursor: 870 / bits: 2, val: 1
+[replay.game.events]cursor: 872 / bits: 14, val: 15c
+[replay.game.events]cursor: 880 / bits: 5, val: 1
+[replay.game.events]cursor: 885 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 88c / bits: 18, val: 108
+[replay.game.events]cursor: 89e / bits: 1, val: 0 // Non-default abil ; i.e. this is a right click?
+[replay.game.events]cursor: 89f / bits: 2, val: 2
+[replay.game.events]cursor: 8a1 / bits: 8, val: 37
+[replay.game.events]cursor: 8a9 / bits: 8, val: 0
+[replay.game.events]cursor: 8b1 / bits: 32, val: bc0001
+[replay.game.events]cursor: 8d1 / bits: 16, val: f8
+[replay.game.events]cursor: 8e1 / bits: 1, val: 1
+[replay.game.events]cursor: 8e2 / bits: 4, val: 0
+[replay.game.events]cursor: 8e6 / bits: 1, val: 1
+[replay.game.events]cursor: 8e7 / bits: 4, val: 0
+[replay.game.events]cursor: 8eb / bits: 20, val: 82000
+[replay.game.events]cursor: 8ff / bits: 20, val: a3800
+[replay.game.events]cursor: 913 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 933 / bits: 1, val: 0
+
+// deselect scv, select new scv (via left click)
+[replay.game.events]cursor: 938 / bits: 2, val: 1
+[replay.game.events]cursor: 93a / bits: 14, val: 85
+[replay.game.events]cursor: 948 / bits: 5, val: 1
+[replay.game.events]cursor: 94d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 954 / bits: 4, val: a
+[replay.game.events]cursor: 958 / bits: 8, val: 0
+[replay.game.events]cursor: 960 / bits: 2, val: 3 // select enum - clear
+[replay.game.events]cursor: 962 / bits: 8, val: 0
+[replay.game.events]cursor: 96a / bits: 8, val: 1 // type list length
+[replay.game.events]cursor: 972 / bits: 16, val: 49 // type 1 - scv
+[replay.game.events]cursor: 982 / bits: 8, val: 1
+[replay.game.events]cursor: 98a / bits: 8, val: 1
+[replay.game.events]cursor: 992 / bits: 8, val: 1 // id list length
+[replay.game.events]cursor: 99a / bits: 32, val: 2240001 // id 1 - 137
+
+// mine mineral field (via G -> left click)
+[replay.game.events]cursor: 9c0 / bits: 2, val: 0
+[replay.game.events]cursor: 9c2 / bits: 6, val: 35
+[replay.game.events]cursor: 9c8 / bits: 5, val: 1
+[replay.game.events]cursor: 9cd / bits: 7, val: 1b
+
+[replay.game.events]cursor: 9d4 / bits: 18, val: 100
+[replay.game.events]cursor: 9e6 / bits: 1, val: 1 // is not default
+[replay.game.events]cursor: 9e7 / bits: 16, val: 69 // CAbilHarvest SCVHarvest
+[replay.game.events]cursor: 9f7 / bits: 5, val: 0
+[replay.game.events]cursor: 9fc / bits: 1, val: 0
+[replay.game.events]cursor: 9fd / bits: 2, val: 2
+[replay.game.events]cursor: 9ff / bits: 8, val: 37
+[replay.game.events]cursor: a07 / bits: 8, val: 0
+[replay.game.events]cursor: a0f / bits: 32, val: 1700001 // unit id - 92
+[replay.game.events]cursor: a2f / bits: 16, val: f8 // unit type - mineralfield
+[replay.game.events]cursor: a3f / bits: 1, val: 1 // player?
+[replay.game.events]cursor: a40 / bits: 4, val: 0 // player
+[replay.game.events]cursor: a44 / bits: 1, val: 1 // alliance?
+[replay.game.events]cursor: a45 / bits: 4, val: 0 // alliance
+[replay.game.events]cursor: a49 / bits: 20, val: 7f000
+[replay.game.events]cursor: a5d / bits: 20, val: a4800
+[replay.game.events]cursor: a71 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: a91 / bits: 1, val: 0 // wonder what invokes this property...
+
+// camera zoom spam, broken scroll wheel is broken
+[replay.game.events]cursor: a98 / bits: 2, val: 0
+[replay.game.events]cursor: a9a / bits: 6, val: 3b
+[replay.game.events]cursor: aa0 / bits: 5, val: 1
+[replay.game.events]cursor: aa5 / bits: 7, val: 31
+[replay.game.events]cursor: aac / bits: 16, val: 7d00 // x
+[replay.game.events]cursor: abc / bits: 16, val: 9fc2 // y
+[replay.game.events]cursor: acc / bits: 1, val: 1
+[replay.game.events]cursor: acd / bits: 16, val: 213b // zoom 
+[replay.game.events]cursor: add / bits: 1, val: 1
+[replay.game.events]cursor: ade / bits: 16, val: 13a
+[replay.game.events]cursor: aee / bits: 1, val: 0
+
+[replay.game.events]cursor: af0 / bits: 2, val: 0
+[replay.game.events]cursor: af2 / bits: 6, val: 2
+[replay.game.events]cursor: af8 / bits: 5, val: 1
+[replay.game.events]cursor: afd / bits: 7, val: 31
+[replay.game.events]cursor: b04 / bits: 16, val: 7d00
+[replay.game.events]cursor: b14 / bits: 16, val: 9fc2
+[replay.game.events]cursor: b24 / bits: 1, val: 1
+[replay.game.events]cursor: b25 / bits: 16, val: 2018
+[replay.game.events]cursor: b35 / bits: 1, val: 1
+[replay.game.events]cursor: b36 / bits: 16, val: 133
+[replay.game.events]cursor: b46 / bits: 1, val: 0
+
+[replay.game.events]cursor: b48 / bits: 2, val: 0
+[replay.game.events]cursor: b4a / bits: 6, val: 2
+[replay.game.events]cursor: b50 / bits: 5, val: 1
+[replay.game.events]cursor: b55 / bits: 7, val: 31
+[replay.game.events]cursor: b5c / bits: 16, val: 7d00
+[replay.game.events]cursor: b6c / bits: 16, val: 9fc2
+[replay.game.events]cursor: b7c / bits: 1, val: 1
+[replay.game.events]cursor: b7d / bits: 16, val: 1fff
+[replay.game.events]cursor: b8d / bits: 1, val: 1
+[replay.game.events]cursor: b8e / bits: 16, val: 133
+[replay.game.events]cursor: b9e / bits: 1, val: 0
+
+[replay.game.events]cursor: ba0 / bits: 2, val: 0
+[replay.game.events]cursor: ba2 / bits: 6, val: 2
+[replay.game.events]cursor: ba8 / bits: 5, val: 1
+[replay.game.events]cursor: bad / bits: 7, val: 31
+[replay.game.events]cursor: bb4 / bits: 16, val: 7d00
+[replay.game.events]cursor: bc4 / bits: 16, val: 9fc2
+[replay.game.events]cursor: bd4 / bits: 1, val: 1
+[replay.game.events]cursor: bd5 / bits: 16, val: 2096
+[replay.game.events]cursor: be5 / bits: 1, val: 1
+[replay.game.events]cursor: be6 / bits: 16, val: 136
+[replay.game.events]cursor: bf6 / bits: 1, val: 0
+
+[replay.game.events]cursor: bf8 / bits: 2, val: 0
+[replay.game.events]cursor: bfa / bits: 6, val: 2
+[replay.game.events]cursor: c00 / bits: 5, val: 1
+[replay.game.events]cursor: c05 / bits: 7, val: 31
+[replay.game.events]cursor: c0c / bits: 16, val: 7d00
+[replay.game.events]cursor: c1c / bits: 16, val: 9fc2
+[replay.game.events]cursor: c2c / bits: 1, val: 1
+[replay.game.events]cursor: c2d / bits: 16, val: 2122
+[replay.game.events]cursor: c3d / bits: 1, val: 1
+[replay.game.events]cursor: c3e / bits: 16, val: 139
+[replay.game.events]cursor: c4e / bits: 1, val: 0
+
+[replay.game.events]cursor: c50 / bits: 2, val: 0
+[replay.game.events]cursor: c52 / bits: 6, val: 2
+[replay.game.events]cursor: c58 / bits: 5, val: 1
+[replay.game.events]cursor: c5d / bits: 7, val: 31
+[replay.game.events]cursor: c64 / bits: 16, val: 7d00
+[replay.game.events]cursor: c74 / bits: 16, val: 9fc2
+[replay.game.events]cursor: c84 / bits: 1, val: 1
+[replay.game.events]cursor: c85 / bits: 16, val: 2181
+[replay.game.events]cursor: c95 / bits: 1, val: 1
+[replay.game.events]cursor: c96 / bits: 16, val: 13b
+[replay.game.events]cursor: ca6 / bits: 1, val: 0
+
+[replay.game.events]cursor: ca8 / bits: 2, val: 0
+[replay.game.events]cursor: caa / bits: 6, val: 2
+[replay.game.events]cursor: cb0 / bits: 5, val: 1
+[replay.game.events]cursor: cb5 / bits: 7, val: 31
+[replay.game.events]cursor: cbc / bits: 16, val: 7d00
+[replay.game.events]cursor: ccc / bits: 16, val: 9fc2
+[replay.game.events]cursor: cdc / bits: 1, val: 1
+[replay.game.events]cursor: cdd / bits: 16, val: 21bb
+[replay.game.events]cursor: ced / bits: 1, val: 1
+[replay.game.events]cursor: cee / bits: 16, val: 13d
+[replay.game.events]cursor: cfe / bits: 1, val: 0
+
+[replay.game.events]cursor: d00 / bits: 2, val: 0
+[replay.game.events]cursor: d02 / bits: 6, val: 2
+[replay.game.events]cursor: d08 / bits: 5, val: 1
+[replay.game.events]cursor: d0d / bits: 7, val: 31
+[replay.game.events]cursor: d14 / bits: 16, val: 7d00
+[replay.game.events]cursor: d24 / bits: 16, val: 9fc2
+[replay.game.events]cursor: d34 / bits: 1, val: 1
+[replay.game.events]cursor: d35 / bits: 16, val: 21db
+[replay.game.events]cursor: d45 / bits: 1, val: 1
+[replay.game.events]cursor: d46 / bits: 16, val: 13d
+[replay.game.events]cursor: d56 / bits: 1, val: 0
+
+[replay.game.events]cursor: d58 / bits: 2, val: 0
+[replay.game.events]cursor: d5a / bits: 6, val: 2
+[replay.game.events]cursor: d60 / bits: 5, val: 1
+[replay.game.events]cursor: d65 / bits: 7, val: 31
+[replay.game.events]cursor: d6c / bits: 16, val: 7d00
+[replay.game.events]cursor: d7c / bits: 16, val: 9fc2
+[replay.game.events]cursor: d8c / bits: 1, val: 1
+[replay.game.events]cursor: d8d / bits: 16, val: 21ed
+[replay.game.events]cursor: d9d / bits: 1, val: 1
+[replay.game.events]cursor: d9e / bits: 16, val: 13e
+[replay.game.events]cursor: dae / bits: 1, val: 0
+
+[replay.game.events]cursor: db0 / bits: 2, val: 0
+[replay.game.events]cursor: db2 / bits: 6, val: 2
+[replay.game.events]cursor: db8 / bits: 5, val: 1
+[replay.game.events]cursor: dbd / bits: 7, val: 31
+[replay.game.events]cursor: dc4 / bits: 16, val: 7d00
+[replay.game.events]cursor: dd4 / bits: 16, val: 9fc2
+[replay.game.events]cursor: de4 / bits: 1, val: 1
+[replay.game.events]cursor: de5 / bits: 16, val: 21f6
+[replay.game.events]cursor: df5 / bits: 1, val: 1
+[replay.game.events]cursor: df6 / bits: 16, val: 13e
+[replay.game.events]cursor: e06 / bits: 1, val: 0
+
+[replay.game.events]cursor: e08 / bits: 2, val: 0
+[replay.game.events]cursor: e0a / bits: 6, val: 2
+[replay.game.events]cursor: e10 / bits: 5, val: 1
+[replay.game.events]cursor: e15 / bits: 7, val: 31
+[replay.game.events]cursor: e1c / bits: 16, val: 7d00
+[replay.game.events]cursor: e2c / bits: 16, val: 9fc2
+[replay.game.events]cursor: e3c / bits: 1, val: 1
+[replay.game.events]cursor: e3d / bits: 16, val: 21fb
+[replay.game.events]cursor: e4d / bits: 1, val: 1
+[replay.game.events]cursor: e4e / bits: 16, val: 13e
+[replay.game.events]cursor: e5e / bits: 1, val: 0
+
+[replay.game.events]cursor: e60 / bits: 2, val: 0
+[replay.game.events]cursor: e62 / bits: 6, val: 2
+[replay.game.events]cursor: e68 / bits: 5, val: 1
+[replay.game.events]cursor: e6d / bits: 7, val: 31
+[replay.game.events]cursor: e74 / bits: 16, val: 7d00
+[replay.game.events]cursor: e84 / bits: 16, val: 9fc2
+[replay.game.events]cursor: e94 / bits: 1, val: 1
+[replay.game.events]cursor: e95 / bits: 16, val: 21fd
+[replay.game.events]cursor: ea5 / bits: 1, val: 1
+[replay.game.events]cursor: ea6 / bits: 16, val: 13e
+[replay.game.events]cursor: eb6 / bits: 1, val: 0
+
+// select 3 scvs
+[replay.game.events]cursor: eb8 / bits: 2, val: 0
+[replay.game.events]cursor: eba / bits: 6, val: 6
+[replay.game.events]cursor: ec0 / bits: 5, val: 1
+[replay.game.events]cursor: ec5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: ecc / bits: 4, val: a
+[replay.game.events]cursor: ed0 / bits: 8, val: 0
+[replay.game.events]cursor: ed8 / bits: 2, val: 3
+[replay.game.events]cursor: eda / bits: 8, val: 0
+[replay.game.events]cursor: ee2 / bits: 8, val: 1
+[replay.game.events]cursor: eea / bits: 16, val: 49
+[replay.game.events]cursor: efa / bits: 8, val: 1
+[replay.game.events]cursor: f02 / bits: 8, val: 3
+[replay.game.events]cursor: f0a / bits: 8, val: 3
+[replay.game.events]cursor: f12 / bits: 32, val: 2180001
+[replay.game.events]cursor: f32 / bits: 32, val: 2200001
+[replay.game.events]cursor: f52 / bits: 32, val: 2280001
+
+// mine mineral field (right click)
+[replay.game.events]cursor: f78 / bits: 2, val: 0
+[replay.game.events]cursor: f7a / bits: 6, val: d
+[replay.game.events]cursor: f80 / bits: 5, val: 1
+[replay.game.events]cursor: f85 / bits: 7, val: 1b
+
+[replay.game.events]cursor: f8c / bits: 18, val: 108
+[replay.game.events]cursor: f9e / bits: 1, val: 0
+[replay.game.events]cursor: f9f / bits: 2, val: 2
+[replay.game.events]cursor: fa1 / bits: 8, val: 37
+[replay.game.events]cursor: fa9 / bits: 8, val: 0
+[replay.game.events]cursor: fb1 / bits: 32, val: 1140001
+[replay.game.events]cursor: fd1 / bits: 16, val: f8
+[replay.game.events]cursor: fe1 / bits: 1, val: 1
+[replay.game.events]cursor: fe2 / bits: 4, val: 0
+[replay.game.events]cursor: fe6 / bits: 1, val: 1
+[replay.game.events]cursor: fe7 / bits: 4, val: 0
+[replay.game.events]cursor: feb / bits: 20, val: 7b000
+[replay.game.events]cursor: fff / bits: 20, val: a4800
+[replay.game.events]cursor: 1013 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 1033 / bits: 1, val: 0
+
+// select command center
+[replay.game.events]cursor: 1038 / bits: 2, val: 1
+[replay.game.events]cursor: 103a / bits: 14, val: 65
+[replay.game.events]cursor: 1048 / bits: 5, val: 1
+[replay.game.events]cursor: 104d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1054 / bits: 4, val: a
+[replay.game.events]cursor: 1058 / bits: 8, val: 0
+[replay.game.events]cursor: 1060 / bits: 2, val: 3 // select enum - clear
+[replay.game.events]cursor: 1062 / bits: 8, val: 0
+[replay.game.events]cursor: 106a / bits: 8, val: 1 // type length
+[replay.game.events]cursor: 1072 / bits: 16, val: 2d // CommandCenter
+[replay.game.events]cursor: 1082 / bits: 8, val: 1
+[replay.game.events]cursor: 108a / bits: 8, val: 1 // length?
+[replay.game.events]cursor: 1092 / bits: 8, val: 1 // length
+[replay.game.events]cursor: 109a / bits: 32, val: 2140001 // 214 >> 2 = 133
+
+// train scv
+[replay.game.events]cursor: 10c0 / bits: 2, val: 0
+[replay.game.events]cursor: 10c2 / bits: 6, val: 7
+[replay.game.events]cursor: 10c8 / bits: 5, val: 1
+[replay.game.events]cursor: 10cd / bits: 7, val: 1b
+
+[replay.game.events]cursor: 10d4 / bits: 18, val: 100
+[replay.game.events]cursor: 10e6 / bits: 1, val: 1 // Is not default
+[replay.game.events]cursor: 10e7 / bits: 16, val: 8d // CAbilTrain CommandCenterTrain
+[replay.game.events]cursor: 10f7 / bits: 5, val: 0 // InfoArray[0] => SCV
+[replay.game.events]cursor: 10fc / bits: 1, val: 0
+[replay.game.events]cursor: 10fd / bits: 2, val: 0
+[replay.game.events]cursor: 10ff / bits: 1, val: 0
+
+// select an scv
+[replay.game.events]cursor: 1100 / bits: 2, val: 1
+[replay.game.events]cursor: 1102 / bits: 14, val: d9
+[replay.game.events]cursor: 1110 / bits: 5, val: 1
+[replay.game.events]cursor: 1115 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 111c / bits: 4, val: a
+[replay.game.events]cursor: 1120 / bits: 8, val: 0
+[replay.game.events]cursor: 1128 / bits: 2, val: 3 // select flags - clear
+[replay.game.events]cursor: 112a / bits: 8, val: 0
+[replay.game.events]cursor: 1132 / bits: 8, val: 1 // 1 type
+[replay.game.events]cursor: 113a / bits: 16, val: 49 // scv
+[replay.game.events]cursor: 114a / bits: 8, val: 1
+[replay.game.events]cursor: 1152 / bits: 8, val: 1
+[replay.game.events]cursor: 115a / bits: 8, val: 1 // 1 id
+[replay.game.events]cursor: 1162 / bits: 32, val: 21c0001 // 21c >> 2
+
+// right click ground
+[replay.game.events]cursor: 1188 / bits: 2, val: 1
+[replay.game.events]cursor: 118a / bits: 14, val: 93
+[replay.game.events]cursor: 1198 / bits: 5, val: 1
+[replay.game.events]cursor: 119d / bits: 7, val: 1b
+
+[replay.game.events]cursor: 11a4 / bits: 18, val: 108
+[replay.game.events]cursor: 11b6 / bits: 1, val: 0 // is default
+[replay.game.events]cursor: 11b7 / bits: 2, val: 1 // target type
+[replay.game.events]cursor: 11b9 / bits: 20, val: 82127 // x
+[replay.game.events]cursor: 11cd / bits: 20, val: a7272 // y
+[replay.game.events]cursor: 11e1 / bits: 32, val: 8000bfce // z
+[replay.game.events]cursor: 1201 / bits: 1, val: 0 // ?
+
+// build supply depot
+[replay.game.events]cursor: 1208 / bits: 2, val: 0
+[replay.game.events]cursor: 120a / bits: 6, val: 3c
+[replay.game.events]cursor: 1210 / bits: 5, val: 1
+[replay.game.events]cursor: 1215 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 121c / bits: 18, val: 100
+[replay.game.events]cursor: 122e / bits: 1, val: 1 // is not default
+[replay.game.events]cursor: 122f / bits: 16, val: 73 // CAbilBuild TerranBuild
+[replay.game.events]cursor: 123f / bits: 5, val: 1 // InfoArray[1] => Supply Depot
+[replay.game.events]cursor: 1244 / bits: 1, val: 0 // only occurs if not default
+[replay.game.events]cursor: 1245 / bits: 2, val: 1 // target flags, location only
+[replay.game.events]cursor: 1247 / bits: 20, val: 82000 // x
+[replay.game.events]cursor: 125b / bits: 20, val: a7000 // y
+[replay.game.events]cursor: 126f / bits: 32, val: 8000bfce // z
+[replay.game.events]cursor: 128f / bits: 1, val: 0 // ?
+
+// camera ...
+[replay.game.events]cursor: 1290 / bits: 2, val: 0
+[replay.game.events]cursor: 1292 / bits: 6, val: 27
+[replay.game.events]cursor: 1298 / bits: 5, val: 1
+[replay.game.events]cursor: 129d / bits: 7, val: 31
+
+[replay.game.events]cursor: 12a4 / bits: 16, val: 7d00
+[replay.game.events]cursor: 12b4 / bits: 16, val: 9fc2
+[replay.game.events]cursor: 12c4 / bits: 1, val: 1
+[replay.game.events]cursor: 12c5 / bits: 16, val: 21fe
+[replay.game.events]cursor: 12d5 / bits: 1, val: 0
+
+[replay.game.events]cursor: 12d6 / bits: 1, val: 0
+
+// cancel building supply depot
+[replay.game.events]cursor: 12d8 / bits: 2, val: 0
+[replay.game.events]cursor: 12da / bits: 6, val: 1f
+[replay.game.events]cursor: 12e0 / bits: 5, val: 1
+[replay.game.events]cursor: 12e5 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 12ec / bits: 18, val: 100
+[replay.game.events]cursor: 12fe / bits: 1, val: 1 // Is not default
+[replay.game.events]cursor: 12ff / bits: 16, val: 73 // TerranBuild
+[replay.game.events]cursor: 130f / bits: 5, val: 1e // 30 - e_abilBuild... only goes to 29, so this is where Halt goes.
+[replay.game.events]cursor: 1314 / bits: 1, val: 0
+[replay.game.events]cursor: 1315 / bits: 2, val: 0 // default target
+[replay.game.events]cursor: 1317 / bits: 1, val: 0
+
+// patrol
+[replay.game.events]cursor: 1318 / bits: 2, val: 0
+[replay.game.events]cursor: 131a / bits: 6, val: 38
+[replay.game.events]cursor: 1320 / bits: 5, val: 1
+[replay.game.events]cursor: 1325 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 132c / bits: 18, val: 100
+[replay.game.events]cursor: 133e / bits: 1, val: 1
+[replay.game.events]cursor: 133f / bits: 16, val: 26 // CAbilMove move
+[replay.game.events]cursor: 134f / bits: 5, val: 1 // [1] => Patrol
+[replay.game.events]cursor: 1354 / bits: 1, val: 0
+[replay.game.events]cursor: 1355 / bits: 2, val: 1
+[replay.game.events]cursor: 1357 / bits: 20, val: 8071e
+[replay.game.events]cursor: 136b / bits: 20, val: a15e5
+[replay.game.events]cursor: 137f / bits: 32, val: 8000bfce
+[replay.game.events]cursor: 139f / bits: 1, val: 0
+
+// select command center
+[replay.game.events]cursor: 13a0 / bits: 2, val: 0
+[replay.game.events]cursor: 13a2 / bits: 6, val: 3f
+[replay.game.events]cursor: 13a8 / bits: 5, val: 1
+[replay.game.events]cursor: 13ad / bits: 7, val: 1c
+[replay.game.events]cursor: 13b4 / bits: 4, val: a
+[replay.game.events]cursor: 13b8 / bits: 8, val: 0
+[replay.game.events]cursor: 13c0 / bits: 2, val: 3 // type: clear
+[replay.game.events]cursor: 13c2 / bits: 8, val: 0
+[replay.game.events]cursor: 13ca / bits: 8, val: 1
+[replay.game.events]cursor: 13d2 / bits: 16, val: 2d
+[replay.game.events]cursor: 13e2 / bits: 8, val: 1
+[replay.game.events]cursor: 13ea / bits: 8, val: 1
+[replay.game.events]cursor: 13f2 / bits: 8, val: 1
+[replay.game.events]cursor: 13fa / bits: 32, val: 2140001
+
+// set worker rally
+[replay.game.events]cursor: 1420 / bits: 2, val: 0
+[replay.game.events]cursor: 1422 / bits: 6, val: d
+[replay.game.events]cursor: 1428 / bits: 5, val: 1
+[replay.game.events]cursor: 142d / bits: 7, val: 1b
+
+[replay.game.events]cursor: 1434 / bits: 18, val: 108
+[replay.game.events]cursor: 1446 / bits: 1, val: 0 // is default
+[replay.game.events]cursor: 1447 / bits: 2, val: 2 // location flags
+[replay.game.events]cursor: 1449 / bits: 8, val: 37 // still unk
+[replay.game.events]cursor: 1451 / bits: 8, val: 0
+[replay.game.events]cursor: 1459 / bits: 32, val: dc0001 // target unit id
+[replay.game.events]cursor: 1479 / bits: 16, val: f8 // target type
+[replay.game.events]cursor: 1489 / bits: 1, val: 1 // target player
+[replay.game.events]cursor: 148a / bits: 4, val: 0
+[replay.game.events]cursor: 148e / bits: 1, val: 1 // target alliance
+[replay.game.events]cursor: 148f / bits: 4, val: 0
+[replay.game.events]cursor: 1493 / bits: 20, val: 77000 // x
+[replay.game.events]cursor: 14a7 / bits: 20, val: a3800 // y
+[replay.game.events]cursor: 14bb / bits: 32, val: 8000bfc0 // z
+[replay.game.events]cursor: 14db / bits: 1, val: 0 // ?
+
+// train scv
+[replay.game.events]cursor: 14e0 / bits: 2, val: 0
+[replay.game.events]cursor: 14e2 / bits: 6, val: 2c
+[replay.game.events]cursor: 14e8 / bits: 5, val: 1
+[replay.game.events]cursor: 14ed / bits: 7, val: 1b
+
+[replay.game.events]cursor: 14f4 / bits: 18, val: 100
+[replay.game.events]cursor: 1506 / bits: 1, val: 1 // is not default
+[replay.game.events]cursor: 1507 / bits: 16, val: 8d // cc train
+[replay.game.events]cursor: 1517 / bits: 5, val: 0 // [0]
+[replay.game.events]cursor: 151c / bits: 1, val: 0
+[replay.game.events]cursor: 151d / bits: 2, val: 0
+[replay.game.events]cursor: 151f / bits: 1, val: 0
+
+// select new scv
+[replay.game.events]cursor: 1520 / bits: 2, val: 1
+[replay.game.events]cursor: 1522 / bits: 14, val: 43
+[replay.game.events]cursor: 1530 / bits: 5, val: 1
+[replay.game.events]cursor: 1535 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 153c / bits: 4, val: a
+[replay.game.events]cursor: 1540 / bits: 8, val: 0
+[replay.game.events]cursor: 1548 / bits: 2, val: 3
+[replay.game.events]cursor: 154a / bits: 8, val: 0
+[replay.game.events]cursor: 1552 / bits: 8, val: 1
+[replay.game.events]cursor: 155a / bits: 16, val: 49
+[replay.game.events]cursor: 156a / bits: 8, val: 1
+[replay.game.events]cursor: 1572 / bits: 8, val: 1
+[replay.game.events]cursor: 157a / bits: 8, val: 1
+[replay.game.events]cursor: 1582 / bits: 32, val: 2300001
+
+// right click mineral field
+[replay.game.events]cursor: 15a8 / bits: 2, val: 0
+[replay.game.events]cursor: 15aa / bits: 6, val: 9
+[replay.game.events]cursor: 15b0 / bits: 5, val: 1
+[replay.game.events]cursor: 15b5 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 15bc / bits: 18, val: 108
+[replay.game.events]cursor: 15ce / bits: 1, val: 0
+[replay.game.events]cursor: 15cf / bits: 2, val: 2
+[replay.game.events]cursor: 15d1 / bits: 8, val: 37
+[replay.game.events]cursor: 15d9 / bits: 8, val: 0
+[replay.game.events]cursor: 15e1 / bits: 32, val: 5c0001
+[replay.game.events]cursor: 1601 / bits: 16, val: f8
+[replay.game.events]cursor: 1611 / bits: 1, val: 1
+[replay.game.events]cursor: 1612 / bits: 4, val: 0
+[replay.game.events]cursor: 1616 / bits: 1, val: 1
+[replay.game.events]cursor: 1617 / bits: 4, val: 0
+[replay.game.events]cursor: 161b / bits: 20, val: 78000
+[replay.game.events]cursor: 162f / bits: 20, val: a4800
+[replay.game.events]cursor: 1643 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 1663 / bits: 1, val: 0
+
+// ctrl-shift-click scvs
+[replay.game.events]cursor: 1668 / bits: 2, val: 0
+[replay.game.events]cursor: 166a / bits: 6, val: 2b
+[replay.game.events]cursor: 1670 / bits: 5, val: 1
+[replay.game.events]cursor: 1675 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 167c / bits: 4, val: a
+[replay.game.events]cursor: 1680 / bits: 8, val: 0
+[replay.game.events]cursor: 1688 / bits: 2, val: 0 // type: add
+[replay.game.events]cursor: 168a / bits: 8, val: 1 // type length: 1
+[replay.game.events]cursor: 1692 / bits: 16, val: 49 // scv
+[replay.game.events]cursor: 16a2 / bits: 8, val: 1
+[replay.game.events]cursor: 16aa / bits: 8, val: 6 // 6 units
+[replay.game.events]cursor: 16b2 / bits: 8, val: 6
+[replay.game.events]cursor: 16ba / bits: 32, val: 2180001 // ids...
+[replay.game.events]cursor: 16da / bits: 32, val: 21c0001
+[replay.game.events]cursor: 16fa / bits: 32, val: 2200001
+[replay.game.events]cursor: 171a / bits: 32, val: 2240001
+[replay.game.events]cursor: 173a / bits: 32, val: 2280001
+[replay.game.events]cursor: 175a / bits: 32, val: 22c0001
+
+// set to control group 6
+[replay.game.events]cursor: 1780 / bits: 2, val: 0
+[replay.game.events]cursor: 1782 / bits: 6, val: f
+[replay.game.events]cursor: 1788 / bits: 5, val: 1
+[replay.game.events]cursor: 178d / bits: 7, val: 1d
+
+[replay.game.events]cursor: 1794 / bits: 4, val: 6 // control group
+[replay.game.events]cursor: 1798 / bits: 2, val: 0 // flags?
+[replay.game.events]cursor: 179a / bits: 2, val: 0
+
+// click command center
+[replay.game.events]cursor: 17a0 / bits: 2, val: 1
+[replay.game.events]cursor: 17a2 / bits: 14, val: 63
+[replay.game.events]cursor: 17b0 / bits: 5, val: 1
+[replay.game.events]cursor: 17b5 / bits: 7, val: 1c
+[replay.game.events]cursor: 17bc / bits: 4, val: a
+[replay.game.events]cursor: 17c0 / bits: 8, val: 0
+[replay.game.events]cursor: 17c8 / bits: 2, val: 3
+[replay.game.events]cursor: 17ca / bits: 8, val: 0
+[replay.game.events]cursor: 17d2 / bits: 8, val: 1
+[replay.game.events]cursor: 17da / bits: 16, val: 2d
+[replay.game.events]cursor: 17ea / bits: 8, val: 1
+[replay.game.events]cursor: 17f2 / bits: 8, val: 1
+[replay.game.events]cursor: 17fa / bits: 8, val: 1
+[replay.game.events]cursor: 1802 / bits: 32, val: 2140001
+
+// set to control group 5
+[replay.game.events]cursor: 1828 / bits: 2, val: 0
+[replay.game.events]cursor: 182a / bits: 6, val: d
+[replay.game.events]cursor: 1830 / bits: 5, val: 1
+[replay.game.events]cursor: 1835 / bits: 7, val: 1d
+[replay.game.events]cursor: 183c / bits: 4, val: 5
+[replay.game.events]cursor: 1840 / bits: 2, val: 0
+[replay.game.events]cursor: 1842 / bits: 2, val: 0
+
+// select 1 scv
+[replay.game.events]cursor: 1848 / bits: 2, val: 0
+[replay.game.events]cursor: 184a / bits: 6, val: 21
+[replay.game.events]cursor: 1850 / bits: 5, val: 1
+[replay.game.events]cursor: 1855 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 185c / bits: 4, val: a
+[replay.game.events]cursor: 1860 / bits: 8, val: 0
+[replay.game.events]cursor: 1868 / bits: 2, val: 3
+[replay.game.events]cursor: 186a / bits: 8, val: 0
+[replay.game.events]cursor: 1872 / bits: 8, val: 1
+[replay.game.events]cursor: 187a / bits: 16, val: 49
+[replay.game.events]cursor: 188a / bits: 8, val: 1
+[replay.game.events]cursor: 1892 / bits: 8, val: 1
+[replay.game.events]cursor: 189a / bits: 8, val: 1
+[replay.game.events]cursor: 18a2 / bits: 32, val: 2380001
+
+// add to control group 5
+[replay.game.events]cursor: 18c8 / bits: 2, val: 0
+[replay.game.events]cursor: 18ca / bits: 6, val: f
+[replay.game.events]cursor: 18d0 / bits: 5, val: 1
+[replay.game.events]cursor: 18d5 / bits: 7, val: 1d
+
+[replay.game.events]cursor: 18dc / bits: 4, val: 5 // control group 5
+[replay.game.events]cursor: 18e0 / bits: 2, val: 1 // enum: add
+[replay.game.events]cursor: 18e2 / bits: 2, val: 0
+
+// select single scv
+[replay.game.events]cursor: 18e8 / bits: 2, val: 0
+[replay.game.events]cursor: 18ea / bits: 6, val: 29
+[replay.game.events]cursor: 18f0 / bits: 5, val: 1
+[replay.game.events]cursor: 18f5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 18fc / bits: 4, val: a
+[replay.game.events]cursor: 1900 / bits: 8, val: 0
+[replay.game.events]cursor: 1908 / bits: 2, val: 3
+[replay.game.events]cursor: 190a / bits: 8, val: 0
+[replay.game.events]cursor: 1912 / bits: 8, val: 1
+[replay.game.events]cursor: 191a / bits: 16, val: 49
+[replay.game.events]cursor: 192a / bits: 8, val: 1
+[replay.game.events]cursor: 1932 / bits: 8, val: 1
+[replay.game.events]cursor: 193a / bits: 8, val: 1
+[replay.game.events]cursor: 1942 / bits: 32, val: 21c0001
+
+// right click unfinished supply depot
+[replay.game.events]cursor: 1968 / bits: 2, val: 0
+[replay.game.events]cursor: 196a / bits: 6, val: b
+[replay.game.events]cursor: 1970 / bits: 5, val: 1
+[replay.game.events]cursor: 1975 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 197c / bits: 18, val: 108
+[replay.game.events]cursor: 198e / bits: 1, val: 0
+[replay.game.events]cursor: 198f / bits: 2, val: 2
+[replay.game.events]cursor: 1991 / bits: 8, val: 37
+[replay.game.events]cursor: 1999 / bits: 8, val: 0
+[replay.game.events]cursor: 19a1 / bits: 32, val: 2340001
+[replay.game.events]cursor: 19c1 / bits: 16, val: 2e
+[replay.game.events]cursor: 19d1 / bits: 1, val: 1
+[replay.game.events]cursor: 19d2 / bits: 4, val: 1
+[replay.game.events]cursor: 19d6 / bits: 1, val: 1
+[replay.game.events]cursor: 19d7 / bits: 4, val: 1
+[replay.game.events]cursor: 19db / bits: 20, val: 82000
+[replay.game.events]cursor: 19ef / bits: 20, val: a7000
+[replay.game.events]cursor: 1a03 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 1a23 / bits: 1, val: 0
+
+// select 3 scvs
+[replay.game.events]cursor: 1a28 / bits: 2, val: 0
+[replay.game.events]cursor: 1a2a / bits: 6, val: 23
+[replay.game.events]cursor: 1a30 / bits: 5, val: 1
+[replay.game.events]cursor: 1a35 / bits: 7, val: 1c
+[replay.game.events]cursor: 1a3c / bits: 4, val: a
+[replay.game.events]cursor: 1a40 / bits: 8, val: 0
+[replay.game.events]cursor: 1a48 / bits: 2, val: 3
+[replay.game.events]cursor: 1a4a / bits: 8, val: 0
+[replay.game.events]cursor: 1a52 / bits: 8, val: 1
+[replay.game.events]cursor: 1a5a / bits: 16, val: 49
+[replay.game.events]cursor: 1a6a / bits: 8, val: 1
+[replay.game.events]cursor: 1a72 / bits: 8, val: 3
+[replay.game.events]cursor: 1a7a / bits: 8, val: 3
+[replay.game.events]cursor: 1a82 / bits: 32, val: 2200001
+[replay.game.events]cursor: 1aa2 / bits: 32, val: 2240001
+[replay.game.events]cursor: 1ac2 / bits: 32, val: 2280001
+
+// right click command center
+[replay.game.events]cursor: 1ae8 / bits: 2, val: 0
+[replay.game.events]cursor: 1aea / bits: 6, val: 3d
+[replay.game.events]cursor: 1af0 / bits: 5, val: 1
+[replay.game.events]cursor: 1af5 / bits: 7, val: 1b
+[replay.game.events]cursor: 1afc / bits: 18, val: 108
+[replay.game.events]cursor: 1b0e / bits: 1, val: 0
+[replay.game.events]cursor: 1b0f / bits: 2, val: 2
+[replay.game.events]cursor: 1b11 / bits: 8, val: 37
+[replay.game.events]cursor: 1b19 / bits: 8, val: 0
+[replay.game.events]cursor: 1b21 / bits: 32, val: 2140001
+[replay.game.events]cursor: 1b41 / bits: 16, val: 2d
+[replay.game.events]cursor: 1b51 / bits: 1, val: 1
+[replay.game.events]cursor: 1b52 / bits: 4, val: 1
+[replay.game.events]cursor: 1b56 / bits: 1, val: 1
+[replay.game.events]cursor: 1b57 / bits: 4, val: 1
+[replay.game.events]cursor: 1b5b / bits: 20, val: 7c800
+[replay.game.events]cursor: 1b6f / bits: 20, val: 9e800
+[replay.game.events]cursor: 1b83 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 1ba3 / bits: 1, val: 0
+
+// select command center
+[replay.game.events]cursor: 1ba8 / bits: 2, val: 0
+[replay.game.events]cursor: 1baa / bits: 6, val: 3b
+[replay.game.events]cursor: 1bb0 / bits: 5, val: 1
+[replay.game.events]cursor: 1bb5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1bbc / bits: 4, val: a
+[replay.game.events]cursor: 1bc0 / bits: 8, val: 0
+[replay.game.events]cursor: 1bc8 / bits: 2, val: 3
+[replay.game.events]cursor: 1bca / bits: 8, val: 0
+[replay.game.events]cursor: 1bd2 / bits: 8, val: 1
+[replay.game.events]cursor: 1bda / bits: 16, val: 2d
+[replay.game.events]cursor: 1bea / bits: 8, val: 1
+[replay.game.events]cursor: 1bf2 / bits: 8, val: 1
+[replay.game.events]cursor: 1bfa / bits: 8, val: 1
+[replay.game.events]cursor: 1c02 / bits: 32, val: 2140001
+
+// lift command center
+[replay.game.events]cursor: 1c28 / bits: 2, val: 0
+[replay.game.events]cursor: 1c2a / bits: 6, val: f
+[replay.game.events]cursor: 1c30 / bits: 5, val: 1
+[replay.game.events]cursor: 1c35 / bits: 7, val: 1b
+[replay.game.events]cursor: 1c3c / bits: 18, val: 100
+[replay.game.events]cursor: 1c4e / bits: 1, val: 1
+[replay.game.events]cursor: 1c4f / bits: 16, val: 83
+[replay.game.events]cursor: 1c5f / bits: 5, val: 0
+[replay.game.events]cursor: 1c64 / bits: 1, val: 0
+[replay.game.events]cursor: 1c65 / bits: 2, val: 0
+[replay.game.events]cursor: 1c67 / bits: 1, val: 0
+
+// (ghost selection -- CC Flying from CAbilMorph)
+[replay.game.events]cursor: 1c68 / bits: 2, val: 0
+[replay.game.events]cursor: 1c6a / bits: 6, val: 1 // +1 tick
+[replay.game.events]cursor: 1c70 / bits: 5, val: 1
+[replay.game.events]cursor: 1c75 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1c7c / bits: 4, val: a
+[replay.game.events]cursor: 1c80 / bits: 8, val: 0
+[replay.game.events]cursor: 1c88 / bits: 2, val: 3
+[replay.game.events]cursor: 1c8a / bits: 8, val: 0
+[replay.game.events]cursor: 1c92 / bits: 8, val: 1
+[replay.game.events]cursor: 1c9a / bits: 16, val: 40 // CUnit CommandCenterFlying
+[replay.game.events]cursor: 1caa / bits: 8, val: 1
+[replay.game.events]cursor: 1cb2 / bits: 8, val: 1
+[replay.game.events]cursor: 1cba / bits: 8, val: 1
+[replay.game.events]cursor: 1cc2 / bits: 32, val: 2140001
+
+
+[replay.game.events]cursor: 1ce8 / bits: 2, val: 0
+[replay.game.events]cursor: 1cea / bits: 6, val: 0 // instant
+[replay.game.events]cursor: 1cf0 / bits: 5, val: 1
+[replay.game.events]cursor: 1cf5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1cfc / bits: 4, val: 5 // this is new.
+[replay.game.events]cursor: 1d00 / bits: 8, val: 1 // as is this != 0
+[replay.game.events]cursor: 1d08 / bits: 2, val: 1
+[replay.game.events]cursor: 1d0a / bits: 8, val: 1
+[replay.game.events]cursor: 1d12 / bits: 1, val: 1 // and this existing
+[replay.game.events]cursor: 1d13 / bits: 8, val: 1
+[replay.game.events]cursor: 1d1b / bits: 16, val: 40 // CUnit CommandCenterFlying
+[replay.game.events]cursor: 1d2b / bits: 8, val: 1
+[replay.game.events]cursor: 1d33 / bits: 8, val: 1
+[replay.game.events]cursor: 1d3b / bits: 8, val: 1
+[replay.game.events]cursor: 1d43 / bits: 32, val: 2140001
+
+// land command center
+
+[replay.game.events]cursor: 1d68 / bits: 2, val: 0
+[replay.game.events]cursor: 1d6a / bits: 6, val: 2f
+[replay.game.events]cursor: 1d70 / bits: 5, val: 1
+[replay.game.events]cursor: 1d75 / bits: 7, val: 1b
+
+[replay.game.events]cursor: 1d7c / bits: 18, val: 100
+[replay.game.events]cursor: 1d8e / bits: 1, val: 1
+[replay.game.events]cursor: 1d8f / bits: 16, val: 84 // CAbilMorphPlacement CommandCenterLand
+[replay.game.events]cursor: 1d9f / bits: 5, val: 0
+[replay.game.events]cursor: 1da4 / bits: 1, val: 0
+[replay.game.events]cursor: 1da5 / bits: 2, val: 1
+[replay.game.events]cursor: 1da7 / bits: 20, val: 7c800 // x
+[replay.game.events]cursor: 1dbb / bits: 20, val: 9e800 // y
+[replay.game.events]cursor: 1dcf / bits: 32, val: 8000bfce // z
+[replay.game.events]cursor: 1def / bits: 1, val: 0
+
+[replay.game.events]cursor: 1df0 / bits: 2, val: 0
+[replay.game.events]cursor: 1df2 / bits: 6, val: 8 // +8 ticks
+[replay.game.events]cursor: 1df8 / bits: 5, val: 1
+[replay.game.events]cursor: 1dfd / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1e04 / bits: 4, val: a
+[replay.game.events]cursor: 1e08 / bits: 8, val: 0
+[replay.game.events]cursor: 1e10 / bits: 2, val: 3 // clear
+[replay.game.events]cursor: 1e12 / bits: 8, val: 0
+[replay.game.events]cursor: 1e1a / bits: 8, val: 1
+[replay.game.events]cursor: 1e22 / bits: 16, val: 2d // commandcenter
+[replay.game.events]cursor: 1e32 / bits: 8, val: 1
+[replay.game.events]cursor: 1e3a / bits: 8, val: 1
+[replay.game.events]cursor: 1e42 / bits: 8, val: 1
+[replay.game.events]cursor: 1e4a / bits: 32, val: 2140001 // ..
+
+[replay.game.events]cursor: 1e70 / bits: 2, val: 0
+[replay.game.events]cursor: 1e72 / bits: 6, val: 0 // instant
+[replay.game.events]cursor: 1e78 / bits: 5, val: 1
+[replay.game.events]cursor: 1e7d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1e84 / bits: 4, val: 5
+[replay.game.events]cursor: 1e88 / bits: 8, val: 1 // as above
+[replay.game.events]cursor: 1e90 / bits: 2, val: 1
+[replay.game.events]cursor: 1e92 / bits: 8, val: 1
+[replay.game.events]cursor: 1e9a / bits: 1, val: 1 // and as above
+[replay.game.events]cursor: 1e9b / bits: 8, val: 1
+[replay.game.events]cursor: 1ea3 / bits: 16, val: 2d
+[replay.game.events]cursor: 1eb3 / bits: 8, val: 1
+[replay.game.events]cursor: 1ebb / bits: 8, val: 1
+[replay.game.events]cursor: 1ec3 / bits: 8, val: 1
+[replay.game.events]cursor: 1ecb / bits: 32, val: 2140001
+
+// load on command center
+[replay.game.events]cursor: 1ef0 / bits: 2, val: 0
+[replay.game.events]cursor: 1ef2 / bits: 6, val: 3e
+[replay.game.events]cursor: 1ef8 / bits: 5, val: 1
+[replay.game.events]cursor: 1efd / bits: 7, val: 1b
+
+[replay.game.events]cursor: 1f04 / bits: 18, val: 100
+[replay.game.events]cursor: 1f16 / bits: 1, val: 1
+[replay.game.events]cursor: 1f17 / bits: 16, val: 82
+[replay.game.events]cursor: 1f27 / bits: 5, val: 4
+[replay.game.events]cursor: 1f2c / bits: 1, val: 0
+[replay.game.events]cursor: 1f2d / bits: 2, val: 0
+[replay.game.events]cursor: 1f2f / bits: 1, val: 0
+
+// right click mineral field
+[replay.game.events]cursor: 1f30 / bits: 2, val: 0
+[replay.game.events]cursor: 1f32 / bits: 6, val: 2c
+[replay.game.events]cursor: 1f38 / bits: 5, val: 1
+[replay.game.events]cursor: 1f3d / bits: 7, val: 1b
+
+[replay.game.events]cursor: 1f44 / bits: 18, val: 108
+[replay.game.events]cursor: 1f56 / bits: 1, val: 0
+[replay.game.events]cursor: 1f57 / bits: 2, val: 2
+[replay.game.events]cursor: 1f59 / bits: 8, val: 37
+[replay.game.events]cursor: 1f61 / bits: 8, val: 0
+[replay.game.events]cursor: 1f69 / bits: 32, val: 1700001
+[replay.game.events]cursor: 1f89 / bits: 16, val: f8
+[replay.game.events]cursor: 1f99 / bits: 1, val: 1
+[replay.game.events]cursor: 1f9a / bits: 4, val: 0
+[replay.game.events]cursor: 1f9e / bits: 1, val: 1
+[replay.game.events]cursor: 1f9f / bits: 4, val: 0
+[replay.game.events]cursor: 1fa3 / bits: 20, val: 7f000
+[replay.game.events]cursor: 1fb7 / bits: 20, val: a4800
+[replay.game.events]cursor: 1fcb / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 1feb / bits: 1, val: 0
+
+// unload all
+[replay.game.events]cursor: 1ff0 / bits: 2, val: 0
+[replay.game.events]cursor: 1ff2 / bits: 6, val: 12
+[replay.game.events]cursor: 1ff8 / bits: 5, val: 1
+[replay.game.events]cursor: 1ffd / bits: 7, val: 1b
+
+[replay.game.events]cursor: 2004 / bits: 18, val: 100
+[replay.game.events]cursor: 2016 / bits: 1, val: 1
+[replay.game.events]cursor: 2017 / bits: 16, val: 82 // CAbilTransport CommandCenterTransport
+[replay.game.events]cursor: 2027 / bits: 5, val: 1 // [1] => Unload All
+[replay.game.events]cursor: 202c / bits: 1, val: 0
+[replay.game.events]cursor: 202d / bits: 2, val: 0
+[replay.game.events]cursor: 202f / bits: 1, val: 0
+
+// select 1 scv
+[replay.game.events]cursor: 2030 / bits: 2, val: 1
+[replay.game.events]cursor: 2032 / bits: 14, val: 7e7
+[replay.game.events]cursor: 2040 / bits: 5, val: 1
+[replay.game.events]cursor: 2045 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 204c / bits: 4, val: a
+[replay.game.events]cursor: 2050 / bits: 8, val: 0
+[replay.game.events]cursor: 2058 / bits: 2, val: 3
+[replay.game.events]cursor: 205a / bits: 8, val: 0 -- Wireframe index?
+[replay.game.events]cursor: 2062 / bits: 8, val: 1 -- Type?
+[replay.game.events]cursor: 206a / bits: 16, val: 49
+[replay.game.events]cursor: 207a / bits: 8, val: 1 -- Id?
+[replay.game.events]cursor: 2082 / bits: 8, val: 1
+[replay.game.events]cursor: 208a / bits: 8, val: 1
+[replay.game.events]cursor: 2092 / bits: 32, val: 21c0001
+
+// right click
+[replay.game.events]cursor: 20b8 / bits: 2, val: 0
+[replay.game.events]cursor: 20ba / bits: 6, val: f
+[replay.game.events]cursor: 20c0 / bits: 5, val: 1
+[replay.game.events]cursor: 20c5 / bits: 7, val: 1b
+[replay.game.events]cursor: 20cc / bits: 18, val: 108
+[replay.game.events]cursor: 20de / bits: 1, val: 0
+[replay.game.events]cursor: 20df / bits: 2, val: 1
+[replay.game.events]cursor: 20e1 / bits: 20, val: 85a65
+[replay.game.events]cursor: 20f5 / bits: 20, val: a5c04
+[replay.game.events]cursor: 2109 / bits: 32, val: 8000bfce
+[replay.game.events]cursor: 2129 / bits: 1, val: 0
+
+// ctrl-click scv
+[replay.game.events]cursor: 2130 / bits: 2, val: 1
+[replay.game.events]cursor: 2132 / bits: 14, val: 67
+[replay.game.events]cursor: 2140 / bits: 5, val: 1
+[replay.game.events]cursor: 2145 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 214c / bits: 4, val: a
+[replay.game.events]cursor: 2150 / bits: 8, val: 0
+[replay.game.events]cursor: 2158 / bits: 2, val: 0 // add
+[replay.game.events]cursor: 215a / bits: 8, val: 1 // 1 type
+[replay.game.events]cursor: 2162 / bits: 16, val: 49
+[replay.game.events]cursor: 2172 / bits: 8, val: 1
+[replay.game.events]cursor: 217a / bits: 8, val: 6
+[replay.game.events]cursor: 2182 / bits: 8, val: 6 // 6 units
+[replay.game.events]cursor: 218a / bits: 32, val: 2180001
+[replay.game.events]cursor: 21aa / bits: 32, val: 2200001
+[replay.game.events]cursor: 21ca / bits: 32, val: 2240001
+[replay.game.events]cursor: 21ea / bits: 32, val: 2280001
+[replay.game.events]cursor: 220a / bits: 32, val: 2300001
+[replay.game.events]cursor: 222a / bits: 32, val: 2380001
+
+// shift-click last scv
+[replay.game.events]cursor: 2250 / bits: 2, val: 1
+[replay.game.events]cursor: 2252 / bits: 14, val: 50
+[replay.game.events]cursor: 2260 / bits: 5, val: 1
+[replay.game.events]cursor: 2265 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 226c / bits: 4, val: a
+[replay.game.events]cursor: 2270 / bits: 8, val: 0
+[replay.game.events]cursor: 2278 / bits: 2, val: 1 // removal
+[replay.game.events]cursor: 227a / bits: 8, val: 7 // removal flags size
+[replay.game.events]cursor: 2282 / bits: 7, val: 40 // removed units flags
+[replay.game.events]cursor: 2289 / bits: 8, val: 0
+[replay.game.events]cursor: 2291 / bits: 8, val: 0
+
+// shift-click first scv
+[replay.game.events]cursor: 22a0 / bits: 2, val: 0
+[replay.game.events]cursor: 22a2 / bits: 6, val: 2a
+[replay.game.events]cursor: 22a8 / bits: 5, val: 1
+[replay.game.events]cursor: 22ad / bits: 7, val: 1c
+
+[replay.game.events]cursor: 22b4 / bits: 4, val: a
+[replay.game.events]cursor: 22b8 / bits: 8, val: 0
+[replay.game.events]cursor: 22c0 / bits: 2, val: 1
+[replay.game.events]cursor: 22c2 / bits: 8, val: 1
+[replay.game.events]cursor: 22ca / bits: 1, val: 1
+[replay.game.events]cursor: 22cb / bits: 8, val: 0
+[replay.game.events]cursor: 22d3 / bits: 8, val: 0
+
+// click last scv
+[replay.game.events]cursor: 22e0 / bits: 2, val: 1
+[replay.game.events]cursor: 22e2 / bits: 14, val: 7a
+[replay.game.events]cursor: 22f0 / bits: 5, val: 1
+[replay.game.events]cursor: 22f5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 22fc / bits: 4, val: a
+[replay.game.events]cursor: 2300 / bits: 8, val: 0
+[replay.game.events]cursor: 2308 / bits: 2, val: 1
+[replay.game.events]cursor: 230a / bits: 8, val: 4
+[replay.game.events]cursor: 2312 / bits: 4, val: f
+[replay.game.events]cursor: 2316 / bits: 8, val: 0
+[replay.game.events]cursor: 231e / bits: 8, val: 0
+
+// New testing!  Zerg
+
+// zerg start sequence, double split
+[replay.game.events]cursor: 30 / bits: 2, val: 0
+[replay.game.events]cursor: 32 / bits: 6, val: 1
+[replay.game.events]cursor: 38 / bits: 5, val: 1
+[replay.game.events]cursor: 3d / bits: 7, val: 31
+[replay.game.events]cursor: 44 / bits: 16, val: 2500
+[replay.game.events]cursor: 54 / bits: 16, val: 30c2
+[replay.game.events]cursor: 64 / bits: 1, val: 1
+[replay.game.events]cursor: 65 / bits: 16, val: 2200
+[replay.game.events]cursor: 75 / bits: 1, val: 1
+[replay.game.events]cursor: 76 / bits: 16, val: 13e
+[replay.game.events]cursor: 86 / bits: 1, val: 1
+[replay.game.events]cursor: 87 / bits: 16, val: 400
+
+
+[replay.game.events]cursor: 98 / bits: 2, val: 0
+[replay.game.events]cursor: 9a / bits: 6, val: 1a
+[replay.game.events]cursor: a0 / bits: 5, val: 1
+[replay.game.events]cursor: a5 / bits: 7, val: 1c
+[replay.game.events]cursor: ac / bits: 4, val: a
+[replay.game.events]cursor: b0 / bits: 8, val: 0
+[replay.game.events]cursor: b8 / bits: 2, val: 0
+[replay.game.events]cursor: ba / bits: 8, val: 1
+[replay.game.events]cursor: c2 / bits: 16, val: 84
+[replay.game.events]cursor: d2 / bits: 8, val: 1
+[replay.game.events]cursor: da / bits: 8, val: 6
+[replay.game.events]cursor: e2 / bits: 8, val: 6
+[replay.game.events]cursor: ea / bits: 32, val: 2180001
+[replay.game.events]cursor: 10a / bits: 32, val: 21c0001
+[replay.game.events]cursor: 12a / bits: 32, val: 2200001
+[replay.game.events]cursor: 14a / bits: 32, val: 2240001
+[replay.game.events]cursor: 16a / bits: 32, val: 2280001
+[replay.game.events]cursor: 18a / bits: 32, val: 22c0001
+
+
+[replay.game.events]cursor: 1b0 / bits: 2, val: 0
+[replay.game.events]cursor: 1b2 / bits: 6, val: 5
+[replay.game.events]cursor: 1b8 / bits: 5, val: 1
+[replay.game.events]cursor: 1bd / bits: 7, val: 1b
+[replay.game.events]cursor: 1c4 / bits: 18, val: 108
+[replay.game.events]cursor: 1d6 / bits: 1, val: 0
+[replay.game.events]cursor: 1d7 / bits: 2, val: 2
+[replay.game.events]cursor: 1d9 / bits: 8, val: 37
+[replay.game.events]cursor: 1e1 / bits: 8, val: 0
+[replay.game.events]cursor: 1e9 / bits: 32, val: b40001
+[replay.game.events]cursor: 209 / bits: 16, val: f8
+[replay.game.events]cursor: 219 / bits: 1, val: 1
+[replay.game.events]cursor: 21a / bits: 4, val: 0
+[replay.game.events]cursor: 21e / bits: 1, val: 1
+[replay.game.events]cursor: 21f / bits: 4, val: 0
+[replay.game.events]cursor: 223 / bits: 20, val: 23000
+[replay.game.events]cursor: 237 / bits: 20, val: 2f800
+[replay.game.events]cursor: 24b / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 26b / bits: 1, val: 0
+
+
+[replay.game.events]cursor: 270 / bits: 2, val: 0
+[replay.game.events]cursor: 272 / bits: 6, val: 9
+[replay.game.events]cursor: 278 / bits: 5, val: 1
+[replay.game.events]cursor: 27d / bits: 7, val: 1c
+[replay.game.events]cursor: 284 / bits: 4, val: a
+[replay.game.events]cursor: 288 / bits: 8, val: 0
+[replay.game.events]cursor: 290 / bits: 2, val: 1 // remove
+[replay.game.events]cursor: 292 / bits: 8, val: 5 // 5 units affected
+[replay.game.events]cursor: 29a / bits: 5, val: 15 // 10101
+[replay.game.events]cursor: 29f / bits: 8, val: 0
+[replay.game.events]cursor: 2a7 / bits: 8, val: 0
+
+
+[replay.game.events]cursor: 2b0 / bits: 2, val: 0
+[replay.game.events]cursor: 2b2 / bits: 6, val: 5
+[replay.game.events]cursor: 2b8 / bits: 5, val: 1
+[replay.game.events]cursor: 2bd / bits: 7, val: 1b
+[replay.game.events]cursor: 2c4 / bits: 18, val: 108
+[replay.game.events]cursor: 2d6 / bits: 1, val: 0
+[replay.game.events]cursor: 2d7 / bits: 2, val: 2
+[replay.game.events]cursor: 2d9 / bits: 8, val: 37
+[replay.game.events]cursor: 2e1 / bits: 8, val: 0
+[replay.game.events]cursor: 2e9 / bits: 32, val: 140001
+[replay.game.events]cursor: 309 / bits: 16, val: f8
+[replay.game.events]cursor: 319 / bits: 1, val: 1
+[replay.game.events]cursor: 31a / bits: 4, val: 0
+[replay.game.events]cursor: 31e / bits: 1, val: 1
+[replay.game.events]cursor: 31f / bits: 4, val: 0
+[replay.game.events]cursor: 323 / bits: 20, val: 27000
+[replay.game.events]cursor: 337 / bits: 20, val: 2f800
+[replay.game.events]cursor: 34b / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 36b / bits: 1, val: 0
+
+
+[replay.game.events]cursor: 370 / bits: 2, val: 0
+[replay.game.events]cursor: 372 / bits: 6, val: f
+[replay.game.events]cursor: 378 / bits: 5, val: 1
+[replay.game.events]cursor: 37d / bits: 7, val: 1c
+[replay.game.events]cursor: 384 / bits: 4, val: a
+[replay.game.events]cursor: 388 / bits: 8, val: 0
+[replay.game.events]cursor: 390 / bits: 2, val: 3 // clear selection
+[replay.game.events]cursor: 392 / bits: 8, val: 0
+[replay.game.events]cursor: 39a / bits: 8, val: 1
+[replay.game.events]cursor: 3a2 / bits: 16, val: 72 // hatcheryyy
+[replay.game.events]cursor: 3b2 / bits: 8, val: 1
+[replay.game.events]cursor: 3ba / bits: 8, val: 1
+[replay.game.events]cursor: 3c2 / bits: 8, val: 1
+[replay.game.events]cursor: 3ca / bits: 32, val: 2140001
+
+
+[replay.game.events]cursor: 3f0 / bits: 2, val: 0
+[replay.game.events]cursor: 3f2 / bits: 6, val: 3
+[replay.game.events]cursor: 3f8 / bits: 5, val: 1
+[replay.game.events]cursor: 3fd / bits: 7, val: 1d
+[replay.game.events]cursor: 404 / bits: 4, val: 5 // set as control group 5
+[replay.game.events]cursor: 408 / bits: 2, val: 0
+[replay.game.events]cursor: 40a / bits: 2, val: 0
+
+// from select larvae
+[replay.game.events]cursor: 410 / bits: 2, val: 0
+[replay.game.events]cursor: 412 / bits: 6, val: 6
+[replay.game.events]cursor: 418 / bits: 5, val: 1
+[replay.game.events]cursor: 41d / bits: 7, val: 1c
+[replay.game.events]cursor: 424 / bits: 4, val: a
+[replay.game.events]cursor: 428 / bits: 8, val: 0
+[replay.game.events]cursor: 430 / bits: 2, val: 3 // replace selection
+[replay.game.events]cursor: 432 / bits: 8, val: 0
+[replay.game.events]cursor: 43a / bits: 8, val: 1 // 1 type
+[replay.game.events]cursor: 442 / bits: 16, val: b1 // larva
+[replay.game.events]cursor: 452 / bits: 8, val: 1
+[replay.game.events]cursor: 45a / bits: 8, val: 3
+[replay.game.events]cursor: 462 / bits: 8, val: 3 // 3 ids
+[replay.game.events]cursor: 46a / bits: 32, val: 2340001
+[replay.game.events]cursor: 48a / bits: 32, val: 2380001
+[replay.game.events]cursor: 4aa / bits: 32, val: 23c0001
+
+
+[replay.game.events]cursor: 4d0 / bits: 2, val: 0
+[replay.game.events]cursor: 4d2 / bits: 6, val: 0
+[replay.game.events]cursor: 4d8 / bits: 5, val: 1
+[replay.game.events]cursor: 4dd / bits: 7, val: 1b
+[replay.game.events]cursor: 4e4 / bits: 18, val: 100
+[replay.game.events]cursor: 4f6 / bits: 1, val: 1
+[replay.game.events]cursor: 4f7 / bits: 16, val: b3
+[replay.game.events]cursor: 507 / bits: 5, val: 0
+[replay.game.events]cursor: 50c / bits: 1, val: 0
+[replay.game.events]cursor: 50d / bits: 2, val: 0
+[replay.game.events]cursor: 50f / bits: 1, val: 0
+
+
+[replay.game.events]cursor: 510 / bits: 2, val: 0
+[replay.game.events]cursor: 512 / bits: 6, val: 1
+[replay.game.events]cursor: 518 / bits: 5, val: 1
+[replay.game.events]cursor: 51d / bits: 7, val: 1c
+[replay.game.events]cursor: 524 / bits: 4, val: a
+[replay.game.events]cursor: 528 / bits: 8, val: 0
+[replay.game.events]cursor: 530 / bits: 2, val: 1
+[replay.game.events]cursor: 532 / bits: 8, val: 1
+[replay.game.events]cursor: 53a / bits: 1, val: 1
+[replay.game.events]cursor: 53b / bits: 8, val: 1
+[replay.game.events]cursor: 543 / bits: 16, val: 83
+[replay.game.events]cursor: 553 / bits: 8, val: 1
+[replay.game.events]cursor: 55b / bits: 8, val: 1
+[replay.game.events]cursor: 563 / bits: 8, val: 1
+[replay.game.events]cursor: 56b / bits: 32, val: 2340001
+
+
+[replay.game.events]cursor: 590 / bits: 2, val: 0
+[replay.game.events]cursor: 592 / bits: 6, val: 7
+[replay.game.events]cursor: 598 / bits: 5, val: 1
+[replay.game.events]cursor: 59d / bits: 7, val: 1b
+[replay.game.events]cursor: 5a4 / bits: 18, val: 108
+[replay.game.events]cursor: 5b6 / bits: 1, val: 0
+[replay.game.events]cursor: 5b7 / bits: 2, val: 2
+[replay.game.events]cursor: 5b9 / bits: 8, val: 37
+[replay.game.events]cursor: 5c1 / bits: 8, val: 0
+[replay.game.events]cursor: 5c9 / bits: 32, val: 1c0001
+[replay.game.events]cursor: 5e9 / bits: 16, val: f8
+[replay.game.events]cursor: 5f9 / bits: 1, val: 1
+[replay.game.events]cursor: 5fa / bits: 4, val: 0
+[replay.game.events]cursor: 5fe / bits: 1, val: 1
+[replay.game.events]cursor: 5ff / bits: 4, val: 0
+[replay.game.events]cursor: 603 / bits: 20, val: 20000
+[replay.game.events]cursor: 617 / bits: 20, val: 30800
+[replay.game.events]cursor: 62b / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 64b / bits: 1, val: 0
+
+
+[replay.game.events]cursor: 650 / bits: 2, val: 0
+[replay.game.events]cursor: 652 / bits: 6, val: 5
+[replay.game.events]cursor: 658 / bits: 5, val: 1
+[replay.game.events]cursor: 65d / bits: 7, val: 1c
+[replay.game.events]cursor: 664 / bits: 4, val: a
+[replay.game.events]cursor: 668 / bits: 8, val: 0
+[replay.game.events]cursor: 670 / bits: 2, val: 3
+[replay.game.events]cursor: 672 / bits: 8, val: 0
+[replay.game.events]cursor: 67a / bits: 8, val: 1
+[replay.game.events]cursor: 682 / bits: 16, val: 72
+[replay.game.events]cursor: 692 / bits: 8, val: 1
+[replay.game.events]cursor: 69a / bits: 8, val: 1
+[replay.game.events]cursor: 6a2 / bits: 8, val: 1
+[replay.game.events]cursor: 6aa / bits: 32, val: 2140001
+
+
+[replay.game.events]cursor: 6d0 / bits: 2, val: 0
+[replay.game.events]cursor: 6d2 / bits: 6, val: 1
+[replay.game.events]cursor: 6d8 / bits: 5, val: 1
+[replay.game.events]cursor: 6dd / bits: 7, val: 1b
+[replay.game.events]cursor: 6e4 / bits: 18, val: 108
+[replay.game.events]cursor: 6f6 / bits: 1, val: 0
+[replay.game.events]cursor: 6f7 / bits: 2, val: 2
+[replay.game.events]cursor: 6f9 / bits: 8, val: 37
+[replay.game.events]cursor: 701 / bits: 8, val: 0
+[replay.game.events]cursor: 709 / bits: 32, val: 1240001
+[replay.game.events]cursor: 729 / bits: 16, val: f8
+[replay.game.events]cursor: 739 / bits: 1, val: 1
+[replay.game.events]cursor: 73a / bits: 4, val: 0
+[replay.game.events]cursor: 73e / bits: 1, val: 1
+[replay.game.events]cursor: 73f / bits: 4, val: 0
+[replay.game.events]cursor: 743 / bits: 20, val: 2a000
+[replay.game.events]cursor: 757 / bits: 20, val: 2f800
+[replay.game.events]cursor: 76b / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 78b / bits: 1, val: 0
+
+
+[replay.game.events]cursor: 790 / bits: 2, val: 0
+[replay.game.events]cursor: 792 / bits: 6, val: 19
+[replay.game.events]cursor: 798 / bits: 5, val: 1
+[replay.game.events]cursor: 79d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 7a4 / bits: 4, val: a
+[replay.game.events]cursor: 7a8 / bits: 8, val: 0
+[replay.game.events]cursor: 7b0 / bits: 2, val: 3
+[replay.game.events]cursor: 7b2 / bits: 8, val: 0
+[replay.game.events]cursor: 7ba / bits: 8, val: 1
+[replay.game.events]cursor: 7c2 / bits: 16, val: 86
+[replay.game.events]cursor: 7d2 / bits: 8, val: 1
+[replay.game.events]cursor: 7da / bits: 8, val: 1
+[replay.game.events]cursor: 7e2 / bits: 8, val: 1
+[replay.game.events]cursor: 7ea / bits: 32, val: 2300001
+
+
+[replay.game.events]cursor: 810 / bits: 2, val: 0
+[replay.game.events]cursor: 812 / bits: 6, val: d
+[replay.game.events]cursor: 818 / bits: 5, val: 1
+[replay.game.events]cursor: 81d / bits: 7, val: 1b
+[replay.game.events]cursor: 824 / bits: 18, val: 10108 // &0x10000 = minimap
+[replay.game.events]cursor: 836 / bits: 1, val: 0
+[replay.game.events]cursor: 837 / bits: 2, val: 1
+[replay.game.events]cursor: 839 / bits: 20, val: 7c7e6
+[replay.game.events]cursor: 84d / bits: 20, val: a0624
+[replay.game.events]cursor: 861 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 881 / bits: 1, val: 0
+
+
+[replay.game.events]cursor: 888 / bits: 2, val: 0
+[replay.game.events]cursor: 88a / bits: 6, val: c
+[replay.game.events]cursor: 890 / bits: 5, val: 1
+[replay.game.events]cursor: 895 / bits: 7, val: 1d
+[replay.game.events]cursor: 89c / bits: 4, val: 5
+[replay.game.events]cursor: 8a0 / bits: 2, val: 2
+[replay.game.events]cursor: 8a2 / bits: 2, val: 0
+
+
+[replay.game.events]cursor: 8a8 / bits: 2, val: 0
+[replay.game.events]cursor: 8aa / bits: 6, val: 1
+[replay.game.events]cursor: 8b0 / bits: 5, val: 1
+[replay.game.events]cursor: 8b5 / bits: 7, val: 31
+[replay.game.events]cursor: 8bc / bits: 16, val: 2580
+[replay.game.events]cursor: 8cc / bits: 16, val: 33c2
+[replay.game.events]cursor: 8dc / bits: 1, val: 0
+[replay.game.events]cursor: 8dd / bits: 1, val: 0
+[replay.game.events]cursor: 8de / bits: 1, val: 0
+
+// shift-right-click
+[replay.game.events]cursor: 1040 / bits: 2, val: 0
+[replay.game.events]cursor: 1042 / bits: 6, val: 38
+[replay.game.events]cursor: 1048 / bits: 5, val: 1
+[replay.game.events]cursor: 104d / bits: 7, val: 1b
+
+[replay.game.events]cursor: 1054 / bits: 18, val: 10a // &2 = queued?
+[replay.game.events]cursor: 1066 / bits: 1, val: 0 // default
+[replay.game.events]cursor: 1067 / bits: 2, val: 1 // location target
+[replay.game.events]cursor: 1069 / bits: 20, val: 30438
+[replay.game.events]cursor: 107d / bits: 20, val: 44c4a
+[replay.game.events]cursor: 1091 / bits: 32, val: 8000bfce
+[replay.game.events]cursor: 10b1 / bits: 1, val: 0
+
+// minimap right click
+[replay.game.events]cursor: 10b8 / bits: 2, val: 1
+[replay.game.events]cursor: 10ba / bits: 14, val: 54
+[replay.game.events]cursor: 10c8 / bits: 5, val: 1
+[replay.game.events]cursor: 10cd / bits: 7, val: 1b
+
+[replay.game.events]cursor: 10d4 / bits: 18, val: 10108
+[replay.game.events]cursor: 10e6 / bits: 1, val: 0
+[replay.game.events]cursor: 10e7 / bits: 2, val: 1
+[replay.game.events]cursor: 10e9 / bits: 20, val: 7d055
+[replay.game.events]cursor: 10fd / bits: 20, val: 9eccc
+[replay.game.events]cursor: 1111 / bits: 32, val: 8000bfc0
+[replay.game.events]cursor: 1131 / bits: 1, val: 0
+
+// More control group stuff - shift+1
+[replay.game.events]cursor: 1378 / bits: 2, val: 1
+[replay.game.events]cursor: 137a / bits: 14, val: ab
+[replay.game.events]cursor: 1388 / bits: 5, val: 1
+[replay.game.events]cursor: 138d / bits: 7, val: 1d
+
+[replay.game.events]cursor: 1394 / bits: 4, val: 1
+[replay.game.events]cursor: 1398 / bits: 2, val: 1
+[replay.game.events]cursor: 139a / bits: 2, val: 0
+
+// ctrl+2
+[replay.game.events]cursor: 13a0 / bits: 2, val: 0
+[replay.game.events]cursor: 13a2 / bits: 6, val: 16
+[replay.game.events]cursor: 13a8 / bits: 5, val: 1
+[replay.game.events]cursor: 13ad / bits: 7, val: 1d
+
+[replay.game.events]cursor: 13b4 / bits: 4, val: 2
+[replay.game.events]cursor: 13b8 / bits: 2, val: 0
+[replay.game.events]cursor: 13ba / bits: 2, val: 0
+
+// 5 -- note, only events when the wireframe changes
+[replay.game.events]cursor: 13c0 / bits: 2, val: 1
+[replay.game.events]cursor: 13c2 / bits: 14, val: 5b
+[replay.game.events]cursor: 13d0 / bits: 5, val: 1
+[replay.game.events]cursor: 13d5 / bits: 7, val: 1d
+
+[replay.game.events]cursor: 13dc / bits: 4, val: 5
+[replay.game.events]cursor: 13e0 / bits: 2, val: 2
+[replay.game.events]cursor: 13e2 / bits: 2, val: 0
+
+// 1
+[replay.game.events]cursor: 13e8 / bits: 2, val: 0
+[replay.game.events]cursor: 13ea / bits: 6, val: c
+[replay.game.events]cursor: 13f0 / bits: 5, val: 1
+[replay.game.events]cursor: 13f5 / bits: 7, val: 1d
+
+[replay.game.events]cursor: 13fc / bits: 4, val: 1
+[replay.game.events]cursor: 1400 / bits: 2, val: 2
+[replay.game.events]cursor: 1402 / bits: 2, val: 0
+
+// This part was hard to get... had to connect to battle.net under debugger!
+// Send minerals
+[replay.game.events]cursor: 16938 / bits: 2, val: 1
+[replay.game.events]cursor: 1693a / bits: 14, val: b4
+[replay.game.events]cursor: 16948 / bits: 5, val: 1
+[replay.game.events]cursor: 1694d / bits: 7, val: 1f
+
+[replay.game.events]cursor: 16954 / bits: 4, val: 2
+[replay.game.events]cursor: 16958 / bits: 3, val: 4
+[replay.game.events]cursor: 1695b / bits: 32, val: 80000032 // 50 min ; fixed32
+[replay.game.events]cursor: 1697b / bits: 32, val: 80000000 // gas
+[replay.game.events]cursor: 1699b / bits: 32, val: 80000000 // terra
+[replay.game.events]cursor: 169bb / bits: 32, val: 80000000 // custom
+
+[replay.game.events]cursor: 169e0 / bits: 2, val: 0
+[replay.game.events]cursor: 169e2 / bits: 6, val: 1f
+[replay.game.events]cursor: 169e8 / bits: 5, val: 1 // player source
+[replay.game.events]cursor: 169ed / bits: 7, val: 1f
+
+[replay.game.events]cursor: 169f4 / bits: 4, val: 2 // target player
+[replay.game.events]cursor: 169f8 / bits: 3, val: 4 // flags = 0b100 = send
+[replay.game.events]cursor: 169fb / bits: 32, val: 80000064 // 100 min
+[replay.game.events]cursor: 16a1b / bits: 32, val: 80000000
+[replay.game.events]cursor: 16a3b / bits: 32, val: 80000000
+[replay.game.events]cursor: 16a5b / bits: 32, val: 80000000
+
+
+// selection - Select a lot of things (Zerglings, Banelings, Marines)
+[replay.game.events]cursor: 63d0 / bits: 2, val: 1
+[replay.game.events]cursor: 63d2 / bits: 14, val: 120
+[replay.game.events]cursor: 63e0 / bits: 5, val: 1
+[replay.game.events]cursor: 63e5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 63ec / bits: 4, val: a
+[replay.game.events]cursor: 63f0 / bits: 8, val: 0
+[replay.game.events]cursor: 63f8 / bits: 2, val: 3 // flags - replace
+[replay.game.events]cursor: 63fa / bits: 8, val: 0 // No wireframe ids
+[replay.game.events]cursor: 6402 / bits: 8, val: 3 // 3
+
+[replay.game.events]cursor: 640a / bits: 16, val: 23 // Type
+[replay.game.events]cursor: 641a / bits: 8, val: 1
+[replay.game.events]cursor: 6422 / bits: 8, val: 8 // 8
+
+[replay.game.events]cursor: 642a / bits: 16, val: 4c // Type
+[replay.game.events]cursor: 643a / bits: 8, val: 1
+[replay.game.events]cursor: 6442 / bits: 8, val: 10 // 16
+
+[replay.game.events]cursor: 644a / bits: 16, val: 85 // Type
+[replay.game.events]cursor: 645a / bits: 8, val: 1
+[replay.game.events]cursor: 6462 / bits: 8, val: c // 12
+
+
+[replay.game.events]cursor: 646a / bits: 8, val: 24 // 36 Ids
+[replay.game.events]cursor: 6472 / bits: 32, val: 40001
+[replay.game.events]cursor: 6492 / bits: 32, val: 80001
+[replay.game.events]cursor: 64b2 / bits: 32, val: 100001
+[replay.game.events]cursor: 64d2 / bits: 32, val: 1c0001
+[replay.game.events]cursor: 64f2 / bits: 32, val: 200001
+[replay.game.events]cursor: 6512 / bits: 32, val: 280001
+[replay.game.events]cursor: 6532 / bits: 32, val: 500001
+[replay.game.events]cursor: 6552 / bits: 32, val: 640001
+[replay.game.events]cursor: 6572 / bits: 32, val: 880001
+[replay.game.events]cursor: 6592 / bits: 32, val: 8c0001
+[replay.game.events]cursor: 65b2 / bits: 32, val: 900001
+[replay.game.events]cursor: 65d2 / bits: 32, val: 940001
+[replay.game.events]cursor: 65f2 / bits: 32, val: 980001
+[replay.game.events]cursor: 6612 / bits: 32, val: 9c0001
+[replay.game.events]cursor: 6632 / bits: 32, val: a00001
+[replay.game.events]cursor: 6652 / bits: 32, val: a40001
+[replay.game.events]cursor: 6672 / bits: 32, val: a80001
+[replay.game.events]cursor: 6692 / bits: 32, val: ac0001
+[replay.game.events]cursor: 66b2 / bits: 32, val: b00001
+[replay.game.events]cursor: 66d2 / bits: 32, val: b40001
+[replay.game.events]cursor: 66f2 / bits: 32, val: b80001
+[replay.game.events]cursor: 6712 / bits: 32, val: bc0001
+[replay.game.events]cursor: 6732 / bits: 32, val: c00001
+[replay.game.events]cursor: 6752 / bits: 32, val: c40001
+[replay.game.events]cursor: 6772 / bits: 32, val: 2cc0001
+[replay.game.events]cursor: 6792 / bits: 32, val: 2f00001
+[replay.game.events]cursor: 67b2 / bits: 32, val: 2fc0001
+[replay.game.events]cursor: 67d2 / bits: 32, val: 31c0001
+[replay.game.events]cursor: 67f2 / bits: 32, val: 33c0001
+[replay.game.events]cursor: 6812 / bits: 32, val: 3440001
+[replay.game.events]cursor: 6832 / bits: 32, val: 34c0001
+[replay.game.events]cursor: 6852 / bits: 32, val: 3500001
+[replay.game.events]cursor: 6872 / bits: 32, val: 3540001
+[replay.game.events]cursor: 6892 / bits: 32, val: 3600001
+[replay.game.events]cursor: 68b2 / bits: 32, val: 37c0001
+[replay.game.events]cursor: 68d2 / bits: 32, val: 3880001
+
+
+// Click on a wireframe marine
+[replay.game.events]cursor: 68f8 / bits: 2, val: 1
+[replay.game.events]cursor: 68fa / bits: 14, val: 8c
+[replay.game.events]cursor: 6908 / bits: 5, val: 1
+[replay.game.events]cursor: 690d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 6914 / bits: 4, val: a
+[replay.game.events]cursor: 6918 / bits: 8, val: 0
+[replay.game.events]cursor: 6920 / bits: 2, val: 3
+[replay.game.events]cursor: 6922 / bits: 8, val: 1 // wireframe index?
+[replay.game.events]cursor: 692a / bits: 8, val: d // 11
+[replay.game.events]cursor: 6932 / bits: 8, val: 0 // Types?
+[replay.game.events]cursor: 693a / bits: 8, val: 0 // Ids?
+
+// Ctrl-shift click Marines, Zerglings, Banelings
+[replay.game.events]cursor: 80a0 / bits: 2, val: 1
+[replay.game.events]cursor: 80a2 / bits: 14, val: 12c0
+[replay.game.events]cursor: 80b0 / bits: 5, val: 1
+[replay.game.events]cursor: 80b5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 80bc / bits: 4, val: a
+[replay.game.events]cursor: 80c0 / bits: 8, val: 1
+[replay.game.events]cursor: 80c8 / bits: 2, val: 0
+[replay.game.events]cursor: 80ca / bits: 8, val: 1
+[replay.game.events]cursor: 80d2 / bits: 16, val: 4c
+[replay.game.events]cursor: 80e2 / bits: 8, val: 1
+[replay.game.events]cursor: 80ea / bits: 8, val: 10
+[replay.game.events]cursor: 80f2 / bits: 8, val: 10
+[replay.game.events]cursor: 80fa / bits: 32, val: 880001
+[replay.game.events]cursor: 811a / bits: 32, val: 8c0001
+[replay.game.events]cursor: 813a / bits: 32, val: 900001
+[replay.game.events]cursor: 815a / bits: 32, val: 940001
+[replay.game.events]cursor: 817a / bits: 32, val: 980001
+[replay.game.events]cursor: 819a / bits: 32, val: 9c0001
+[replay.game.events]cursor: 81ba / bits: 32, val: a00001
+[replay.game.events]cursor: 81da / bits: 32, val: a40001
+[replay.game.events]cursor: 81fa / bits: 32, val: a80001
+[replay.game.events]cursor: 821a / bits: 32, val: ac0001
+[replay.game.events]cursor: 823a / bits: 32, val: b00001
+[replay.game.events]cursor: 825a / bits: 32, val: b40001
+[replay.game.events]cursor: 827a / bits: 32, val: b80001
+[replay.game.events]cursor: 829a / bits: 32, val: bc0001
+[replay.game.events]cursor: 82ba / bits: 32, val: c00001
+[replay.game.events]cursor: 82da / bits: 32, val: c40001
+
+
+[replay.game.events]cursor: 8300 / bits: 2, val: 0
+[replay.game.events]cursor: 8302 / bits: 6, val: 1c
+[replay.game.events]cursor: 8308 / bits: 5, val: 1
+[replay.game.events]cursor: 830d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 8314 / bits: 4, val: a
+[replay.game.events]cursor: 8318 / bits: 8, val: 2
+[replay.game.events]cursor: 8320 / bits: 2, val: 0
+[replay.game.events]cursor: 8322 / bits: 8, val: 1
+[replay.game.events]cursor: 832a / bits: 16, val: 23
+[replay.game.events]cursor: 833a / bits: 8, val: 1
+[replay.game.events]cursor: 8342 / bits: 8, val: 1e
+[replay.game.events]cursor: 834a / bits: 8, val: 1e
+[replay.game.events]cursor: 8352 / bits: 32, val: 1
+[replay.game.events]cursor: 8372 / bits: 32, val: 40001
+[replay.game.events]cursor: 8392 / bits: 32, val: 80001
+[replay.game.events]cursor: 83b2 / bits: 32, val: c0001
+[replay.game.events]cursor: 83d2 / bits: 32, val: 100001
+[replay.game.events]cursor: 83f2 / bits: 32, val: 140001
+[replay.game.events]cursor: 8412 / bits: 32, val: 180001
+[replay.game.events]cursor: 8432 / bits: 32, val: 1c0001
+[replay.game.events]cursor: 8452 / bits: 32, val: 200001
+[replay.game.events]cursor: 8472 / bits: 32, val: 240001
+[replay.game.events]cursor: 8492 / bits: 32, val: 280001
+[replay.game.events]cursor: 84b2 / bits: 32, val: 2c0001
+[replay.game.events]cursor: 84d2 / bits: 32, val: 300001
+[replay.game.events]cursor: 84f2 / bits: 32, val: 340001
+[replay.game.events]cursor: 8512 / bits: 32, val: 380001
+[replay.game.events]cursor: 8532 / bits: 32, val: 3c0001
+[replay.game.events]cursor: 8552 / bits: 32, val: 400001
+[replay.game.events]cursor: 8572 / bits: 32, val: 440001
+[replay.game.events]cursor: 8592 / bits: 32, val: 480001
+[replay.game.events]cursor: 85b2 / bits: 32, val: 4c0001
+[replay.game.events]cursor: 85d2 / bits: 32, val: 500001
+[replay.game.events]cursor: 85f2 / bits: 32, val: 540001
+[replay.game.events]cursor: 8612 / bits: 32, val: 580001
+[replay.game.events]cursor: 8632 / bits: 32, val: 5c0001
+[replay.game.events]cursor: 8652 / bits: 32, val: 600001
+[replay.game.events]cursor: 8672 / bits: 32, val: 640001
+[replay.game.events]cursor: 8692 / bits: 32, val: 680001
+[replay.game.events]cursor: 86b2 / bits: 32, val: 6c0001
+[replay.game.events]cursor: 86d2 / bits: 32, val: 700001
+[replay.game.events]cursor: 86f2 / bits: 32, val: 740001
+
+
+[replay.game.events]cursor: 8718 / bits: 2, val: 0
+[replay.game.events]cursor: 871a / bits: 6, val: 11
+[replay.game.events]cursor: 8720 / bits: 5, val: 1
+[replay.game.events]cursor: 8725 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 872c / bits: 4, val: a
+[replay.game.events]cursor: 8730 / bits: 8, val: 2
+[replay.game.events]cursor: 8738 / bits: 2, val: 0
+[replay.game.events]cursor: 873a / bits: 8, val: 1
+[replay.game.events]cursor: 8742 / bits: 16, val: 85
+[replay.game.events]cursor: 8752 / bits: 8, val: 1
+[replay.game.events]cursor: 875a / bits: 8, val: 2e
+[replay.game.events]cursor: 8762 / bits: 8, val: 2e
+[replay.game.events]cursor: 876a / bits: 32, val: 2b00001
+[replay.game.events]cursor: 878a / bits: 32, val: 2b40001
+[replay.game.events]cursor: 87aa / bits: 32, val: 2b80001
+[replay.game.events]cursor: 87ca / bits: 32, val: 2bc0001
+[replay.game.events]cursor: 87ea / bits: 32, val: 2c00001
+[replay.game.events]cursor: 880a / bits: 32, val: 2c40001
+[replay.game.events]cursor: 882a / bits: 32, val: 2c80001
+[replay.game.events]cursor: 884a / bits: 32, val: 2d00001
+[replay.game.events]cursor: 886a / bits: 32, val: 2d40001
+[replay.game.events]cursor: 888a / bits: 32, val: 2d80001
+[replay.game.events]cursor: 88aa / bits: 32, val: 2dc0001
+[replay.game.events]cursor: 88ca / bits: 32, val: 2e80001
+[replay.game.events]cursor: 88ea / bits: 32, val: 2ec0001
+[replay.game.events]cursor: 890a / bits: 32, val: 2f00001
+[replay.game.events]cursor: 892a / bits: 32, val: 2fc0001
+[replay.game.events]cursor: 894a / bits: 32, val: 3000001
+[replay.game.events]cursor: 896a / bits: 32, val: 3040001
+[replay.game.events]cursor: 898a / bits: 32, val: 3080001
+[replay.game.events]cursor: 89aa / bits: 32, val: 30c0001
+[replay.game.events]cursor: 89ca / bits: 32, val: 3100001
+[replay.game.events]cursor: 89ea / bits: 32, val: 3140001
+[replay.game.events]cursor: 8a0a / bits: 32, val: 31c0001
+[replay.game.events]cursor: 8a2a / bits: 32, val: 3240001
+[replay.game.events]cursor: 8a4a / bits: 32, val: 3280001
+[replay.game.events]cursor: 8a6a / bits: 32, val: 32c0001
+[replay.game.events]cursor: 8a8a / bits: 32, val: 3340001
+[replay.game.events]cursor: 8aaa / bits: 32, val: 3380001
+[replay.game.events]cursor: 8aca / bits: 32, val: 33c0001
+[replay.game.events]cursor: 8aea / bits: 32, val: 3440001
+[replay.game.events]cursor: 8b0a / bits: 32, val: 3480001
+[replay.game.events]cursor: 8b2a / bits: 32, val: 34c0001
+[replay.game.events]cursor: 8b4a / bits: 32, val: 3500001
+[replay.game.events]cursor: 8b6a / bits: 32, val: 3540001
+[replay.game.events]cursor: 8b8a / bits: 32, val: 3580001
+[replay.game.events]cursor: 8baa / bits: 32, val: 35c0001
+[replay.game.events]cursor: 8bca / bits: 32, val: 3600001
+[replay.game.events]cursor: 8bea / bits: 32, val: 3640001
+[replay.game.events]cursor: 8c0a / bits: 32, val: 3680001
+[replay.game.events]cursor: 8c2a / bits: 32, val: 36c0001
+[replay.game.events]cursor: 8c4a / bits: 32, val: 3740001
+[replay.game.events]cursor: 8c6a / bits: 32, val: 3780001
+[replay.game.events]cursor: 8c8a / bits: 32, val: 37c0001
+[replay.game.events]cursor: 8caa / bits: 32, val: 3800001
+[replay.game.events]cursor: 8cca / bits: 32, val: 3880001
+[replay.game.events]cursor: 8cea / bits: 32, val: 38c0001
+[replay.game.events]cursor: 8d0a / bits: 32, val: 3940001
+
+// Shift-boxing
+
+// replace selection with single unit
+[replay.game.events]cursor: 8d30 / bits: 2, val: 1
+[replay.game.events]cursor: 8d32 / bits: 14, val: 72
+[replay.game.events]cursor: 8d40 / bits: 5, val: 1
+[replay.game.events]cursor: 8d45 / bits: 7, val: 1c
+[replay.game.events]cursor: 8d4c / bits: 4, val: a
+[replay.game.events]cursor: 8d50 / bits: 8, val: 0
+[replay.game.events]cursor: 8d58 / bits: 2, val: 3
+[replay.game.events]cursor: 8d5a / bits: 8, val: 1
+[replay.game.events]cursor: 8d62 / bits: 8, val: 3
+[replay.game.events]cursor: 8d6a / bits: 8, val: 0
+[replay.game.events]cursor: 8d72 / bits: 8, val: 0
+
+
+[replay.game.events]cursor: 8d80 / bits: 2, val: 0
+[replay.game.events]cursor: 8d82 / bits: 6, val: 3b
+[replay.game.events]cursor: 8d88 / bits: 5, val: 1
+[replay.game.events]cursor: 8d8d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 8d94 / bits: 4, val: a
+[replay.game.events]cursor: 8d98 / bits: 8, val: 0
+[replay.game.events]cursor: 8da0 / bits: 2, val: 0
+[replay.game.events]cursor: 8da2 / bits: 8, val: 2
+[replay.game.events]cursor: 8daa / bits: 16, val: 23
+[replay.game.events]cursor: 8dba / bits: 8, val: 1
+[replay.game.events]cursor: 8dc2 / bits: 8, val: 5
+[replay.game.events]cursor: 8dca / bits: 16, val: 85
+[replay.game.events]cursor: 8dda / bits: 8, val: 1
+[replay.game.events]cursor: 8de2 / bits: 8, val: 1
+[replay.game.events]cursor: 8dea / bits: 8, val: 6
+[replay.game.events]cursor: 8df2 / bits: 32, val: 1
+[replay.game.events]cursor: 8e12 / bits: 32, val: 240001
+[replay.game.events]cursor: 8e32 / bits: 32, val: 580001
+[replay.game.events]cursor: 8e52 / bits: 32, val: 680001
+[replay.game.events]cursor: 8e72 / bits: 32, val: 6c0001
+[replay.game.events]cursor: 8e92 / bits: 32, val: 2d40001
+
+
+[replay.game.events]cursor: 8eb8 / bits: 2, val: 0
+[replay.game.events]cursor: 8eba / bits: 6, val: 2c
+[replay.game.events]cursor: 8ec0 / bits: 5, val: 1
+[replay.game.events]cursor: 8ec5 / bits: 7, val: 1c
+
+[replay.game.events]cursor: 8ecc / bits: 4, val: a
+[replay.game.events]cursor: 8ed0 / bits: 8, val: 0
+[replay.game.events]cursor: 8ed8 / bits: 2, val: 0
+[replay.game.events]cursor: 8eda / bits: 8, val: 2
+[replay.game.events]cursor: 8ee2 / bits: 16, val: 23
+[replay.game.events]cursor: 8ef2 / bits: 8, val: 1
+[replay.game.events]cursor: 8efa / bits: 8, val: 8
+[replay.game.events]cursor: 8f02 / bits: 16, val: 85
+[replay.game.events]cursor: 8f12 / bits: 8, val: 1
+[replay.game.events]cursor: 8f1a / bits: 8, val: 5
+[replay.game.events]cursor: 8f22 / bits: 8, val: d
+[replay.game.events]cursor: 8f2a / bits: 32, val: 40001
+[replay.game.events]cursor: 8f4a / bits: 32, val: 80001
+[replay.game.events]cursor: 8f6a / bits: 32, val: 100001
+[replay.game.events]cursor: 8f8a / bits: 32, val: 1c0001
+[replay.game.events]cursor: 8faa / bits: 32, val: 200001
+[replay.game.events]cursor: 8fca / bits: 32, val: 280001
+[replay.game.events]cursor: 8fea / bits: 32, val: 500001
+[replay.game.events]cursor: 900a / bits: 32, val: 640001
+[replay.game.events]cursor: 902a / bits: 32, val: 2cc0001
+[replay.game.events]cursor: 904a / bits: 32, val: 2f00001
+[replay.game.events]cursor: 906a / bits: 32, val: 33c0001
+[replay.game.events]cursor: 908a / bits: 32, val: 3440001
+[replay.game.events]cursor: 90aa / bits: 32, val: 3500001
+
+
+[replay.game.events]cursor: 90d0 / bits: 2, val: 0
+[replay.game.events]cursor: 90d2 / bits: 6, val: 1f
+[replay.game.events]cursor: 90d8 / bits: 5, val: 1
+[replay.game.events]cursor: 90dd / bits: 7, val: 1c
+
+[replay.game.events]cursor: 90e4 / bits: 4, val: a
+[replay.game.events]cursor: 90e8 / bits: 8, val: 0
+[replay.game.events]cursor: 90f0 / bits: 2, val: 0
+[replay.game.events]cursor: 90f2 / bits: 8, val: 2
+[replay.game.events]cursor: 90fa / bits: 16, val: 4c
+[replay.game.events]cursor: 910a / bits: 8, val: 1
+[replay.game.events]cursor: 9112 / bits: 8, val: 6
+[replay.game.events]cursor: 911a / bits: 16, val: 85
+[replay.game.events]cursor: 912a / bits: 8, val: 1
+[replay.game.events]cursor: 9132 / bits: 8, val: 1
+[replay.game.events]cursor: 913a / bits: 8, val: 7
+[replay.game.events]cursor: 9142 / bits: 32, val: 880001
+[replay.game.events]cursor: 9162 / bits: 32, val: 8c0001
+[replay.game.events]cursor: 9182 / bits: 32, val: b00001
+[replay.game.events]cursor: 91a2 / bits: 32, val: b40001
+[replay.game.events]cursor: 91c2 / bits: 32, val: c00001
+[replay.game.events]cursor: 91e2 / bits: 32, val: c40001
+[replay.game.events]cursor: 9202 / bits: 32, val: 3600001
+
+// Post-operation wireframe
+i:0 (0) / p: 16 / t:Baneling (35)
+i:1 (1) / p: 16 / t:Baneling (35)
+i:2 (2) / p: 16 / t:Baneling (35)
+i:3 (3) / p: 16 / t:Baneling (35)
+i:4 (4) / p: 16 / t:Baneling (35)
+i:5 (7) / p: 16 / t:Baneling (35)
+i:6 (8) / p: 16 / t:Baneling (35)
+i:7 (9) / p: 16 / t:Baneling (35)
+i:8 (10) / p: 16 / t:Baneling (35)
+i:9 (20) / p: 16 / t:Baneling (35)
+i:10 (22) / p: 16 / t:Baneling (35)
+i:11 (25) / p: 16 / t:Baneling (35)
+i:12 (26) / p: 16 / t:Baneling (35)
+i:13 (27) / p: 16 / t:Baneling (35)
+i:14 (34) / p: 15 / t:Marine (76)
+i:15 (35) / p: 15 / t:Marine (76)
+i:16 (44) / p: 15 / t:Marine (76)
+i:17 (45) / p: 15 / t:Marine (76)
+i:18 (48) / p: 15 / t:Marine (76)
+i:19 (49) / p: 15 / t:Marine (76)
+i:20 (179) / p: 8 / t:Zergling (133)
+i:21 (181) / p: 8 / t:Zergling (133)
+i:22 (188) / p: 8 / t:Zergling (133)
+i:23 (207) / p: 8 / t:Zergling (133)
+i:24 (209) / p: 8 / t:Zergling (133)
+i:25 (212) / p: 8 / t:Zergling (133)
+i:26 (216) / p: 8 / t:Zergling (133)
+
+// single marine in wireframe dies
+[replay.game.events]cursor: 9b90 / bits: 2, val: 1
+[replay.game.events]cursor: 9b92 / bits: 14, val: 61
+[replay.game.events]cursor: 9ba0 / bits: 5, val: 1
+[replay.game.events]cursor: 9ba5 / bits: 7, val: 1c
+[replay.game.events]cursor: 9bac / bits: 4, val: a
+[replay.game.events]cursor: 9bb0 / bits: 8, val: 0
+[replay.game.events]cursor: 9bb8 / bits: 2, val: 3
+[replay.game.events]cursor: 9bba / bits: 8, val: 0
+[replay.game.events]cursor: 9bc2 / bits: 8, val: 0
+[replay.game.events]cursor: 9bca / bits: 8, val: 0
+
+//4 orbitals upgrading
+[replay.game.events]cursor: 1ab8 / bits: 2, val: 1
+[replay.game.events]cursor: 1aba / bits: 14, val: 226
+[replay.game.events]cursor: 1ac8 / bits: 5, val: 1
+[replay.game.events]cursor: 1acd / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1ad4 / bits: 4, val: a
+[replay.game.events]cursor: 1ad8 / bits: 8, val: 1
+[replay.game.events]cursor: 1ae0 / bits: 2, val: 1
+[replay.game.events]cursor: 1ae2 / bits: 8, val: 1
+[replay.game.events]cursor: 1aea / bits: 1, val: 1
+[replay.game.events]cursor: 1aeb / bits: 8, val: 1
+[replay.game.events]cursor: 1af3 / bits: 16, val: a0
+[replay.game.events]cursor: 1b03 / bits: 8, val: 1
+[replay.game.events]cursor: 1b0b / bits: 8, val: 1
+[replay.game.events]cursor: 1b13 / bits: 8, val: 1
+[replay.game.events]cursor: 1b1b / bits: 32, val: 40001
+
+
+[replay.game.events]cursor: 1b40 / bits: 2, val: 0
+[replay.game.events]cursor: 1b42 / bits: 6, val: 0
+[replay.game.events]cursor: 1b48 / bits: 5, val: 1
+[replay.game.events]cursor: 1b4d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1b54 / bits: 4, val: 5
+[replay.game.events]cursor: 1b58 / bits: 8, val: 1
+[replay.game.events]cursor: 1b60 / bits: 2, val: 1
+[replay.game.events]cursor: 1b62 / bits: 8, val: 1
+[replay.game.events]cursor: 1b6a / bits: 1, val: 1
+[replay.game.events]cursor: 1b6b / bits: 8, val: 1
+[replay.game.events]cursor: 1b73 / bits: 16, val: a0
+[replay.game.events]cursor: 1b83 / bits: 8, val: 1
+[replay.game.events]cursor: 1b8b / bits: 8, val: 1
+[replay.game.events]cursor: 1b93 / bits: 8, val: 1
+[replay.game.events]cursor: 1b9b / bits: 32, val: 40001
+
+
+[replay.game.events]cursor: 1bc0 / bits: 2, val: 0
+[replay.game.events]cursor: 1bc2 / bits: 6, val: 8
+[replay.game.events]cursor: 1bc8 / bits: 5, val: 1
+[replay.game.events]cursor: 1bcd / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1bd4 / bits: 4, val: a
+[replay.game.events]cursor: 1bd8 / bits: 8, val: 1
+[replay.game.events]cursor: 1be0 / bits: 2, val: 1
+[replay.game.events]cursor: 1be2 / bits: 8, val: 3
+[replay.game.events]cursor: 1bea / bits: 3, val: 6
+[replay.game.events]cursor: 1bed / bits: 8, val: 1
+[replay.game.events]cursor: 1bf5 / bits: 16, val: a0
+[replay.game.events]cursor: 1c05 / bits: 8, val: 1
+[replay.game.events]cursor: 1c0d / bits: 8, val: 2
+[replay.game.events]cursor: 1c15 / bits: 8, val: 2
+[replay.game.events]cursor: 1c1d / bits: 32, val: 80001
+[replay.game.events]cursor: 1c3d / bits: 32, val: c0001
+
+
+[replay.game.events]cursor: 1c60 / bits: 2, val: 0
+[replay.game.events]cursor: 1c62 / bits: 6, val: 0
+[replay.game.events]cursor: 1c68 / bits: 5, val: 1
+[replay.game.events]cursor: 1c6d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1c74 / bits: 4, val: 5
+[replay.game.events]cursor: 1c78 / bits: 8, val: 1
+[replay.game.events]cursor: 1c80 / bits: 2, val: 1
+[replay.game.events]cursor: 1c82 / bits: 8, val: 3
+[replay.game.events]cursor: 1c8a / bits: 3, val: 6
+[replay.game.events]cursor: 1c8d / bits: 8, val: 1
+[replay.game.events]cursor: 1c95 / bits: 16, val: a0
+[replay.game.events]cursor: 1ca5 / bits: 8, val: 1
+[replay.game.events]cursor: 1cad / bits: 8, val: 2
+[replay.game.events]cursor: 1cb5 / bits: 8, val: 2
+[replay.game.events]cursor: 1cbd / bits: 32, val: 80001
+[replay.game.events]cursor: 1cdd / bits: 32, val: c0001
+
+
+[replay.game.events]cursor: 1d00 / bits: 2, val: 0
+[replay.game.events]cursor: 1d02 / bits: 6, val: 1
+[replay.game.events]cursor: 1d08 / bits: 5, val: 1
+[replay.game.events]cursor: 1d0d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1d14 / bits: 4, val: a
+[replay.game.events]cursor: 1d18 / bits: 8, val: 0
+[replay.game.events]cursor: 1d20 / bits: 2, val: 1
+[replay.game.events]cursor: 1d22 / bits: 8, val: 4
+[replay.game.events]cursor: 1d2a / bits: 4, val: 8
+[replay.game.events]cursor: 1d2e / bits: 8, val: 1
+[replay.game.events]cursor: 1d36 / bits: 16, val: a0
+[replay.game.events]cursor: 1d46 / bits: 8, val: 1
+[replay.game.events]cursor: 1d4e / bits: 8, val: 1
+[replay.game.events]cursor: 1d56 / bits: 8, val: 1
+[replay.game.events]cursor: 1d5e / bits: 32, val: 100001
+
+
+[replay.game.events]cursor: 1d80 / bits: 2, val: 0
+[replay.game.events]cursor: 1d82 / bits: 6, val: 0
+[replay.game.events]cursor: 1d88 / bits: 5, val: 1
+[replay.game.events]cursor: 1d8d / bits: 7, val: 1c
+
+[replay.game.events]cursor: 1d94 / bits: 4, val: 5
+[replay.game.events]cursor: 1d98 / bits: 8, val: 0
+[replay.game.events]cursor: 1da0 / bits: 2, val: 1
+[replay.game.events]cursor: 1da2 / bits: 8, val: 4
+[replay.game.events]cursor: 1daa / bits: 4, val: 8
+[replay.game.events]cursor: 1dae / bits: 8, val: 1
+[replay.game.events]cursor: 1db6 / bits: 16, val: a0
+[replay.game.events]cursor: 1dc6 / bits: 8, val: 1
+[replay.game.events]cursor: 1dce / bits: 8, val: 1
+[replay.game.events]cursor: 1dd6 / bits: 8, val: 1
+[replay.game.events]cursor: 1dde / bits: 32, val: 100001

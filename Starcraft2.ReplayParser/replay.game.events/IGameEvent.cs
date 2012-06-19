@@ -7,6 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Starcraft2.ReplayParser.Streams;
+
 namespace Starcraft2.ReplayParser
 {
     /// <summary> Interface for a basic game event. </summary>

@@ -65,17 +65,24 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="replay.details\ReplayDetails.cs" />
+    <Compile Include="replay.game.events\AbilityEvent.cs" />
     <Compile Include="replay.game.events\GameEventBase.cs" />
     <Compile Include="replay.game.events\GameEventType.cs" />
+    <Compile Include="replay.game.events\GameStartEvent.cs" />
     <Compile Include="replay.game.events\HotkeyEvent.cs" />
     <Compile Include="replay.game.events\IGameEvent.cs" />
+    <Compile Include="replay.game.events\PlayerJoinEvent.cs" />
     <Compile Include="replay.game.events\PlayerLeftEvent.cs" />
     <Compile Include="replay.game.events\ReplayGameEvents.cs" />
     <Compile Include="replay.initData\ReplayInitData.cs" />
     <Compile Include="replay.messages.events\ChatMessage.cs" />
     <Compile Include="replay.messages.events\ChatMessageTarget.cs" />
     <Compile Include="replay.messages.events\ReplayMessageEvents.cs" />
+    <Compile Include="Streams\BitReader.cs" />
     <Compile Include="Timestamp.cs" />
+    <Compile Include="Unit.cs" />
+    <Compile Include="UnitType.cs" />
+    <Compile Include="Version\UnitData.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

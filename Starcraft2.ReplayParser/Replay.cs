@@ -187,7 +187,7 @@ namespace Starcraft2.ReplayParser
         /// <returns> Returns the appropriate Player from the Players array. </returns>
         public Player GetPlayerById(int playerId)
         {
-            int playerIndex = playerId - 1;
+            int playerIndex = playerId - 1; // This is incorrect.  Player 0 is Neutral and shows up in Ability targets. -- mischanix
 
             if (playerIndex < this.Players.Length)
             {
