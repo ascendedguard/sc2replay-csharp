@@ -15,15 +15,16 @@ namespace Starcraft2.ReplayParser.Version
     {
         public static AbilityType GetAbilityType(int typeId, int buttonId, int buildNumber)
         {
-            if (AbilityTypeData.ContainsKey(buildNumber))
+            Dictionary<int, Dictionary<int, AbilityType>> versionData;
+            if (AbilityTypeData.TryGetValue(buildNumber, out versionData))
             {
-                var versionData = AbilityTypeData[buildNumber];
-                if (versionData.ContainsKey(typeId))
+                Dictionary<int, AbilityType> cAbilData;
+                if (versionData.TryGetValue(typeId, out cAbilData))
                 {
-                    var cAbilData = versionData[typeId];
-                    if (cAbilData.ContainsKey(buttonId))
+                    AbilityType value;
+                    if (cAbilData.TryGetValue(buttonId, out value))
                     {
-                        return cAbilData[buttonId];
+                        return value;
                     }
                     else
                     {

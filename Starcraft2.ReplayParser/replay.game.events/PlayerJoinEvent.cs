@@ -16,6 +16,8 @@ namespace Starcraft2.ReplayParser
         public PlayerJoinEvent(BitReader bitReader)
         {
             this.EventType = GameEventType.Inactive;
+            // This should probably be a series of {shl; or} on .Read(1)
+            // to make it version-independent
             this.JoinFlags = (int)bitReader.Read(4);
         }
 

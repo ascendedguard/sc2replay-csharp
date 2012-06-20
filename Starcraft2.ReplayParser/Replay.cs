@@ -26,6 +26,8 @@ namespace Starcraft2.ReplayParser
         /// <summary> Initializes a new instance of the <see cref = "Replay" /> class. </summary>
         internal Replay()
         {
+            GameUnits = new Dictionary<int, Unit>();
+            Players = new List<Player>();
         }
 
         #endregion
@@ -50,8 +52,11 @@ namespace Starcraft2.ReplayParser
         /// <summary> Gets the list of game events occuring during the course of the replay. </summary>
         public List<IGameEvent> PlayerEvents { get; internal set; }
 
+        /// <summary> Gets the list of units appearing throughout the replay. </summary>
+        public Dictionary<int, Unit> GameUnits { get; internal set; }
+
         /// <summary> Gets the details of all players in the replay. </summary>
-        public Player[] Players { get; internal set; }
+        public List<Player> Players { get; internal set; }
 
         /// <summary> Gets the build number of the Starcraft 2 version used in creating the replay. </summary>
         public int ReplayBuild { get; internal set; }
@@ -187,14 +192,19 @@ namespace Starcraft2.ReplayParser
         /// <returns> Returns the appropriate Player from the Players array. </returns>
         public Player GetPlayerById(int playerId)
         {
-            int playerIndex = playerId - 1; // This is incorrect.  Player 0 is Neutral and shows up in Ability targets. -- mischanix
-
-            if (playerIndex < this.Players.Length)
+            if (this.Players.Count > playerId)
             {
-                return this.Players[playerIndex];
+                return this.Players[playerId];
             }
 
             return null;
+        }
+
+        public Unit GetUnitById(int unitId)
+        {
+            Unit unit = null;
+            GameUnits.TryGetValue(unitId, out unit);
+            return unit;
         }
 
         #endregion

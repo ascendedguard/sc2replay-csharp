@@ -16,11 +16,13 @@ namespace Starcraft2.ReplayParser.Version
     {
         public static UnitType GetUnitType(int typeId, int buildNumber)
         {
-            if (UnitTypeData.ContainsKey(buildNumber))
+            Dictionary<int, UnitType> versionData;
+            if (UnitTypeData.TryGetValue(buildNumber, out versionData))
             {
-                if (UnitTypeData[buildNumber].ContainsKey(typeId))
+                UnitType value;
+                if (versionData.TryGetValue(typeId, out value))
                 {
-                    return UnitTypeData[buildNumber][typeId];
+                    return value;
                 }
             }
             return UnitType.Unknown;
