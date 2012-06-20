@@ -47,20 +47,21 @@
                         case 0x05: // Game start
                             gameEvent = new GameStartEvent();
                             break;
+                        case 0x0b:
                         case 0x0c: // Join game
-                            gameEvent = new PlayerJoinEvent(bitReader);
+                            gameEvent = new PlayerJoinEvent(bitReader, player);
                             break;
                         case 0x19: // Leave game
-                            gameEvent = new PlayerLeftEvent();
+                            gameEvent = new PlayerLeftEvent(player);
                             break;
                         case 0x1b: // Ability
-                            gameEvent = new AbilityEvent(bitReader, replay);
+                            gameEvent = new AbilityEvent(bitReader, replay, player);
                             break;
                         case 0x1c: // Selection
-                            gameEvent = new SelectionEvent(bitReader, replay);
+                            gameEvent = new SelectionEvent(bitReader, replay, player);
                             break;
                         case 0x1d: // Control groups
-                            gameEvent = new HotkeyEvent(bitReader, replay);
+                            gameEvent = new HotkeyEvent(bitReader, replay, player);
                             break;
                         case 0x1f: // Send resources
                             gameEvent = new SendResourcesEvent(bitReader, replay);
@@ -86,7 +87,7 @@
                             Console.WriteLine("Unknown event type {0:x} at {1:x} in replay.game.events", eventType, bitReader.Cursor);
                             return null; // Irrecoverable
                     }
-                    
+
                     gameEvent.Player = player;
                     gameEvent.Time = Timestamp.Create(ticksElapsed);
                     events.Add(gameEvent);

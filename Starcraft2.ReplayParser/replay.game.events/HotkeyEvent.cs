@@ -14,7 +14,7 @@ namespace Starcraft2.ReplayParser
     /// <summary> Describes an event where the player has set or used a hotkey. </summary>
     public class HotkeyEvent : GameEventBase
     {
-        public HotkeyEvent(BitReader bitReader, Replay replay)
+        public HotkeyEvent(BitReader bitReader, Replay replay, Player player)
         {
             // ...
         }

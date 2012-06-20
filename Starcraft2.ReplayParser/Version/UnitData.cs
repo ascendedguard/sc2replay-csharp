@@ -28,6 +28,23 @@ namespace Starcraft2.ReplayParser.Version
             return UnitType.Unknown;
         }
 
+        public static int GetUnitSubgroupPriority(UnitType unitType)
+        {
+            int value;
+            if (SubgroupData.TryGetValue(unitType, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return 0; // Default SubgroupPriority
+            }
+        }
+
+        #region UnitTypeData
+        /// <summary>
+        /// BuildNumber => UnitTypeId => UnitType
+        /// </summary>
         static Dictionary<int, Dictionary<int, UnitType>> UnitTypeData = new Dictionary<int, Dictionary<int, UnitType>>()
         {
             {21029, new Dictionary<int, UnitType>()
@@ -227,5 +244,175 @@ namespace Starcraft2.ReplayParser.Version
                 {0x11F, UnitType.DestructibleDoodad}
             }}
         };
+        #endregion
+        #region SubgroupData
+        /// <summary>
+        /// Higher priorities mean lower wireframe indices (descending); unit
+        /// type id is used as a tie-breaker, and then unit id, both ascending.
+        /// </summary>
+        static Dictionary<UnitType, int> SubgroupData = new Dictionary<UnitType, int>
+        {
+            // Neutral units
+            {UnitType.MineralField, 1},
+            {UnitType.RichMineralField, 1},
+            {UnitType.VespeneGeyser, 2},
+            {UnitType.SpacePlatformGeyser, 2},
+            {UnitType.RichVespeneGeyser, 2},
+            // Neutral units - Critters
+            {UnitType.Lyote, 48},
+            {UnitType.CarrionBird, 48},
+            {UnitType.Karak, 48},
+            {UnitType.Ursadak, 48},
+            {UnitType.UtilityBot, 48},
+            {UnitType.CommentatorBot, 48},
+            {UnitType.Scantipede, 48},
+
+            // Terran units
+            {UnitType.SCV, 6},
+            {UnitType.MULE, 5},
+            {UnitType.Marine, 15},
+            {UnitType.Marauder, 14},
+            {UnitType.Reaper, 7},
+            {UnitType.Ghost, 18},
+            {UnitType.SiegeTank, 13},
+            {UnitType.SiegeTankSieged, 13},
+            {UnitType.Thor, 10},
+            {UnitType.Hellion, 8},
+            {UnitType.Medivac, 9},
+            {UnitType.Banshee, 11},
+            {UnitType.VikingFighter, 12},
+            {UnitType.VikingAssault, 12},
+            {UnitType.Raven, 19},
+            {UnitType.Battlecruiser, 16},
+
+            // Protoss units
+            {UnitType.Probe, 3},
+            {UnitType.Zealot, 5},
+            {UnitType.Stalker, 11},
+            {UnitType.Sentry, 16},
+            {UnitType.HighTemplar, 17},
+            {UnitType.DarkTemplar, 6},
+            {UnitType.Archon, 8},
+            {UnitType.Immortal, 7},
+            {UnitType.Observer, 4},
+            {UnitType.WarpPrism, 14},
+            {UnitType.WarpPrismPhasing, 13},
+            {UnitType.Colossus, 10},
+            {UnitType.Phoenix, 15},
+            {UnitType.VoidRay, 9},
+            {UnitType.Mothership, 18},
+            {UnitType.Carrier, 12},
+            {UnitType.Interceptor, 19},
+
+            // Zerg units
+            {UnitType.Larva, 3},
+            {UnitType.Egg, 1},
+            {UnitType.Drone, 4},
+            {UnitType.DroneBurrowed, 4},
+            {UnitType.Queen, 21},
+            {UnitType.QueenBurrowed, 20},
+            {UnitType.Zergling, 8},
+            {UnitType.ZerglingBurrowed, 8},
+            {UnitType.BanelingCocoon, 1},
+            {UnitType.Baneling, 16},
+            {UnitType.BanelingBurrowed, 16},
+            {UnitType.Roach, 15},
+            {UnitType.RoachBurrowed, 15},
+            {UnitType.Overlord, 10},
+            {UnitType.OverlordCocoon, 1},
+            {UnitType.Overseer, 11},
+            {UnitType.Changeling, 5},
+            {UnitType.ChangelingZealot, 5},
+            {UnitType.ChangelingMarine, 15},
+            {UnitType.ChangelingZergling, 8},
+            {UnitType.Hydralisk, 9},
+            {UnitType.HydraliskBurrowed, 9},
+            {UnitType.Mutalisk, 13},
+            {UnitType.Infestor, 19},
+            {UnitType.InfestorBurrowed, 19},
+            {UnitType.InfestorTerran, 6},
+            {UnitType.InfestorTerranBurrowed, 6},
+            {UnitType.Corruptor, 17},
+            {UnitType.BroodLordCocoon, 1},
+            {UnitType.BroodLord, 14},
+            {UnitType.Broodling, 14},
+            {UnitType.Ultralisk, 12},
+            {UnitType.UltraliskBurrowed, 12},
+
+            // Terran buildings
+            {UnitType.CommandCenter, 3},
+            {UnitType.CommandCenterFlying, 3},
+            {UnitType.OrbitalCommand, 4},
+            {UnitType.OrbitalCommandFlying, 4},
+            {UnitType.PlanetaryFortress, 3},
+            {UnitType.SupplyDepot, 3},
+            {UnitType.SupplyDepotLowered, 3},
+            {UnitType.Refinery, 3},
+            {UnitType.Barracks, 3},
+            {UnitType.BarracksFlying, 3},
+            {UnitType.Factory, 3},
+            {UnitType.FactoryFlying, 3},
+            {UnitType.Starport, 3},
+            {UnitType.StarportFlying, 3},
+            {UnitType.TechLab, 2},
+            {UnitType.BarracksTechLab, 2},
+            {UnitType.FactoryTechLab, 2},
+            {UnitType.StarportTechLab, 2},
+            {UnitType.Reactor, 1},
+            {UnitType.BarracksReactor, 1},
+            {UnitType.FactoryReactor, 1},
+            {UnitType.StarportReactor, 1},
+            {UnitType.Bunker, 3},
+            {UnitType.MissileTurret, 3},
+            {UnitType.SensorTower, 3},
+            {UnitType.GhostAcademy, 3},
+            {UnitType.EngineeringBay, 3},
+            {UnitType.Armory, 3},
+            {UnitType.FusionCore, 3},
+            {UnitType.AutoTurret, 2},
+            {UnitType.PointDefenseDrone, 6},
+
+            // Protoss buildings
+            {UnitType.Nexus, 2},
+            {UnitType.Pylon, 2},
+            {UnitType.Assimilator, 2},
+            {UnitType.Gateway, 2},
+            {UnitType.Forge, 2},
+            {UnitType.FleetBeacon, 2},
+            {UnitType.TwilightCouncil, 2},
+            {UnitType.PhotonCannon, 2},
+            {UnitType.Stargate, 2},
+            {UnitType.TemplarArchive, 2},
+            {UnitType.DarkShrine, 2},
+            {UnitType.RoboticsBay, 2},
+            {UnitType.RoboticsFacility, 2},
+            {UnitType.CyberneticsCore, 2},
+            {UnitType.WarpGate, 3},
+            {UnitType.ForceField, 31},
+
+            // Zerg buildings
+            {UnitType.Hatchery, 2},
+            {UnitType.Lair, 2},
+            {UnitType.Hive, 2},
+            {UnitType.Extractor, 2},
+            {UnitType.CreepTumor, 2},
+            {UnitType.CreepTumorBurrowed, 2},
+            {UnitType.EvolutionChamber, 2},
+            {UnitType.SpawningPool, 2},
+            {UnitType.BanelingNest, 2},
+            {UnitType.RoachWarren, 2},
+            {UnitType.HydraliskDen, 2},
+            {UnitType.Spire, 2},
+            {UnitType.InfestationPit, 2},
+            {UnitType.NydusNetwork, 2},
+            {UnitType.NydusCanal, 2},
+            {UnitType.UltraliskCavern, 2},
+            {UnitType.SpineCrawler, 2},
+            {UnitType.SpineCrawlerUprooted, 3},
+            {UnitType.SporeCrawler, 2},
+            {UnitType.SporeCrawlerUprooted, 3},
+            {UnitType.GreaterSpire, 2}
+        };
+        #endregion
     }
 }

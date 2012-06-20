@@ -17,7 +17,7 @@ namespace Starcraft2.ReplayParser
         #region Constructors and Destructors
 
         /// <summary> Initializes a new instance of the <see cref="PlayerLeftEvent"/> class. </summary>
-        public PlayerLeftEvent()
+        public PlayerLeftEvent(Player player)
         {
             this.EventType = GameEventType.Inactive;
         }

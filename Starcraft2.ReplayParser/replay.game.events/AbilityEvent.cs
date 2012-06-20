@@ -7,6 +7,7 @@
 namespace Starcraft2.ReplayParser
 {
     using System;
+    using System.Collections.Generic;
 
     using Streams;
     using Version;
@@ -16,7 +17,7 @@ namespace Starcraft2.ReplayParser
     /// </summary>
     public class AbilityEvent : GameEventBase
     {
-        public AbilityEvent(BitReader bitReader, Replay replay)
+        public AbilityEvent(BitReader bitReader, Replay replay, Player player)
         {
             var flags = bitReader.Read(18);
             Queued = (flags & 2) != 0;
@@ -43,15 +44,16 @@ namespace Starcraft2.ReplayParser
                     (int)bitReader.Read(5),
                     replay.ReplayBuild);
                 DefaultActor = (bitReader.Read(1) == 0);
-                if (!DefaultActor) // guessing
+                if (!DefaultActor)
+                {   // I'm thinking this would be an array type... but I have no data.
+                    // TODO: Look at that maphacker replay when this is finished.
+                    throw new InvalidOperationException("Unsupported: non-default actor");
+                }
+                else
                 {
-                    var id = (int)bitReader.Read(32);
-                    var unit = replay.GetUnitById(id);
-                    if (unit == null)
-                    {
-                        unit = new Unit(id, UnitType.Unknown);
-                        replay.GameUnits.Add(id, unit);
-                    }
+                    // Copy the current wireframe as the actor list
+                    // deal with subgroups later...
+                    Actors = new List<Unit>(player.Wireframe);
                 }
             }
 
@@ -103,6 +105,16 @@ namespace Starcraft2.ReplayParser
             if (lastBit == 1)
             {
                 var zero = 0d;
+            }
+
+            if (!AbilityFailed)
+            {
+                this.EventType = GameEventType.Micro;
+                
+            }
+            else
+            {
+                this.EventType = GameEventType.Inactive;
             }
         }
 
@@ -177,16 +189,15 @@ namespace Starcraft2.ReplayParser
         public AbilityType AbilityType { get; private set; }
 
         /// <summary>
-        /// True if the actor is default:  Sometimes maphackers use blink
-        /// hacks that could trigger this, and sometimes people are really
-        /// good at micro.
+        /// True if the actor is default, otherwise sometimes people
+        /// are really good at micro.
         /// </summary>
         public bool DefaultActor { get; private set; }
 
         /// <summary>
-        /// The actor if not default or null
+        /// The actors
         /// </summary>
-        public Unit Actor { get; private set; }
+        public List<Unit> Actors { get; private set; }
 
         /// <summary>
         /// True if the event uses a default target, e.g. for self-cast abilities
