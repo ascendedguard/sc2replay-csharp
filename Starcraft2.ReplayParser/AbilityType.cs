@@ -18,6 +18,7 @@ namespace Starcraft2.ReplayParser
         Attack,
         Move,
         Stop,
+        HoldPosition,
         HoldFire,
         Patrol,
 
@@ -26,11 +27,13 @@ namespace Starcraft2.ReplayParser
         SetUnitRally,
 
         // Cancels
-        CancelBuilding,
+        CancelQueue,
         CancelResearch,
         CancelTrain,
+        CancelBuilding,
         CancelWarpIn,
         CancelChannel,
+        CancelMorph,
         Cancel,
 
         // Harvest
@@ -78,6 +81,7 @@ namespace Starcraft2.ReplayParser
         BuildUltraliskCavern,
         BuildInfestationPit,
         BuildNydusNetwork,
+        BuildNydusCanal,
         BuildBanelingNest,
         BuildRoachWarren,
         BuildSpineCrawler,
@@ -140,7 +144,6 @@ namespace Starcraft2.ReplayParser
         LandBarracks,
         LandFactory,
         LandStarport,
-        LandCommandCenter,
 
         // Burrow
         BurrowBaneling,

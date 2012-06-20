@@ -14,7 +14,7 @@ namespace Starcraft2.ReplayParser.Version
     /// </summary>
     public static class UnitData
     {
-        public UnitType GetUnitType(int typeId, int buildNumber)
+        public static UnitType GetUnitType(int typeId, int buildNumber)
         {
             if (UnitTypeData.ContainsKey(buildNumber))
             {
@@ -26,7 +26,7 @@ namespace Starcraft2.ReplayParser.Version
             return UnitType.Unknown;
         }
 
-        static const Dictionary<int, Dictionary<int, UnitType>> UnitTypeData = new Dictionary<int, Dictionary<int, UnitType>>()
+        static Dictionary<int, Dictionary<int, UnitType>> UnitTypeData = new Dictionary<int, Dictionary<int, UnitType>>()
         {
             {21029, new Dictionary<int, UnitType>()
             {
