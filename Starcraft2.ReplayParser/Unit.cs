@@ -18,6 +18,7 @@ namespace Starcraft2.ReplayParser
     {
         int id;
         UnitType type;
+
         /// <summary>
         /// Version-specific id, used as a tie-breaker in wireframe subgroups.
         /// </summary>

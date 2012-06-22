@@ -40,6 +40,8 @@ namespace Starcraft2.ReplayParser
                 // Debug since we're unsure
                 HeightOffset = CFixedToDouble(bitReader.Read(16));
             }
+
+            this.EventType = GameEventType.Other;
         }
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace Starcraft2.ReplayParser
         /// </summary>
         double CFixedToDouble(uint cfixedAmount)
         {
-            return (int)cfixedAmount / 0x100d;
+            return (double)cfixedAmount / 256;
         }
 
         /// <summary>

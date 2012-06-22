@@ -16,6 +16,8 @@
             // parsing replays this old should be extremely rare, I don't believe
             // its worth the effort to try to support both. If it is, it should be
             // done in another method.
+            //
+            // Still a bitstream, but stuff's moved around and event codes are different.
             if (replay.ReplayBuild < 16561)
             {
                 throw new NotSupportedException(
@@ -45,6 +47,11 @@
                     else
                     {
                         player = Player.Global;
+                    }
+
+                    if (ticksElapsed == 0x16)
+                    {
+                        var zero = 0d;
                     }
 
                     var eventType = bitReader.Read(7);
@@ -84,17 +91,26 @@
                             bitReader.Read(32);
                             bitReader.Read(32);
                             break;
+                        case 0x27: // Target critter - special
+                            gameEvent = new GameEventBase();
+                            gameEvent.EventType = GameEventType.Selection;
+                            var unitId = bitReader.Read(32);
+                            break;
                         case 0x31: // Camera
                             gameEvent = new CameraEvent(bitReader, replay);
                             break;
                         case 0x46: // Request resources
                             gameEvent = new RequestResourcesEvent(bitReader, replay);
                             break;
+                        case 0x4C: // ?? -- seen with spectator
+                            bitReader.Read(4);
+                            gameEvent = new GameEventBase();
+                            gameEvent.EventType = GameEventType.Inactive;
+                            break;
                         default: // debug
                             throw new InvalidOperationException(String.Format(
                                 "Unknown event type {0:x} at {1:x} in replay.game.events",
                                 eventType, bitReader.Cursor));
-                            return null; // Irrecoverable
                     }
 
                     gameEvent.Player = player;

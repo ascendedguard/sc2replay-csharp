@@ -21,15 +21,23 @@ namespace Starcraft2.ReplayParser
             Target = replay.GetPlayerById(playerId);
 
             var someFlags = (int)bitReader.Read(3);
-            if (someFlags != 4) // Debug: if this isn't 4, we're probably fucked.
-            {       // I actually don't think they're flags, but an array length.
-                var zero = 0d;
-            }
 
-            MineralsSent = ReadSignedAmount(bitReader.Read(32));
-            VespeneSent = ReadSignedAmount(bitReader.Read(32));
-            TerrazineSent = ReadSignedAmount(bitReader.Read(32));
-            CustomSent = ReadSignedAmount(bitReader.Read(32));
+            if (someFlags-- > 0) // 4
+            {
+                MineralsSent = ReadSignedAmount(bitReader.Read(32));
+            }
+            if (someFlags-- > 0) // 3
+            {
+                VespeneSent = ReadSignedAmount(bitReader.Read(32));
+            }
+            if (someFlags-- > 0) // 2
+            {
+                TerrazineSent = ReadSignedAmount(bitReader.Read(32));
+            }
+            if (someFlags-- > 0) // 1
+            {
+                CustomSent = ReadSignedAmount(bitReader.Read(32));
+            }
         }
 
         int ReadSignedAmount(uint amount)

@@ -83,19 +83,13 @@ namespace Starcraft2.ReplayParser
             }
             else if (updateFlags == 2)
             {
-                try
+                var indexArrayLength = (int)bitReader.Read(8);
+                if (indexArrayLength > 0)
                 {
-                    var indexArrayLength = (int)bitReader.Read(8);
-                    if (indexArrayLength > 0)
+                    for (int i = 0; i < indexArrayLength; i++)
                     {
-                        for (int i = 0; i < indexArrayLength; i++)
-                        {
-                            RemovedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
-                        }
+                        RemovedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
                     }
-                }
-                catch (System.Exception e)
-                {
                 }
             }
             else if (updateFlags == 3)
@@ -138,8 +132,14 @@ namespace Starcraft2.ReplayParser
                 var unknown = bitReader.Read(8);
 
                 var unitCountType = (int)bitReader.Read(8);
-
-                AddedUnitTypes.Add(unitType, unitCountType);
+                if (unitType == UnitType.Unknown && AddedUnitTypes.ContainsKey(UnitType.Unknown))
+                {
+                    AddedUnitTypes[UnitType.Unknown] += unitCountType;
+                }
+                else
+                {
+                    AddedUnitTypes.Add(unitType, unitCountType);
+                }
                 subgroups.Add(new KeyValuePair<UnitType, int>(unitType, unitCountType));
             }
 
@@ -216,18 +216,20 @@ namespace Starcraft2.ReplayParser
                 if (WireframeIndex == 10)
                 {
                     player.Wireframe = new List<Unit>(AddedUnits);
-                    player.Wireframe.Sort((m, n) => m.Id - n.Id);
+                    // player.Wireframe.Sort((m, n) => m.Id - n.Id);
                 }
                 else
                 {
                     player.Hotkeys[WireframeIndex] = new List<Unit>(AddedUnits);
-                    player.Hotkeys[WireframeIndex].Sort((m, n) => m.Id - n.Id);
+                    // player.Hotkeys[WireframeIndex].Sort((m, n) => m.Id - n.Id);
                 }
             }
         }
 
-        /// <summary> The index of the wireframe affected; 0~9 refer to control
-        /// groups, 10 refers to the current selection </summary>
+        /// <summary> 
+        /// The index of the wireframe affected; 0~9 refer to control groups,
+        /// 10 refers to the current selection
+        /// </summary>
         public int WireframeIndex { get; private set; }
 
         /// <summary>

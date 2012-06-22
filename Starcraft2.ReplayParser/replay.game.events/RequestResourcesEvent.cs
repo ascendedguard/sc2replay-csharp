@@ -18,15 +18,23 @@ namespace Starcraft2.ReplayParser
             this.EventType = GameEventType.Other;
 
             var someFlags = (int)bitReader.Read(3);
-            if (someFlags != 4) // Debug: if this isn't 4, we're probably fucked.
-            {       // I actually don't think they're flags, but an array length.
-                var zero = 0d;
+            
+            if (someFlags-- > 0) // 4
+            {
+                MineralsRequested = ReadSignedAmount(bitReader.Read(32));
             }
-
-            MineralsRequested = ReadSignedAmount(bitReader.Read(32));
-            VespeneRequested = ReadSignedAmount(bitReader.Read(32));
-            TerrazineRequested = ReadSignedAmount(bitReader.Read(32));
-            CustomRequested = ReadSignedAmount(bitReader.Read(32));
+            if (someFlags-- > 0) // 3
+            {
+                VespeneRequested = ReadSignedAmount(bitReader.Read(32));
+            }
+            if (someFlags-- > 0) // 2
+            {
+                TerrazineRequested = ReadSignedAmount(bitReader.Read(32));
+            }
+            if (someFlags-- > 0) // 1
+            {
+                CustomRequested = ReadSignedAmount(bitReader.Read(32));
+            }
         }
 
         int ReadSignedAmount(uint amount)

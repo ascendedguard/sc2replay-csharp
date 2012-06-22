@@ -12,17 +12,27 @@
             string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             appPath = Path.GetDirectoryName(appPath);
 
-            // Confirmed for not working.
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.SC2Replay"));
-
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.4.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.korean.1.3.4.SC2Replay"));
-
-            // Taeja vs llllllllll -- KR Ladder
-            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.3.SC2Replay"));
-            // Blink hax
-            BenchmarkReplay(Path.Combine(appPath, "dsNinetail.1.4.3.SC2Replay"));
+            // Files between 1.0.0 and 1.0.3 are compatible up to 1.0.3
+            // We won't test these because we don't support them in replay.game.events
+            // BenchmarkReplay(Path.Combine(appPath, "testReplay.1.0.0.16117.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.0.16561.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.1.16605.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.2.16755.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.16939.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.0.17326.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.1.17682.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.2.17811.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.0.18092.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.1.18221.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.2.18317.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.3.18574.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.4.18701.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.5.19132.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.6.19269.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.0.19679.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.1.19776.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.2.20141.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.3.21029.SC2Replay"));
 
             // Replace this with your local Starcraft 2's replay folder to  test parallel parsing.
             const string replayLocation = @"C:\Users\Will\Documents\StarCraft II\Accounts\1300563\1-S2-1-268325\Replays\Multiplayer";

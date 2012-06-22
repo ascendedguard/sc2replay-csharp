@@ -19,7 +19,20 @@ namespace Starcraft2.ReplayParser
     {
         public AbilityEvent(BitReader bitReader, Replay replay, Player player)
         {
-            var flags = bitReader.Read(18);
+            
+            uint flags;
+            // 1.3.3 patch notes:
+            // - Fixed an issue where the APM statistic could be artificially increased.
+            // This adds the "failed" flag below, which comes from holding down a hotkey
+            // and key repeat spamming events through a tick.
+            if (replay.ReplayBuild < 18574) // < 1.3.3
+            {
+                flags = bitReader.Read(17);
+            }
+            else
+            {
+                flags = bitReader.Read(18);
+            }
             Queued = (flags & 2) != 0;
             RightClick = (flags & 8) != 0;
             WireframeClick = (flags & 0x20) != 0;
@@ -91,10 +104,14 @@ namespace Starcraft2.ReplayParser
                 {
                     TargetPlayer = (int)bitReader.Read(4);
                 }
-                var targetHasTeam = bitReader.Read(1) == 1;
-                if (targetHasTeam)
+
+                if (replay.ReplayBuild >= 19679) // Dunno which build this changes
                 {
-                    TargetTeam = (int)bitReader.Read(4);
+                    var targetHasTeam = bitReader.Read(1) == 1;
+                    if (targetHasTeam)
+                    {
+                        TargetTeam = (int)bitReader.Read(4);
+                    }
                 }
 
                 var targetX = bitReader.Read(20);
