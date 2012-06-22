@@ -24,9 +24,7 @@ namespace Starcraft2.ReplayParser
             {
                 Header = BitConverter.ToInt32(buffer, offset),
                 AttributeId = BitConverter.ToInt32(buffer, offset + 4),
-
-                // Offset the PlayerID so it matches our array indices.
-                PlayerId = buffer[offset + 8] - 1,
+                PlayerId = buffer[offset + 8],
                 Value = new byte[4],
             };
 

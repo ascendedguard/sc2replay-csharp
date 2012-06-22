@@ -22,6 +22,11 @@ namespace Starcraft2.ReplayParser
         /// <summary>
         /// CPU-controlled player.
         /// </summary>
-        Computer
+        Computer,
+
+        /// <summary>
+        /// Observer
+        /// </summary>
+        Spectator
     }
 }

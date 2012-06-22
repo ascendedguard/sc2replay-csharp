@@ -54,6 +54,7 @@
     <Compile Include="GameSpeed.cs" />
     <Compile Include="GameType.cs" />
     <Compile Include="KeyValueStruct.cs" />
+    <Compile Include="Location.cs" />
     <Compile Include="MpqHeader.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Race.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="replay.game.events\GameEventBase.cs" />
     <Compile Include="replay.game.events\GameEventType.cs" />
     <Compile Include="replay.game.events\GameStartEvent.cs" />
+    <Compile Include="replay.game.events\HotkeyActionType.cs" />
     <Compile Include="replay.game.events\HotkeyEvent.cs" />
     <Compile Include="replay.game.events\IGameEvent.cs" />
     <Compile Include="replay.game.events\PlayerJoinEvent.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="replay.messages.events\ReplayMessageEvents.cs" />
     <Compile Include="Streams\BitReader.cs" />
     <Compile Include="Timestamp.cs" />
+    <Compile Include="Unit.cs" />
     <Compile Include="UnitType.cs" />
     <Compile Include="Version\AbilityData.cs" />
     <Compile Include="Version\UnitData.cs" />

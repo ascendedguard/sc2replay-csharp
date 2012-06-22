@@ -12,10 +12,11 @@
             string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             appPath = Path.GetDirectoryName(appPath);
 
-            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.SC2Replay"));
-            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.SC2Replay"));
-            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.4.SC2Replay"));
-            BenchmarkReplay(Path.Combine(appPath, "testReplay.korean.1.3.4.SC2Replay"));
+            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.SC2Replay"));
+            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.SC2Replay"));
+            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.4.SC2Replay"));
+            //BenchmarkReplay(Path.Combine(appPath, "testReplay.korean.1.3.4.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.3.SC2Replay"));
 
             // Replace this with your local Starcraft 2's replay folder to  test parallel parsing.
             const string replayLocation = @"C:\Users\Will\Documents\StarCraft II\Accounts\1300563\1-S2-1-268325\Replays\Multiplayer";
@@ -54,7 +55,8 @@
         
             foreach (var player in replay.Players)
             {
-                Console.Out.Write(player.Name + " ");
+                if (player != null)
+                    Console.Out.Write(player.Name + " ");
             }
 
             Console.Out.WriteLine();

@@ -15,7 +15,7 @@ namespace Starcraft2.ReplayParser
     /// </summary>
     public class PlayerJoinEvent : GameEventBase
     {
-        public PlayerJoinEvent(BitReader bitReader, Player player)
+        public PlayerJoinEvent(BitReader bitReader, Replay replay, int playerIndex)
         {
             this.EventType = GameEventType.Inactive;
 
@@ -23,9 +23,17 @@ namespace Starcraft2.ReplayParser
             // to make it version-independent
             this.JoinFlags = (int)bitReader.Read(4);
 
+            // Initialize player if not exists (true for observers)
+            Player player = replay.GetPlayerById(playerIndex);
+            if (player == null)
+            {
+                Player p = new Player();
+                p.PlayerType = PlayerType.Spectator;
+                replay.Players[playerIndex] = player = p;
+            }
+
             // Initialize wireframe
-            player.Wireframe = new Unit[255];
-            player.WireframeCount = 0;
+            player.Wireframe = new List<Unit>();
             player.WireframeSubgroup = 0;
 
             // Initialize control groups

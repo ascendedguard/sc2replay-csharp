@@ -15,7 +15,43 @@ namespace Starcraft2.ReplayParser
     {
         public SendResourcesEvent(BitReader bitReader, Replay replay)
         {
-            // ...
+            this.EventType = GameEventType.Other;
+
+            var playerId = (int)bitReader.Read(4);
+            Target = replay.GetPlayerById(playerId);
+
+            var someFlags = (int)bitReader.Read(3);
+            if (someFlags != 4) // Debug: if this isn't 4, we're probably fucked.
+            {       // I actually don't think they're flags, but an array length.
+                var zero = 0d;
+            }
+
+            MineralsSent = ReadSignedAmount(bitReader.Read(32));
+            VespeneSent = ReadSignedAmount(bitReader.Read(32));
+            TerrazineSent = ReadSignedAmount(bitReader.Read(32));
+            CustomSent = ReadSignedAmount(bitReader.Read(32));
         }
+
+        int ReadSignedAmount(uint amount)
+        {
+            int result = ((amount & 0x80000000) != 0) ? 1 : -1;
+
+            return result * (int)(amount & 0x7fffffff);
+        }
+
+        /// <summary> Amount of resources sent </summary>
+        public int MineralsSent { get; private set; }
+
+        /// <summary> Amount of resources sent </summary>
+        public int VespeneSent { get; private set; }
+
+        /// <summary> Amount of resources sent </summary>
+        public int TerrazineSent { get; private set; }
+
+        /// <summary> Amount of resources sent </summary>
+        public int CustomSent { get; private set; }
+
+        /// <summary> The target of the trade </summary>
+        public Player Target { get; private set; }
     }
 }

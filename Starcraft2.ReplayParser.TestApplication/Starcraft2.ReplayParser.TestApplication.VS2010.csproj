@@ -56,6 +56,9 @@
     <Content Include="testReplay.korean.1.3.4.SC2Replay">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="testReplay.1.4.3.SC2Replay">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Starcraft2.ReplayParser\Starcraft2.ReplayParser.VS2010.csproj">

@@ -27,7 +27,7 @@ namespace Starcraft2.ReplayParser
         internal Replay()
         {
             GameUnits = new Dictionary<int, Unit>();
-            Players = new List<Player>();
+            Players = new Player[0x10];
         }
 
         #endregion
@@ -56,7 +56,7 @@ namespace Starcraft2.ReplayParser
         public Dictionary<int, Unit> GameUnits { get; internal set; }
 
         /// <summary> Gets the details of all players in the replay. </summary>
-        public List<Player> Players { get; internal set; }
+        public Player[] Players { get; internal set; }
 
         /// <summary> Gets the build number of the Starcraft 2 version used in creating the replay. </summary>
         public int ReplayBuild { get; internal set; }
@@ -192,7 +192,7 @@ namespace Starcraft2.ReplayParser
         /// <returns> Returns the appropriate Player from the Players array. </returns>
         public Player GetPlayerById(int playerId)
         {
-            if (this.Players.Count > playerId)
+            if (16 > playerId)
             {
                 return this.Players[playerId];
             }

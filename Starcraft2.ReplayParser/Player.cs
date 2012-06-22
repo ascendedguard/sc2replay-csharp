@@ -75,10 +75,7 @@ namespace Starcraft2.ReplayParser
         public int Team { get; set; }
 
         /// <summary> The player's current wireframe </summary>
-        internal Unit[] Wireframe;
-
-        /// <summary> Number of units in the player's current wireframe </summary>
-        internal int WireframeCount;
+        internal List<Unit> Wireframe;
 
         /// <summary> Currently selected wireframe subgroup </summary>
         internal int WireframeSubgroup;
@@ -87,6 +84,8 @@ namespace Starcraft2.ReplayParser
         /// The player's current control group setup.
         /// </summary>
         internal List<Unit>[] Hotkeys;
+
+        internal static Player Global = new Player();
 
         #endregion
     }

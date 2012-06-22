@@ -37,8 +37,21 @@
                     var intervalLength = 6 + (bitReader.Read(2) << 3);
                     var interval = bitReader.Read(intervalLength);
                     ticksElapsed += (int)interval;
+                    var playerIndex = (int)bitReader.Read(5);
+                    Player player;
+                    if (playerIndex < 0x10)
+                    {
+                        player = replay.GetPlayerById(playerIndex);
+                    }
+                    else
+                    {
+                        player = Player.Global;
+                    }
 
-                    var player = replay.GetPlayerById((int)bitReader.Read(5));
+                    if (ticksElapsed == 0x5a8)
+                    {
+                        var zero = 0d;
+                    }
 
                     var eventType = bitReader.Read(7);
                     IGameEvent gameEvent;
@@ -49,7 +62,7 @@
                             break;
                         case 0x0b:
                         case 0x0c: // Join game
-                            gameEvent = new PlayerJoinEvent(bitReader, player);
+                            gameEvent = new PlayerJoinEvent(bitReader, replay, playerIndex);
                             break;
                         case 0x19: // Leave game
                             gameEvent = new PlayerLeftEvent(player);

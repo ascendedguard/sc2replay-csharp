@@ -45,7 +45,9 @@ namespace Starcraft2.ReplayParser.Version
         }
 
         // Build number => CAbil Index => Button Index => AbilityType
-        // Use references to 21029 in other versions as much as possible.
+        // Use references to 21029 in other versions by creating instances to
+        // reference (i.e. Dictionary<int, AbilityType> CAbilName21029) and updating the
+        // original and the new to point to that reference.
         static Dictionary<int, Dictionary<int, Dictionary<int, AbilityType>>> AbilityTypeData
             = new Dictionary<int, Dictionary<int, Dictionary<int, AbilityType>>>()
         {
@@ -63,7 +65,13 @@ namespace Starcraft2.ReplayParser.Version
                     {2, AbilityType.Taunt}, // /cheer
                     {3, AbilityType.Taunt} // /dance
                 }},
-                {0x25, AbilityTypeData[21029][0x24]}, // HoldFire
+                {0x25, new Dictionary<int, AbilityType>() // HoldFire
+                {
+                    {0, AbilityType.Stop},
+                    {1, AbilityType.HoldFire},
+                    {2, AbilityType.Taunt}, // /cheer
+                    {3, AbilityType.Taunt} // /dance
+                }},
                 {0x26, new Dictionary<int, AbilityType>() // move
                 {
                     {0, AbilityType.Move},
@@ -212,12 +220,18 @@ namespace Starcraft2.ReplayParser.Version
                 {
                     {0, AbilityType.SetUnitRally}
                 }},
-                {0x59, AbilityTypeData[21029][0x58]}, // ProgressRally
+                {0x59, new Dictionary<int, AbilityType>() // ProgressRally
+                {
+                    {0, AbilityType.SetUnitRally}
+                }},
                 {0x5A, new Dictionary<int, AbilityType>() // RallyCommand
                 {
                     {0, AbilityType.SetWorkerRally}
                 }},
-                {0x5B, AbilityTypeData[21029][0x59]}, // RallyNexus
+                {0x5B, new Dictionary<int, AbilityType>() // RallyNexus
+                {
+                    {0, AbilityType.SetUnitRally}
+                }},
                 {0x5C, new Dictionary<int, AbilityType>() // RallyHatchery
                 {
                     {0, AbilityType.SetUnitRally},
@@ -263,18 +277,47 @@ namespace Starcraft2.ReplayParser.Version
                     {1, AbilityType.Unknown}, // Removed -- Anabolic Synthesis
                     {2, AbilityType.ResearchUltraliskArmor},
                 }},
-                {0x69, AbilityTypeData[21029][0x4A]}, // SCVHarvest
-                {0x6A, AbilityTypeData[21029][0x4A]}, // ProbeHarvest
-                {0x6B, AbilityTypeData[21029][0x2A]}, // AttackWarpPrism
+                {0x69, new Dictionary<int, AbilityType>() // SCVHarvest
+                {
+                    {0, AbilityType.Gather},
+                    {1, AbilityType.ReturnCargo},
+                    {2, AbilityType.Cancel}
+                }},
+                {0x6A, new Dictionary<int, AbilityType>() // ProbeHarvest
+                {
+                    {0, AbilityType.Gather},
+                    {1, AbilityType.ReturnCargo},
+                    {2, AbilityType.Cancel}
+                }},
+                {0x6B, new Dictionary<int, AbilityType>() // AttackWarpPrism
+                {
+                    {0, AbilityType.Attack}
+                }},
                 {0x6C, new Dictionary<int, AbilityType>() // que1
                 { // Remember:  delegate event info from ability flags, not AbilityType
                     {0, AbilityType.CancelQueue}, // Cancel last (1 ?? 0)
-                    {0, AbilityType.CancelQueue} // Cancel specific
+                    {1, AbilityType.CancelQueue} // Cancel specific
                 }},
-                {0x6D, AbilityTypeData[21029][0x6C]}, // que5
-                {0x6E, AbilityTypeData[21029][0x6C]}, // que5LongBlend
-                {0x6F, AbilityTypeData[21029][0x6C]}, // que5Passive
-                {0x70, AbilityTypeData[21029][0x6C]}, // que5Addon
+                {0x6D, new Dictionary<int, AbilityType>() // que5
+                {
+                    {0, AbilityType.CancelQueue},
+                    {1, AbilityType.CancelQueue}
+                }},
+                {0x6E, new Dictionary<int, AbilityType>() // que5LongBlend
+                {
+                    {0, AbilityType.CancelQueue},
+                    {1, AbilityType.CancelQueue}
+                }},
+                {0x6F, new Dictionary<int, AbilityType>() // que5Passive
+                {
+                    {0, AbilityType.CancelQueue},
+                    {1, AbilityType.CancelQueue}
+                }},
+                {0x70, new Dictionary<int, AbilityType>() // que5Addon
+                {
+                    {0, AbilityType.CancelQueue},
+                    {1, AbilityType.CancelQueue}
+                }},
                 {0x71, new Dictionary<int, AbilityType>() // BuildInProgress
                 {
                     {0, AbilityType.CancelBuilding},
@@ -384,17 +427,32 @@ namespace Starcraft2.ReplayParser.Version
                 {
                     {0, AbilityType.LandCommandCenter}
                 }},
-                {0x85, AbilityTypeData[21029][0x2B]}, // BarracksAddOns
+                {0x85, new Dictionary<int, AbilityType>() // BarracksAddOns
+                {
+                    {0, AbilityType.BuildTechLab},
+                    {1, AbilityType.BuildReactor},
+                    {30, AbilityType.CancelBuilding}
+                }},
                 {0x86, new Dictionary<int, AbilityType>() // BarracksLiftOff
                 {
                     {0, AbilityType.LiftBarracks}
                 }},
-                {0x87, AbilityTypeData[21029][0x2B]}, // FactoryAddOns
+                {0x87, new Dictionary<int, AbilityType>() // FactoryAddOns
+                {
+                    {0, AbilityType.BuildTechLab},
+                    {1, AbilityType.BuildReactor},
+                    {30, AbilityType.CancelBuilding}
+                }},
                 {0x88, new Dictionary<int, AbilityType>() // FactoryLiftOff
                 {
                     {0, AbilityType.LiftFactory}
                 }},
-                {0x89, AbilityTypeData[21029][0x2B]}, // StarportAddOns
+                {0x89, new Dictionary<int, AbilityType>() // StarportAddOns
+                {
+                    {0, AbilityType.BuildTechLab},
+                    {1, AbilityType.BuildReactor},
+                    {30, AbilityType.CancelBuilding}
+                }},
                 {0x8A, new Dictionary<int, AbilityType>() // StarportLiftOff
                 {
                     {0, AbilityType.LiftStarport}
@@ -570,8 +628,16 @@ namespace Starcraft2.ReplayParser.Version
                 {
                     {0, AbilityType.HighTemplarPsiStorm}
                 }},
-                {0xA3, AbilityTypeData[21029][0x6C]}, // HangarQueue5
-                {0xA4, AbilityTypeData[21029][0x6C]}, // BroodLordQueue2
+                {0xA3, new Dictionary<int, AbilityType>() // HangarQueue5
+                {
+                    {0, AbilityType.CancelQueue},
+                    {1, AbilityType.CancelQueue}
+                }},
+                {0xA4, new Dictionary<int, AbilityType>() // BroodLordQueue2
+                {
+                    {0, AbilityType.CancelQueue},
+                    {1, AbilityType.CancelQueue}
+                }},
                 {0xA5, new Dictionary<int, AbilityType>() // CarrierHanger
                 {
                     {0, AbilityType.ArmInterceptor}
@@ -618,7 +684,12 @@ namespace Starcraft2.ReplayParser.Version
                     {15, AbilityType.BuildSporeCrawler},
                     {30, AbilityType.CancelBuilding}
                 }},
-                {0xAA, AbilityTypeData[21029][0x4A]}, // DroneHarvest
+                {0xAA, new Dictionary<int, AbilityType>() // DroneHarvest
+                {
+                    {0, AbilityType.Gather},
+                    {1, AbilityType.ReturnCargo},
+                    {2, AbilityType.Cancel}
+                }},
                 {0xAB, new Dictionary<int, AbilityType>() // EvolutionChamberResearch
                 {
                     {0, AbilityType.ResearchZergMeleeWeapons1},

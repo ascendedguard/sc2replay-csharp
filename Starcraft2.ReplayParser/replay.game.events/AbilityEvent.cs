@@ -56,6 +56,12 @@ namespace Starcraft2.ReplayParser
                     Actors = new List<Unit>(player.Wireframe);
                 }
             }
+            else
+            {
+                // Copy the current wireframe as the actor list
+                // deal with subgroups later...
+                Actors = new List<Unit>(player.Wireframe);
+            }
 
             var targetType = bitReader.Read(2);
             if (targetType == 1) // Location target

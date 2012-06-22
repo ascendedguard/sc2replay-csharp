@@ -19,11 +19,101 @@ namespace Starcraft2.ReplayParser
         public SelectionEvent(BitReader bitReader, Replay replay, Player player)
         {
             // Parse select event and update player wireframe accordingly
-            SelectionFlags = (int)bitReader.Read(4);
+            WireframeIndex = (int)bitReader.Read(4);
             player.WireframeSubgroup = SubgroupIndex = (int)bitReader.Read(8);
+
+            if (WireframeIndex == 10)
+            {
+                this.EventType = GameEventType.Selection;
+            }
+            else // This is a control group update, likely from a CAbilMorph
+            {
+                this.EventType = GameEventType.Inactive;
+            }
+            
+            List<Unit> affectedWireframe;
+            if (WireframeIndex == 10)
+            {
+                affectedWireframe = player.Wireframe;
+            }
+            else
+            {
+                affectedWireframe = player.Hotkeys[WireframeIndex];
+            }
+
+            RemovedUnits = new List<Unit>();
 
             var updateFlags = (int)bitReader.Read(2);
 
+            ClearSelection = false;
+
+            if (updateFlags == 1)
+            {
+                var numBits = (int)bitReader.Read(8);
+                var unitsRemoved = new bool[numBits];
+                if (numBits > affectedWireframe.Count)
+                {
+                    var zero = 0d;
+                }
+                var wireframeIndex = 0;
+                while (numBits >= 8)
+                {
+                    numBits -= 8;
+                    var flags = bitReader.Read(8);
+                    for (int i = 0; i < 8; i++)
+                    {
+                        unitsRemoved[wireframeIndex + i] = (flags & (1 << i)) != 0;
+                    }
+                    wireframeIndex += 8;
+                }
+                if (numBits != 0)
+                {
+                    var flags = bitReader.Read(numBits);
+                    for (int i = 0; i < numBits; i++)
+                    {
+                        unitsRemoved[wireframeIndex + i] = (flags & (1 << i)) != 0;
+                    }
+                    wireframeIndex += numBits;
+                }
+
+                for (int i = 0; i < wireframeIndex; i++)
+                {
+                    if (unitsRemoved[i])
+                    {
+                        RemovedUnits.Add(affectedWireframe[i]);
+                    }
+                }
+            }
+            else if (updateFlags == 2)
+            {
+                var indexArrayLength = (int)bitReader.Read(8);
+                if (indexArrayLength > 0)
+                {
+                    for (int i = 0; i < indexArrayLength; i++)
+                    {
+                        RemovedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
+                    }
+                }
+            }
+            else if (updateFlags == 3)
+            {
+                var indexArrayLength = (int)bitReader.Read(8);
+                if (indexArrayLength > 0)
+                {
+                    AddedUnits = new List<Unit>(indexArrayLength);
+                    for (int i = 0; i < indexArrayLength; i++)
+                    {
+                        AddedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
+                    }
+                }
+
+                ClearSelection = true;
+            }
+
+            HandleUnitArrays(bitReader, replay);
+
+            // Now, update the player wireframe.
+            UpdateWireframe(player);
         }
 
         /// <summary>
@@ -41,7 +131,7 @@ namespace Starcraft2.ReplayParser
             {
                 var unitTypeId = (int)bitReader.Read(16);
                 var unitType = UnitData.GetUnitType(unitTypeId, replay.ReplayBuild);
-                
+
                 var unknown = bitReader.Read(8);
                 if (unknown != 1) // Debug:  No idea
                 {
@@ -58,7 +148,14 @@ namespace Starcraft2.ReplayParser
             if (idsLength == 0) return;
 
             var subgroupsEnumerator = subgroups.GetEnumerator();
-            var currentSubgroupIndex = subgroupsEnumerator.Current.Value;
+
+            int currentSubgroupIndex;
+            if (subgroupsEnumerator.MoveNext())
+            {
+                currentSubgroupIndex = subgroupsEnumerator.Current.Value;
+            }
+            else return;
+
             for (int i = 0; i < idsLength; i++)
             {
                 var unitId = (int)bitReader.Read(32);
@@ -75,7 +172,7 @@ namespace Starcraft2.ReplayParser
                 }
                 AddedUnits.Add(unit);
 
-                if (--currentSubgroupIndex == 0)
+                if (--currentSubgroupIndex <= 0)
                 {
                     if (subgroupsEnumerator.MoveNext())
                     {
@@ -85,8 +182,51 @@ namespace Starcraft2.ReplayParser
             }
         }
 
-        /// <summary>  4 bit flags, unknown purpose </summary>
-        public int SelectionFlags { get; private set; }
+        /// <summary> Update the wireframe for a player using the data in the event </summary>
+        void UpdateWireframe(Player player)
+        {
+            List<Unit> affectedWireframe;
+            if (WireframeIndex == 10)
+            {
+                affectedWireframe = player.Wireframe;
+            }
+            else
+            {
+                affectedWireframe = player.Hotkeys[WireframeIndex];
+            }
+
+            if (!ClearSelection)
+            {
+                // Remove removed units, add added units, sort by unit id (top 14 bits)
+                foreach (Unit unit in RemovedUnits)
+                {
+                    affectedWireframe.Remove(unit);
+                }
+
+                foreach (Unit unit in AddedUnits)
+                {
+                    affectedWireframe.Add(unit);
+                }
+            }
+            else
+            {
+                // Copy added units only to wireframe
+                if (WireframeIndex == 10)
+                {
+                    player.Wireframe = new List<Unit>(AddedUnits);
+                }
+                else
+                {
+                    player.Hotkeys[WireframeIndex] = new List<Unit>(AddedUnits);
+                }
+            }
+
+            affectedWireframe.Sort((m, n) => m.Id - n.Id);
+        }
+
+        /// <summary> The index of the wireframe affected; 0~9 refer to control
+        /// groups, 10 refers to the current selection </summary>
+        public int WireframeIndex { get; private set; }
 
         /// <summary>
         /// The index of the subset of selected units in the wireframe,
