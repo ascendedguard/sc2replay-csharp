@@ -74,6 +74,11 @@ namespace Starcraft2.ReplayParser
         /// </summary>
         public int Team { get; set; }
 
+        public override string ToString()
+        {
+            return Name.ToString();
+        }
+
         /// <summary> The player's current wireframe </summary>
         internal List<Unit> Wireframe;
 

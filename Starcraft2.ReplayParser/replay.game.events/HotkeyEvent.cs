@@ -26,36 +26,82 @@ namespace Starcraft2.ReplayParser
             ActionType = (HotkeyActionType)(int)bitReader.Read(2);
 
             var updateType = (int)bitReader.Read(2);
-            if (updateType > 1) // Debug:  if this isn't known, we're probably fucked
-            {
-                var zero = 0d;
-            }
 
-            // This is an internal update that will affect the precondition
-            // of the other actions... it basically updates control groups
-            // for units dying whenever needed, so we don't have to guess!
+            // This is an internal update that is somewhat asynchronous to
+            // the main wireframe.
+            var unitsRemovedList = new List<Unit>();
             if (updateType == 1) // Remove by flags
             {
                 var numBits = (int)bitReader.Read(8);
-                if (numBits > player.Hotkeys[ControlGroup].Count) // Debug:  Maybe we were wrong?
-                {
-                    var zero = 0d;
-                }
+                var unitsRemoved = new bool[numBits];
+                var wireframeIndex = 0;
+
                 while (numBits >= 8)
                 {
+                    numBits -= 8;
+                    var flags = bitReader.Read(8);
+                    for (int i = 0; i < 8; i++)
+                    {
+                        unitsRemoved[wireframeIndex + i] = (flags & (1 << i)) != 0;
+                    }
+                    wireframeIndex += 8;
+                }
+                if (numBits != 0)
+                {
+                    var flags = bitReader.Read(numBits);
+                    for (int i = 0; i < numBits; i++)
+                    {
+                        unitsRemoved[wireframeIndex + i] = (flags & (1 << i)) != 0;
+                    }
+                    wireframeIndex += numBits;
+                }
+
+                for (int i = 0; i < wireframeIndex; i++)
+                {
+                    if (unitsRemoved[i])
+                    {
+                        unitsRemovedList.Add(player.Hotkeys[ControlGroup][i]);
+                    }
+                }
+            }
+            else if (updateType == 2)
+            {
+                var numIndices = (int)bitReader.Read(8);
+                for (int i = 0; i < numIndices; i++)
+                {
+                    unitsRemovedList.Add(player.Hotkeys[ControlGroup][(int)bitReader.Read(8)]);
+                }
+            }
+            else if (updateType == 3) // Replace control group with portion of control group
+            {
+                // This happens fairly rarely, so I'll just invert the output
+                unitsRemovedList = new List<Unit>(player.Hotkeys[ControlGroup]);
+
+                var numIndices = (int)bitReader.Read(8);
+                for (int i = 0; i < numIndices; i++)
+                {
+                    unitsRemovedList.Remove(player.Hotkeys[ControlGroup][(int)bitReader.Read(8)]);
                 }
             }
 
             if (ActionType == HotkeyActionType.AddToControlGroup)
             {
                 var oldControlgroup = player.Hotkeys[ControlGroup];
-                var newControlgroup = new List<Unit>(
-                    player.Wireframe.Count + oldControlgroup.Count);
-
-                foreach (Unit unit in oldControlgroup)
+                List<Unit> newControlgroup;
+                if (oldControlgroup != null)
                 {
-                    newControlgroup.Add(unit);
+                    newControlgroup = new List<Unit>(player.Wireframe.Count + oldControlgroup.Count);
+
+                    foreach (Unit unit in oldControlgroup)
+                    {
+                        newControlgroup.Add(unit);
+                    }
                 }
+                else
+                {
+                    newControlgroup = new List<Unit>(player.Wireframe.Count);
+                }
+
                 foreach (Unit unit in player.Wireframe)
                 {
                     newControlgroup.Add(unit);
@@ -66,8 +112,13 @@ namespace Starcraft2.ReplayParser
             }
             else if (ActionType == HotkeyActionType.SelectControlGroup)
             {
-                // Don't think this needs to be a copy, but just in case...
                 player.Wireframe = new List<Unit>(player.Hotkeys[ControlGroup]);
+
+                // Only see these two together because of the nature of it
+                foreach (Unit unit in unitsRemovedList)
+                {
+                    player.Wireframe.Remove(unit);
+                }
             }
             else if (ActionType == HotkeyActionType.SetControlGroup)
             {

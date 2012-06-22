@@ -23,14 +23,13 @@
             }
 
             var events = new List<IGameEvent>();
-            
+
             // Keep a reference to know the game length.
-            Timestamp time = null;
+            var ticksElapsed = 0;
 
             using (var stream = new MemoryStream(buffer))
             {
                 var bitReader = new BitReader(stream);
-                var ticksElapsed = 0;
 
                 while (!bitReader.EndOfStream)
                 {
@@ -46,11 +45,6 @@
                     else
                     {
                         player = Player.Global;
-                    }
-
-                    if (ticksElapsed == 0x5a8)
-                    {
-                        var zero = 0d;
                     }
 
                     var eventType = bitReader.Read(7);
@@ -97,7 +91,9 @@
                             gameEvent = new RequestResourcesEvent(bitReader, replay);
                             break;
                         default: // debug
-                            Console.WriteLine("Unknown event type {0:x} at {1:x} in replay.game.events", eventType, bitReader.Cursor);
+                            throw new InvalidOperationException(String.Format(
+                                "Unknown event type {0:x} at {1:x} in replay.game.events",
+                                eventType, bitReader.Cursor));
                             return null; // Irrecoverable
                     }
 
@@ -109,10 +105,7 @@
                 }
             }
 
-            if (time != null)
-            {
-                replay.GameLength = time.TimeSpan;
-            }
+            replay.GameLength = Timestamp.Create(ticksElapsed).TimeSpan;
 
             return events;
         }

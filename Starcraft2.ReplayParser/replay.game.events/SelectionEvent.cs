@@ -51,10 +51,7 @@ namespace Starcraft2.ReplayParser
             {
                 var numBits = (int)bitReader.Read(8);
                 var unitsRemoved = new bool[numBits];
-                if (numBits > affectedWireframe.Count)
-                {
-                    var zero = 0d;
-                }
+
                 var wireframeIndex = 0;
                 while (numBits >= 8)
                 {
@@ -86,13 +83,19 @@ namespace Starcraft2.ReplayParser
             }
             else if (updateFlags == 2)
             {
-                var indexArrayLength = (int)bitReader.Read(8);
-                if (indexArrayLength > 0)
+                try
                 {
-                    for (int i = 0; i < indexArrayLength; i++)
+                    var indexArrayLength = (int)bitReader.Read(8);
+                    if (indexArrayLength > 0)
                     {
-                        RemovedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
+                        for (int i = 0; i < indexArrayLength; i++)
+                        {
+                            RemovedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
+                        }
                     }
+                }
+                catch (System.Exception e)
+                {
                 }
             }
             else if (updateFlags == 3)
@@ -133,10 +136,7 @@ namespace Starcraft2.ReplayParser
                 var unitType = UnitData.GetUnitType(unitTypeId, replay.ReplayBuild);
 
                 var unknown = bitReader.Read(8);
-                if (unknown != 1) // Debug:  No idea
-                {
-                    var zero = 0d;
-                }
+
                 var unitCountType = (int)bitReader.Read(8);
 
                 AddedUnitTypes.Add(unitType, unitCountType);
@@ -207,6 +207,8 @@ namespace Starcraft2.ReplayParser
                 {
                     affectedWireframe.Add(unit);
                 }
+
+                affectedWireframe.Sort((m, n) => m.Id - n.Id);
             }
             else
             {
@@ -214,14 +216,14 @@ namespace Starcraft2.ReplayParser
                 if (WireframeIndex == 10)
                 {
                     player.Wireframe = new List<Unit>(AddedUnits);
+                    player.Wireframe.Sort((m, n) => m.Id - n.Id);
                 }
                 else
                 {
                     player.Hotkeys[WireframeIndex] = new List<Unit>(AddedUnits);
+                    player.Hotkeys[WireframeIndex].Sort((m, n) => m.Id - n.Id);
                 }
             }
-
-            affectedWireframe.Sort((m, n) => m.Id - n.Id);
         }
 
         /// <summary> The index of the wireframe affected; 0~9 refer to control

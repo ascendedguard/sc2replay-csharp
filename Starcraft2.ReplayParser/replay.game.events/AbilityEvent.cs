@@ -107,11 +107,7 @@ namespace Starcraft2.ReplayParser
                 var id = (int)bitReader.Read(32);
             }
 
-            var lastBit = bitReader.Read(1);
-            if (lastBit == 1)
-            {
-                var zero = 0d;
-            }
+            var lastBit = bitReader.Read(1); // Should be 0; if not, misalignment is likely
 
             if (!AbilityFailed)
             {
