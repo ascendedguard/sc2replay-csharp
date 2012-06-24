@@ -19,7 +19,6 @@ namespace Starcraft2.ReplayParser
     {
         public AbilityEvent(BitReader bitReader, Replay replay, Player player, AbilityData abilityData, UnitData unitData)
         {
-            
             uint flags;
             // 1.3.3 patch notes:
             // - Fixed an issue where the APM statistic could be artificially increased.
@@ -50,6 +49,7 @@ namespace Starcraft2.ReplayParser
             }
 
             DefaultAbility = (bitReader.Read(1) == 0);
+            DefaultActor = true;
             if (!DefaultAbility)
             {
                 AbilityType = abilityData.GetAbilityType(
@@ -61,18 +61,16 @@ namespace Starcraft2.ReplayParser
                     // TODO: Look at that maphacker replay when this is finished.
                     throw new InvalidOperationException("Unsupported: non-default actor");
                 }
-                else
-                {
-                    // Copy the current wireframe as the actor list
-                    // deal with subgroups later...
-                    Actors = new List<Unit>(player.Wireframe);
-                }
             }
-            else
+            else if (DefaultActor)
             {
-                // Copy the current wireframe as the actor list
+                // Deep copy the current wireframe as the actor list
                 // deal with subgroups later...
-                Actors = new List<Unit>(player.Wireframe);
+                Actors = new List<Unit>(player.Wireframe.Count);
+                foreach (var unit in player.Wireframe)
+                {
+                    Actors.Add(new Unit(unit));
+                }
             }
 
             var targetType = bitReader.Read(2);
@@ -98,6 +96,8 @@ namespace Starcraft2.ReplayParser
                     unit.typeId = unitTypeId;
                     replay.GameUnits.Add(unitId, unit);
                 }
+
+                TargetUnit = unit;
 
                 var targetHasPlayer = bitReader.Read(1) == 1;
                 if (targetHasPlayer)

@@ -14,7 +14,7 @@ namespace Starcraft2.ReplayParser
     /// <summary>
     /// A game unit
     /// </summary>
-    public class Unit
+    public class Unit   
     {
         int id;
         UnitType type;
@@ -28,6 +28,16 @@ namespace Starcraft2.ReplayParser
         {
             this.id = id;
             this.type = type;
+        }
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        public Unit(Unit u)
+        {
+            this.id = u.id;
+            this.type = u.type;
+            this.typeId = u.typeId;
         }
 
         internal void UpdateType(UnitType type)

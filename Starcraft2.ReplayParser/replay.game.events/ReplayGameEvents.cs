@@ -55,7 +55,7 @@
                         player = Player.Global;
                     }
 
-                    if (ticksElapsed == 0x16)
+                    if (ticksElapsed == 0x1e)
                     {
                         var zero = 0d;
                     }

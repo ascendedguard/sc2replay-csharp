@@ -7,6 +7,7 @@
 namespace Starcraft2.ReplayParser
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using Streams;
     using Version;
@@ -107,10 +108,30 @@ namespace Starcraft2.ReplayParser
                 ClearSelection = true;
             }
 
+            // Build removed unit types
+            RemovedUnitTypes = new Dictionary<UnitType, int>();
+            foreach (var unit in RemovedUnits)
+            {
+                if (!RemovedUnitTypes.ContainsKey(unit.Type))
+                {
+                    RemovedUnitTypes.Add(unit.Type, 1);
+                }
+                else
+                {
+                    RemovedUnitTypes[unit.Type]++;
+                }
+            }
+
             HandleUnitArrays(bitReader, replay, data);
 
             // Now, update the player wireframe.
             UpdateWireframe(player);
+
+            // Check for Morph update
+            if (AddedUnits.SequenceEqual(RemovedUnits))
+            {
+                this.EventType = GameEventType.Inactive;
+            }
         }
 
         /// <summary>
@@ -247,5 +268,8 @@ namespace Starcraft2.ReplayParser
 
         /// <summary> A map of the added unit types to the corresponding unit counts </summary>
         public Dictionary<UnitType, int> AddedUnitTypes { get; private set; }
+
+        /// <summary> A map of the removed unit types to the corresponding unit counts </summary>
+        public Dictionary<UnitType, int> RemovedUnitTypes { get; private set; }
     }
 }
