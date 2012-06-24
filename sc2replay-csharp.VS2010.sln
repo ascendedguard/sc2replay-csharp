@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.VS2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.TestApplication.VS2010", "Starcraft2.ReplayParser.TestApplication\Starcraft2.ReplayParser.TestApplication.VS2010.csproj", "{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.DataCompiler", "Starcraft2.ReplayParser.DataCompiler\Starcraft2.ReplayParser.DataCompiler.csproj", "{6582781B-BB53-4AB2-8676-61FC30286BA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}.Release|Mixed Platforms.Build.0 = Release|x86
 		{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}.Release|x86.ActiveCfg = Release|x86
 		{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}.Release|x86.Build.0 = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|x86.ActiveCfg = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|x86.Build.0 = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|Any CPU.ActiveCfg = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|x86.ActiveCfg = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

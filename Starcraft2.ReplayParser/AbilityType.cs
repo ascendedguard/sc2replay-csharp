@@ -251,9 +251,11 @@ namespace Starcraft2.ReplayParser
         ResearchBlink, // Twilight Council
         ResearchCharge,
         ResearchPsiStorm, // Templar Archives
+        ResearchKhaydarinAmulet, // Templar Archives - Removed
         ResearchExtendedThermalLance, // Robotics Bay
         ResearchWarpPrismSpeed,
         ResearchObserverSpeed,
+        ResearchFluxVanes, // Fleet Beacon - Removed
         ResearchPhoenixRange, // Fleet Beacon
         ResearchCarrierWeaponSpeed,
         // Upgrade Research - Zerg
@@ -380,6 +382,6 @@ namespace Starcraft2.ReplayParser
 
         // Misc
         Taunt, // /dance, /cheer
-        Unknown
+        Unknown = 0xFFFF
     }
 }

@@ -15,7 +15,7 @@ namespace Starcraft2.ReplayParser
     public enum GameEventType
     {
         /// <summary>
-        /// Unknown event.
+        /// Unknown event
         /// </summary>
         Unknown = 0, 
 
@@ -30,12 +30,22 @@ namespace Starcraft2.ReplayParser
         Micro, 
 
         /// <summary>
-        /// Unit selection.
+        /// Getting upgrades or building tech structures
+        /// </summary>
+        Tech,
+
+        /// <summary>
+        /// An ability that is caused by a right click
+        /// </summary>
+        RightClick,
+
+        /// <summary>
+        /// Unit selection
         /// </summary>
         Selection, 
 
         /// <summary>
-        /// Other event type.
+        /// Other event type
         /// </summary>
         Other, 
 

@@ -194,6 +194,6 @@ namespace Starcraft2.ReplayParser
         GreaterSpire,
 
         // Misc.
-        Unknown
+        Unknown = 0xFFFF
     }
 }

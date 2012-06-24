@@ -216,12 +216,12 @@ namespace Starcraft2.ReplayParser
                 if (WireframeIndex == 10)
                 {
                     player.Wireframe = new List<Unit>(AddedUnits);
-                    // player.Wireframe.Sort((m, n) => m.Id - n.Id);
+                    player.Wireframe.Sort((m, n) => m.Id - n.Id);
                 }
                 else
                 {
                     player.Hotkeys[WireframeIndex] = new List<Unit>(AddedUnits);
-                    // player.Hotkeys[WireframeIndex].Sort((m, n) => m.Id - n.Id);
+                    player.Hotkeys[WireframeIndex].Sort((m, n) => m.Id - n.Id);
                 }
             }
         }

@@ -96,6 +96,7 @@ namespace Starcraft2.ReplayParser
                 {
                     var unitType = UnitData.GetUnitType(unitTypeId, replay.ReplayBuild);
                     unit = new Unit(unitId, unitType);
+                    unit.typeId = unitTypeId;
                     replay.GameUnits.Add(unitId, unit);
                 }
 
@@ -122,6 +123,7 @@ namespace Starcraft2.ReplayParser
             else if (targetType == 3) // Unit target
             {
                 var id = (int)bitReader.Read(32);
+                // Needs special handling
             }
 
             var lastBit = bitReader.Read(1); // Should be 0; if not, misalignment is likely

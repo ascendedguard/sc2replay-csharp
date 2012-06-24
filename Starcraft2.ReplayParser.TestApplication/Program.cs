@@ -15,6 +15,8 @@
             // Files between 1.0.0 and 1.0.3 are compatible up to 1.0.3
             // We won't test these because we don't support them in replay.game.events
             // BenchmarkReplay(Path.Combine(appPath, "testReplay.1.0.0.16117.SC2Replay"));
+            BenchmarkReplay(Path.Combine(appPath, "190334.SC2Replay"));
+
             BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.0.16561.SC2Replay"));
             BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.1.16605.SC2Replay"));
             BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.2.16755.SC2Replay"));

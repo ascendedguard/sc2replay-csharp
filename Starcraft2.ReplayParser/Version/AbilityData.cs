@@ -16,6 +16,7 @@ namespace Starcraft2.ReplayParser.Version
         public static AbilityType GetAbilityType(int typeId, int buttonId, int buildNumber)
         {
             Dictionary<int, Dictionary<int, AbilityType>> versionData;
+            
             if (AbilityTypeData.TryGetValue(buildNumber, out versionData))
             {
                 Dictionary<int, AbilityType> cAbilData;
