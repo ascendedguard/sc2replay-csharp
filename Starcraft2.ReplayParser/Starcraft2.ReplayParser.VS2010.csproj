@@ -90,7 +90,26 @@
     <Compile Include="Unit.cs" />
     <Compile Include="UnitType.cs" />
     <Compile Include="Version\AbilityData.cs" />
+    <Compile Include="Version\BuildData.cs" />
+    <Compile Include="Version\DataFile.cs" />
+    <Compile Include="Version\EventData.cs" />
+    <Compile Include="Version\SubgroupData.cs" />
     <Compile Include="Version\UnitData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Version\abil16939.dat" />
+    <EmbeddedResource Include="Version\abil17811.dat" />
+    <EmbeddedResource Include="Version\abil18701.dat" />
+    <EmbeddedResource Include="Version\abil21029.dat" />
+    <EmbeddedResource Include="Version\builds.dat" />
+    <EmbeddedResource Include="Version\subgroups.dat" />
+    <EmbeddedResource Include="Version\unit16939.dat" />
+    <EmbeddedResource Include="Version\unit17811.dat" />
+    <EmbeddedResource Include="Version\unit18701.dat" />
+    <EmbeddedResource Include="Version\unit21029.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Version\events.dat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

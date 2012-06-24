@@ -17,7 +17,7 @@ namespace Starcraft2.ReplayParser
     /// </summary>
     public class AbilityEvent : GameEventBase
     {
-        public AbilityEvent(BitReader bitReader, Replay replay, Player player)
+        public AbilityEvent(BitReader bitReader, Replay replay, Player player, AbilityData abilityData, UnitData unitData)
         {
             
             uint flags;
@@ -52,10 +52,9 @@ namespace Starcraft2.ReplayParser
             DefaultAbility = (bitReader.Read(1) == 0);
             if (!DefaultAbility)
             {
-                AbilityType = AbilityData.GetAbilityType(
+                AbilityType = abilityData.GetAbilityType(
                     (int)bitReader.Read(16),
-                    (int)bitReader.Read(5),
-                    replay.ReplayBuild);
+                    (int)bitReader.Read(5));
                 DefaultActor = (bitReader.Read(1) == 0);
                 if (!DefaultActor)
                 {   // I'm thinking this would be an array type... but I have no data.
@@ -94,7 +93,7 @@ namespace Starcraft2.ReplayParser
                 var unitTypeId = (int)bitReader.Read(16);
                 if (unit == null)
                 {
-                    var unitType = UnitData.GetUnitType(unitTypeId, replay.ReplayBuild);
+                    var unitType = unitData.GetUnitType(unitTypeId);
                     unit = new Unit(unitId, unitType);
                     unit.typeId = unitTypeId;
                     replay.GameUnits.Add(unitId, unit);
@@ -130,8 +129,7 @@ namespace Starcraft2.ReplayParser
 
             if (!AbilityFailed)
             {
-                this.EventType = GameEventType.Micro;
-                
+                this.EventType = EventData.GetInstance().GetEventType(this.AbilityType);
             }
             else
             {

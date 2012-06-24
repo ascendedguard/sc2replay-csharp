@@ -16,7 +16,7 @@ namespace Starcraft2.ReplayParser
     /// </summary>
     public class SelectionEvent : GameEventBase
     {
-        public SelectionEvent(BitReader bitReader, Replay replay, Player player)
+        public SelectionEvent(BitReader bitReader, Replay replay, Player player, UnitData data)
         {
             // Parse select event and update player wireframe accordingly
             WireframeIndex = (int)bitReader.Read(4);
@@ -107,7 +107,7 @@ namespace Starcraft2.ReplayParser
                 ClearSelection = true;
             }
 
-            HandleUnitArrays(bitReader, replay);
+            HandleUnitArrays(bitReader, replay, data);
 
             // Now, update the player wireframe.
             UpdateWireframe(player);
@@ -116,7 +116,7 @@ namespace Starcraft2.ReplayParser
         /// <summary>
         /// Reads the 8 {16, 8, 8}, 8 {32} struct; the result is in AddedUnits / AddedUnitTypes.
         /// </summary>
-        void HandleUnitArrays(BitReader bitReader, Replay replay)
+        void HandleUnitArrays(BitReader bitReader, Replay replay, UnitData data)
         {
             var typesLength = (int)bitReader.Read(8);
             AddedUnitTypes = new Dictionary<UnitType, int>(typesLength);
@@ -127,7 +127,7 @@ namespace Starcraft2.ReplayParser
             for (int i = 0; i < typesLength; i++)
             {
                 var unitTypeId = (int)bitReader.Read(16);
-                var unitType = UnitData.GetUnitType(unitTypeId, replay.ReplayBuild);
+                var unitType = data.GetUnitType(unitTypeId);
 
                 var unknown = bitReader.Read(8);
 

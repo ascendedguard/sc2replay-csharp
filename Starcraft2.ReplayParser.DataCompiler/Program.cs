@@ -29,11 +29,62 @@ namespace Starcraft2.ReplayParser.DataCompiler
 
                 CompileSubgroups(conn);
 
+                CompileEvents(conn);
+
                 var builds = CompileBuilds(conn);
                 foreach (var build in builds)
                 {
                     CompileAbilities(conn, build);
                     CompileUnits(conn, build);
+                }
+            }
+        }
+
+
+        static void CompileEvents(SQLiteConnection conn)
+        {
+            var result = new Dictionary<AbilityType, GameEventType>();
+
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM event_type;";
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    result.Add((AbilityType)Enum.Parse(typeof(AbilityType), reader.GetString(0)),
+                        (GameEventType)Enum.Parse(typeof(GameEventType), reader.GetString(1)));
+                }
+            }
+
+            using (var file = File.Open("events.dat", FileMode.Create))
+            {
+                var typesLength = Enum.GetNames(typeof(AbilityType)).Length;
+
+                var headerMagic = BitConverter.GetBytes(magicWord);
+                file.Write(headerMagic, 0, headerMagic.Length);
+
+                // 'evts'
+                var headerEvts = BitConverter.GetBytes(0x65767473);
+                file.Write(headerEvts, 0, headerEvts.Length);
+
+                var headerBuild = BitConverter.GetBytes((int)0);
+                file.Write(headerBuild, 0, headerBuild.Length);
+
+                // AbilityType count * 1 byte
+                var headerLength = BitConverter.GetBytes(typesLength);
+                file.Write(headerLength, 0, headerLength.Length);
+
+                for (var i = 0; i < typesLength; i++)
+                {
+                    GameEventType eventType;
+                    if (result.TryGetValue((AbilityType)i, out eventType))
+                    {
+                        file.WriteByte((byte)eventType);
+                    }
+                    else
+                    {
+                        file.WriteByte((byte)GameEventType.Unknown);
+                    }
                 }
             }
         }

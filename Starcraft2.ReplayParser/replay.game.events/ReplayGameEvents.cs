@@ -5,7 +5,8 @@
     using System;
     using System.Collections.Generic;
 
-    using Starcraft2.ReplayParser.Streams;
+    using Streams;
+    using Version;
 
     public class ReplayGameEvents
     {
@@ -23,6 +24,11 @@
                 throw new NotSupportedException(
                     "Replay builds under 16561 are not supported for parsing GameEvent log.");
             }
+
+            // Initialize Ability and Unit data.
+            var effectiveBuild = BuildData.GetInstance().GetEffectiveBuild(replay.ReplayBuild);
+            var abilityData = new AbilityData(effectiveBuild);
+            var unitData = new UnitData(effectiveBuild);
 
             var events = new List<IGameEvent>();
 
@@ -69,10 +75,10 @@
                             gameEvent = new PlayerLeftEvent(player);
                             break;
                         case 0x1b: // Ability
-                            gameEvent = new AbilityEvent(bitReader, replay, player);
+                            gameEvent = new AbilityEvent(bitReader, replay, player, abilityData, unitData);
                             break;
                         case 0x1c: // Selection
-                            gameEvent = new SelectionEvent(bitReader, replay, player);
+                            gameEvent = new SelectionEvent(bitReader, replay, player, unitData);
                             break;
                         case 0x1d: // Control groups
                             gameEvent = new HotkeyEvent(bitReader, replay, player);
