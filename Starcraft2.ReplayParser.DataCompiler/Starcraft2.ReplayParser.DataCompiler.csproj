@@ -48,6 +48,12 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Starcraft2.ReplayParser\Starcraft2.ReplayParser.VS2010.csproj">
+      <Project>{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}</Project>
+      <Name>Starcraft2.ReplayParser.VS2010</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

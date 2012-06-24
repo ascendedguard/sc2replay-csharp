@@ -11,6 +11,9 @@ namespace Starcraft2.ReplayParser
     /// </summary>
     public enum UnitType
     {
+        // Unknown
+        Unknown = 0,
+
         // Neutral units
         XelNagaTower,
         MineralField,
@@ -191,9 +194,6 @@ namespace Starcraft2.ReplayParser
         SpineCrawlerUprooted,
         SporeCrawler,
         SporeCrawlerUprooted,
-        GreaterSpire,
-
-        // Misc.
-        Unknown = 0xFFFF
+        GreaterSpire
     }
 }

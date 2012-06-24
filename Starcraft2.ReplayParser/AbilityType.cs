@@ -14,6 +14,9 @@ namespace Starcraft2.ReplayParser
         // This is meant to describe every ability type, i.e. CAbil * Buttons.
         // Hand-made with love.
 
+        // Unknown
+        Unknown = 0,
+
         // Basic movement
         Attack,
         Move,
@@ -381,7 +384,6 @@ namespace Starcraft2.ReplayParser
         ArmBroodling,
 
         // Misc
-        Taunt, // /dance, /cheer
-        Unknown = 0xFFFF
+        Taunt // /dance, /cheer
     }
 }
