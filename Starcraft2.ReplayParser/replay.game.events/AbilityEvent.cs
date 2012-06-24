@@ -129,7 +129,14 @@ namespace Starcraft2.ReplayParser
 
             if (!AbilityFailed)
             {
-                this.EventType = EventData.GetInstance().GetEventType(this.AbilityType);
+                if (RightClick)
+                {
+                    this.EventType = GameEventType.RightClick;
+                }
+                else
+                {
+                    this.EventType = EventData.GetInstance().GetEventType(this.AbilityType);
+                }
             }
             else
             {
