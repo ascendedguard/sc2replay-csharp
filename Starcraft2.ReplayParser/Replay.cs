@@ -185,9 +185,7 @@ namespace Starcraft2.ReplayParser
                 }
                 catch (Exception)
                 {
-                    // In the current state, the parsing commonly fails.
-                    // Incase of failing, we should probably just ignore the results of the parse
-                    // And return.
+                    // Likely to happen with any non-standard (i.e. format isn't melee nvn, locked alliances) replay.
                 }
             }
             finally
@@ -213,6 +211,9 @@ namespace Starcraft2.ReplayParser
             return null;
         }
 
+        /// <summary> Retrieves a unit by its long (32-bit) id </summary>
+        /// <param name="unitId"> The unit's long id </param>
+        /// <returns> Returns the unit </returns>
         public Unit GetUnitById(int unitId)
         {
             Unit unit = null;

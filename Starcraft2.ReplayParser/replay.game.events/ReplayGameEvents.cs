@@ -55,11 +55,6 @@
                         player = Player.Global;
                     }
 
-                    if (ticksElapsed == 0x1e)
-                    {
-                        var zero = 0d;
-                    }
-
                     var eventType = bitReader.Read(7);
                     IGameEvent gameEvent;
                     switch (eventType)

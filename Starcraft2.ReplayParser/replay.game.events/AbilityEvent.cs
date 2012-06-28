@@ -20,10 +20,10 @@ namespace Starcraft2.ReplayParser
         public AbilityEvent(BitReader bitReader, Replay replay, Player player, AbilityData abilityData, UnitData unitData)
         {
             uint flags;
-            // 1.3.3 patch notes:
-            // - Fixed an issue where the APM statistic could be artificially increased.
-            // This adds the "failed" flag below, which comes from holding down a hotkey
-            // and key repeat spamming events through a tick.
+            //   1.3.3 patch notes:
+            //   - Fixed an issue where the APM statistic could be artificially increased.
+            // This adds the "failed" flag, which is triggered usually by holding down a
+            // hotkey, leading to key repeat spamming the event throughout a single tick.
             if (replay.ReplayBuild < 18574) // < 1.3.3
             {
                 flags = bitReader.Read(17);
@@ -43,10 +43,8 @@ namespace Starcraft2.ReplayParser
             MinimapClick = (flags & 0x10000) != 0;
             AbilityFailed = (flags & 0x20000) != 0;
 
-            if ((flags & 0xf815) != 0) // Debug for unknown flags
-            {
-                var zero = 0d;
-            }
+            // flags & 0xf815 -> Debug for unknown flags
+            // Never found any across all test data.
 
             DefaultAbility = (bitReader.Read(1) == 0);
             DefaultActor = true;
@@ -57,15 +55,19 @@ namespace Starcraft2.ReplayParser
                     (int)bitReader.Read(5));
                 DefaultActor = (bitReader.Read(1) == 0);
                 if (!DefaultActor)
-                {   // I'm thinking this would be an array type... but I have no data.
-                    // TODO: Look at that maphacker replay when this is finished.
+                {   // I'm thinking this would be an array type... but I can't
+                    // find anything that causes this bit to be set.
                     throw new InvalidOperationException("Unsupported: non-default actor");
                 }
             }
             else if (DefaultActor)
             {
                 // Deep copy the current wireframe as the actor list
-                // deal with subgroups later...
+                // -----
+                // If a user wants to deal with subgroups to get a more
+                // concise actor list, the data is all here.  We're not
+                // going to bother, though, because there are several
+                // exceptions to account for in determining event actors.
                 Actors = new List<Unit>(player.Wireframe.Count);
                 foreach (var unit in player.Wireframe)
                 {
@@ -105,7 +107,8 @@ namespace Starcraft2.ReplayParser
                     TargetPlayer = (int)bitReader.Read(4);
                 }
 
-                if (replay.ReplayBuild >= 19679) // Dunno which build this changes
+                // 1.4.0 -- Don't really know what this was meant to fix
+                if (replay.ReplayBuild >= 19679)
                 {
                     var targetHasTeam = bitReader.Read(1) == 1;
                     if (targetHasTeam)
@@ -121,8 +124,14 @@ namespace Starcraft2.ReplayParser
             }
             else if (targetType == 3) // Unit target
             {
-                var id = (int)bitReader.Read(32);
-                // Needs special handling
+                var id = bitReader.Read(32);
+                // Again, if the user wants to determine exactly which
+                // queue item is canceled in the case of a queue cancel
+                // event (the most common case of this target specifier's
+                // occurence), they can; however, it requires an additional
+                // data structure that I don't want to bother with; however,
+                // all the underlying data is available in the events list.
+                TargetId = id;
             }
 
             var lastBit = bitReader.Read(1); // Should be 0; if not, misalignment is likely
@@ -238,6 +247,9 @@ namespace Starcraft2.ReplayParser
 
         /// <summary> The target unit of the ability or null </summary>
         public Unit TargetUnit { get; private set; }
+
+        /// <summary> The long id of the target unit or queue item </summary>
+        public uint TargetId { get; private set; }
 
         /// <summary> The target location of the ability or null </summary>
         public Location TargetLocation { get; private set; }
