@@ -27,6 +27,11 @@
 
             // Initialize Ability and Unit data.
             var effectiveBuild = BuildData.GetInstance().GetEffectiveBuild(replay.ReplayBuild);
+            if (effectiveBuild == 0)
+            {
+                throw new NotSupportedException(
+                    String.Format("Replay build {0} is not supported by the current event database", replay.ReplayBuild));
+            }
             var abilityData = new AbilityData(effectiveBuild);
             var unitData = new UnitData(effectiveBuild);
 

@@ -30,6 +30,11 @@ namespace Starcraft2.ReplayParser.Version
                 fileStream = currentAssembly.GetManifestResourceStream(embeddedFilename);
             }
 
+            if (fileStream == null)
+            {
+                throw new FileNotFoundException(String.Format("Could not find data file: {0}", fileName)); 
+            }
+
             using (fileStream)
             {
                 // Read header
