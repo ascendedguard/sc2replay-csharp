@@ -7,10 +7,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Starcraft2.ReplayParser.Streams;
-
 namespace Starcraft2.ReplayParser
 {
+    using Streams;
+
     /// <summary> Interface for a basic game event. </summary>
     public interface IGameEvent
     {
