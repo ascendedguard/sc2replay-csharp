@@ -7,6 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Starcraft2.ReplayParser
 {
     using System;
@@ -69,11 +72,7 @@ namespace Starcraft2.ReplayParser
                 var mapPreviewNameLength = KeyValueStruct.Parse(reader).Value;
                 var mapPreviewNameBytes = reader.ReadBytes(mapPreviewNameLength);
 
-                // What have I learned:
-                // While I can get the name of the map preview file, apparently MPQLib.dll will not
-                // Support exporting the file since its not in the file list. I tried, and it threw an error...
-                // Maybe my buffer wasn't big enough, but it was some temporary file error, so I don't think so.
-                var mapPreviewName = Encoding.UTF8.GetString(mapPreviewNameBytes);
+				replay.MapPreviewName = Encoding.UTF8.GetString(mapPreviewNameBytes);
 
                 reader.ReadBytes(3);
 
@@ -87,10 +86,38 @@ namespace Starcraft2.ReplayParser
                 // We create a new timestamp so we can properly set this as UTC time.
                 replay.Timestamp = new DateTime(time.Ticks, DateTimeKind.Utc);
 
+				// don't know what the next 14 bytes are for, so we skip them
+            	reader.ReadBytes(14);
+
+            	var resources =  new List<ResourceInfo>();
+            	reader.ReadBytes(2); // there are 2 bytes before each "s2ma" string
+            	var s2ma = Encoding.UTF8.GetString(reader.ReadBytes(4));
+
+				while(s2ma == "s2ma") {
+					reader.ReadBytes(2); // 0x00, 0x00
+
+					resources.Add(new ResourceInfo {
+						Gateway = Encoding.UTF8.GetString(reader.ReadBytes(2)),
+						Hash = reader.ReadBytes(32),
+					});
+
+					reader.ReadBytes(2);
+					s2ma = Encoding.UTF8.GetString(reader.ReadBytes(4));
+				}
+
+            	var map = resources.Last();
+            	replay.MapGateway = map.Gateway;
+            	replay.MapHash = map.Hash;
+
                 reader.Close();
             }
         }
 
         #endregion
+
+		private class ResourceInfo {
+			public string Gateway { get; set; }
+			public byte[] Hash { get; set; }
+		}
     }
 }
