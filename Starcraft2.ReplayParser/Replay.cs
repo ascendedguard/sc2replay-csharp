@@ -47,6 +47,12 @@ namespace Starcraft2.ReplayParser
         /// <summary> Gets the map the game was played on. </summary>
         public string Map { get; internal set; }
 
+		public string MapPreviewName { get; internal set; }
+
+		public string MapGateway { get; internal set; }
+
+		public byte[] MapHash { get; internal set; }
+
         /// <summary> Gets the list of game events occuring during the course of the replay. </summary>
         public List<IGameEvent> PlayerEvents { get; internal set; }
 
