@@ -34,10 +34,15 @@ namespace Starcraft2.ReplayParser
             KeyValueStruct.Parse(reader);
             reader.ReadBytes(6);
 
-            var subId = KeyValueStruct.Parse(reader).Value;
-            var battlenetId = KeyValueStruct.Parse(reader).Value;
+            var subIdKVS = KeyValueStruct.Parse(reader);
 
-            int raceLength = KeyValueStruct.Parse(reader).Value;
+            var subId = subIdKVS.Value;
+
+            var bnetIdKVS = KeyValueStruct.Parse(reader);
+            var battlenetId = bnetIdKVS.Value;
+
+            var raceLengthKVS = KeyValueStruct.Parse(reader);
+            int raceLength = raceLengthKVS.Value;
 
             byte[] raceBytes = reader.ReadBytes(raceLength);
             var race = Encoding.UTF8.GetString(raceBytes);
@@ -63,13 +68,11 @@ namespace Starcraft2.ReplayParser
                             keys[1].Value.ToString("X2"), 
                             keys[2].Value.ToString("X2"), 
                             keys[3].Value.ToString("X2")), 
-                    Handicap = keys[6].Value, 
-                    //// IsWinner = keys[7].Value == 1, -- Incorrect.
-                    //// Ignoring the team here because it's unreliable in many replays. Parsed in replay.attributes.events
-                    //// Team = keys[8].Value,
-                           
-                    BattleNetId = battlenetId, 
-                    BattleNetSubId = subId, 
+                    Handicap = keys[6].Value,
+                    Team = keys[7].Value,
+                    IsWinner = keys[8].Value == 1, // 1 == winner, 2 == loser 
+                    BattleNetId = battlenetId,
+                    BattleNetSubId = subId,
                 };
         }
 

@@ -49,6 +49,12 @@ namespace Starcraft2.ReplayParser
         /// <summary> Gets the map the game was played on. </summary>
         public string Map { get; internal set; }
 
+		public string MapPreviewName { get; internal set; }
+
+		public string MapGateway { get; internal set; }
+
+		public byte[] MapHash { get; internal set; }
+
         /// <summary> Gets the list of game events occuring during the course of the replay. </summary>
         public List<IGameEvent> PlayerEvents { get; internal set; }
 
@@ -72,6 +78,14 @@ namespace Starcraft2.ReplayParser
 
         /// <summary> Gets the length of the game. </summary>
         public TimeSpan GameLength { get; internal set; }
+
+        /// <summary>
+        /// Gets the list of clients connected to the game.
+        /// </summary>
+        /// <remarks>
+        /// The list of observers can be determined by removing any players from the Players array.
+        /// </remarks>
+        public string[] ClientList { get; internal set; }
 
         #endregion
 

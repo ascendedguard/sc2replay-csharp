@@ -10,6 +10,8 @@ Starcraft2.ReplayParser.DataCompiler/obj
 *StyleCop.Cache
 *.Resharper
 *.dotCover
+*.DotSettings
+*.DotSettings.*
 *.SC2Replay
 *.7z
 *.sql

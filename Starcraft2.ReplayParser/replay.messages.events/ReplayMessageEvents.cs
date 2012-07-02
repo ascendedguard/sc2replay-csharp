@@ -338,9 +338,9 @@ namespace Starcraft2.ReplayParser
         private static byte[] GenerateChatMessage(
             byte[] buffer, string message, ChatMessageTarget target, int playerId, int seconds)
         {
-            if (message.Length >= 64)
+            if (message.Length >= 256)
             {
-                throw new NotSupportedException("This call does not support strings longer than 64 characters yet.");
+                throw new NotSupportedException("This call does not support strings longer than 256 characters.");
             }
 
             int targetValue = seconds * 16;
@@ -372,17 +372,62 @@ namespace Starcraft2.ReplayParser
 
                             var shiftTimestamp = CreateTimestamp(shiftValue);
 
+                            #region Writing the chat message
+
                             var bytes = new List<byte>();
 
                             bytes.AddRange(shiftTimestamp);
                             bytes.Add((byte)playerId); // playerid
 
-                            var opcode = (byte)target;
-                            bytes.Add(opcode); // opcode
-                            bytes.Add((byte)message.Length);
-                            bytes.AddRange(Encoding.UTF8.GetBytes(message));
+                            // &8 for +64, &16 for +128
+
+                            var messageOut = Encoding.UTF8.GetBytes(message);
+
+                            int length = messageOut.Length;
+
+                            if (length < 64)
+                            {
+                                var opcode = (byte)target;
+                                bytes.Add(opcode); // opcode
+
+                                bytes.Add((byte)length);
+                                bytes.AddRange(messageOut);
+                            }
+                            else if (length < 128)
+                            {
+                                var opcode = (byte)((byte)target | 8);
+                                bytes.Add(opcode);
+
+                                length -= 64;
+
+                                bytes.Add((byte)length);
+                                bytes.AddRange(messageOut);
+                            }
+                            else if (length < 192)
+                            {
+                                var opcode = (byte)((byte)target | 16);
+                                bytes.Add(opcode);
+
+                                length -= 128;
+
+                                bytes.Add((byte)length);
+                                bytes.AddRange(messageOut);
+                            }
+                            else if (length < 256)
+                            {
+                                var opcode = (byte)((byte)target | 24);
+                                bytes.Add(opcode);
+
+                                length -= 192;
+
+                                bytes.Add((byte)length);
+                                bytes.AddRange(messageOut);
+                            }
 
                             completeFile.AddRange(bytes);
+
+                            #endregion
+
                             hasBeenWritten = true;
                             adjustTimestamps = true;
                         }
@@ -434,13 +479,50 @@ namespace Starcraft2.ReplayParser
                         bytes.AddRange(shiftTimestamp);
                         bytes.Add((byte)playerId); // playerid
 
-                        var opcode = (byte)target;
-                        bytes.Add(opcode); // opcode
+                        // &8 for +64, &16 for +128
 
                         var messageOut = Encoding.UTF8.GetBytes(message);
 
-                        bytes.Add((byte)messageOut.Length);
-                        bytes.AddRange(messageOut);
+                        int length = messageOut.Length;
+
+                        if (length < 64)
+                        {
+                            var opcode = (byte)target;
+                            bytes.Add(opcode); // opcode
+
+                            bytes.Add((byte)length);
+                            bytes.AddRange(messageOut);                         
+                        }
+                        else if (length < 128)
+                        {
+                            var opcode = (byte)((byte)target | 8);
+                            bytes.Add(opcode);
+
+                            length -= 64;
+
+                            bytes.Add((byte)length);
+                            bytes.AddRange(messageOut);
+                        }
+                        else if (length < 192)
+                        {
+                            var opcode = (byte)((byte)target | 16);
+                            bytes.Add(opcode);
+
+                            length -= 128;
+
+                            bytes.Add((byte)length);
+                            bytes.AddRange(messageOut);
+                        }
+                        else if (length < 256)
+                        {
+                            var opcode = (byte)((byte)target | 24);
+                            bytes.Add(opcode);
+
+                            length -= 192;
+
+                            bytes.Add((byte)length);
+                            bytes.AddRange(messageOut);
+                        }
 
                         completeFile.AddRange(bytes);
                     }
