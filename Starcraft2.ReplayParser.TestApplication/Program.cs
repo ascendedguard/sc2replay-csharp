@@ -1,51 +1,45 @@
-﻿namespace Starcraft2.ReplayParser.TestApplication
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="Ascend">
+//   Copyright 2012 All Rights Reserved
+// </copyright>
+// <summary>
+//   Defines the Program type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Starcraft2.ReplayParser.TestApplication
 {
     using System;
     using System.Diagnostics;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
-    class Program
+    /// <summary> Main application entry point </summary>
+    public class Program
     {
-        static void Main()
+        /// <summary> Main application entry point </summary>
+        public static void Main()
         {
-            replays = new List<Replay>();
+            // If you'd like to test a specific folder, replace this line.
+            var replayFolder = GetDefaultReplayDirectory();
 
-            string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            appPath = Path.GetDirectoryName(appPath);
+            if (replayFolder == null)
+            {
+                // Close and do nothing if the parsing directory was invalid.
+                return;
+            }
 
-            // Files between 1.0.0 and 1.0.3 are compatible up to 1.0.3
-            // We won't test these because we don't support them in replay.game.events
-            // BenchmarkReplay(Path.Combine(appPath, "testReplay.1.0.0.16117.SC2Replay"));
-
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.0.16561.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.1.16605.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.2.16755.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.1.3.16939.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.0.17326.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.1.17682.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.2.2.17811.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.0.18092.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.1.18221.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.2.18317.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.3.18574.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.4.18701.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.5.19132.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.3.6.19269.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.0.19679.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.1.19776.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.2.20141.SC2Replay"));
-            //BenchmarkReplay(Path.Combine(appPath, "testReplay.1.4.3.21029.SC2Replay"));
-
-            // Replace this with your local Starcraft 2's replay folder to  test parallel parsing.
-            const string replayLocation = @"C:\Users\Sherwood\Documents\StarCraft II\Test Data";
-
-            string[] replayFiles = Directory.GetFiles(replayLocation);
+            var replayFiles = Directory.GetFiles(replayFolder, "*.SC2Replay", SearchOption.AllDirectories);
 
             int filesTotal = replayFiles.Length;
             int filesSucceeded = 0;
-            
+
+            if (filesTotal == 0)
+            {
+                Console.Out.WriteLine("No replays found in selected directory.");
+                return;
+            }
+
             foreach (string replay in replayFiles)
             {
                 try
@@ -68,7 +62,6 @@
         private static void BenchmarkReplay(string filePath)
         {
             Replay replay = Replay.Parse(filePath);
-            replays.Add(replay);
 
             CalculateAPM(replay);
 
@@ -79,7 +72,10 @@
                 if (player != null)
                 {
                     if (player.IsWinner)
+                    {
                         Console.Out.Write("*");
+                    }
+
                     Console.Out.Write(player.Name + " ");
                 }
             }
@@ -116,6 +112,50 @@
             }
         }
 
-        static System.Collections.Generic.List<Replay> replays;
+        private static string GetDefaultReplayDirectory()
+        {
+            // The following gets a user's Starcraft II replay folder automatically.
+            var sc2Accounts = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Starcraft II", "Accounts");
+
+            if (Directory.Exists(sc2Accounts) == false)
+            {
+                Console.Out.WriteLine("Starcraft II is not installed on the system.");
+                return null;
+            }
+
+            var accounts = Directory.GetDirectories(sc2Accounts);
+            var selectedAccount = accounts.FirstOrDefault();
+
+            if (selectedAccount == null || Directory.Exists(selectedAccount) == false)
+            {
+                // This likely shouldn't happen. I don't think these folders would
+                // get created until the user has logged into the game for the first time.
+                Console.Out.WriteLine("The user has never played Starcraft II, but it is installed.");
+                return null;
+            }
+
+            var players = Directory.GetDirectories(selectedAccount);
+            var selectedPlayer = players.FirstOrDefault();
+
+            if (selectedPlayer == null || Directory.Exists(selectedPlayer) == false)
+            {
+                // I'm not sure why this would happen either. You CAN, however, have multiple players
+                // registered to a single account. For example, my EU and US accounts were merged onto
+                // a single account, and both players (with 1- and 2- regions) show up here.
+                Console.Out.WriteLine("The user has never played Starcraft II, but it is installed.");
+                return null;
+            }
+
+            var replayFolder = Path.Combine(selectedPlayer, "Replays", "Multiplayer");
+
+            if (replayFolder == null || Directory.Exists(replayFolder) == false)
+            {
+                // This can happen if the user just has never saved any replays.
+                Console.Out.WriteLine("The replay directory for the selected user does not exist.");
+                return null;
+            }
+
+            return replayFolder;
+        }
     }
 }
