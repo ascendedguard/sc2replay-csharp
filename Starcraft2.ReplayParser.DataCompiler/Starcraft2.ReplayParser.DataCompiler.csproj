@@ -12,7 +12,7 @@
     <AssemblyName>Starcraft2.ReplayParser.DataCompiler</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -37,7 +37,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\System.Data.SQLite\2010\bin\System.Data.SQLite.dll</HintPath>
+      <HintPath>References\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
