@@ -44,6 +44,8 @@
             {
                 var bitReader = new BitReader(stream);
 
+                var playersGone = new bool[0x10];
+
                 while (!bitReader.EndOfStream)
                 {
                     var intervalLength = 6 + (bitReader.Read(2) << 3);
@@ -73,6 +75,8 @@
                             break;
                         case 0x19: // Leave game
                             gameEvent = new PlayerLeftEvent(player);
+                            playersGone[playerIndex] = true;
+                            DetectWinners(playersGone, replay);
                             break;
                         case 0x1b: // Ability
                             gameEvent = new AbilityEvent(bitReader, replay, player, abilityData, unitData);
@@ -105,6 +109,12 @@
                         case 0x31: // Camera
                             gameEvent = new CameraEvent(bitReader, replay);
                             break;
+                        case 0x37: // UI Event
+                            gameEvent = new GameEventBase();
+                            gameEvent.EventType = GameEventType.Other;
+                            bitReader.Read(32);
+                            bitReader.Read(32);
+                            break;
                         case 0x46: // Request resources
                             gameEvent = new RequestResourcesEvent(bitReader, replay);
                             break;
@@ -132,11 +142,44 @@
             return events;
         }
 
-        private static void TrackLeavingPlayer(List<Player> remainingPlayers, Player player)
+        private static void DetectWinners(bool[] playersGone, Replay replay)
         {
-            if (remainingPlayers.Contains(player))
+            var teamsStillActive = new bool[0x10];
+            for (var i = 0; i < playersGone.Length; i++)
             {
-                remainingPlayers.Remove(player);
+                var player = replay.GetPlayerById(i);
+                if (player != null && // player exists
+                    player.Team != 0 && // player is not neutral
+                    // -- Technically player team is 16 for spectators I think, but not defined here => 0
+                    player.PlayerType != PlayerType.Spectator && // player is playing
+                    playersGone[i] == false) // player is still in-game
+                {
+                    teamsStillActive[player.Team] = true;
+                }
+            }
+
+            var winCandidate = 0;
+            for (var i = 1; i < 0x10; i++)
+            {
+                if (teamsStillActive[i] && winCandidate == 0)
+                {
+                    winCandidate = i;
+                }
+                else if (teamsStillActive[i]) // .Count(n=>n) > 0
+                {
+                    winCandidate = -1;
+                }
+            }
+
+            if (winCandidate > 0)
+            {
+                foreach (var player in replay.Players)
+                {
+                    if (player != null && player.Team == winCandidate)
+                    {
+                        player.IsWinner = true;
+                    }
+                }
             }
         }
     }

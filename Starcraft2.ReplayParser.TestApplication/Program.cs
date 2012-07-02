@@ -77,7 +77,11 @@
             foreach (var player in replay.Players)
             {
                 if (player != null)
+                {
+                    if (player.IsWinner)
+                        Console.Out.Write("*");
                     Console.Out.Write(player.Name + " ");
+                }
             }
 
             Console.Out.WriteLine();

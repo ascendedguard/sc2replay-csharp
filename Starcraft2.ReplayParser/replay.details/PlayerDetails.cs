@@ -64,7 +64,7 @@ namespace Starcraft2.ReplayParser
                             keys[2].Value.ToString("X2"), 
                             keys[3].Value.ToString("X2")), 
                     Handicap = keys[6].Value, 
-                    IsWinner = keys[7].Value == 1, 
+                    //// IsWinner = keys[7].Value == 1, -- Incorrect.
                     //// Ignoring the team here because it's unreliable in many replays. Parsed in replay.attributes.events
                     //// Team = keys[8].Value,
                            
