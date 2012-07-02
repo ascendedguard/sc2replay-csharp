@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser", "Starcraft2.ReplayParser\Starcraft2.ReplayParser.VS2010.csproj", "{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.VS2010", "Starcraft2.ReplayParser\Starcraft2.ReplayParser.VS2010.csproj", "{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.TestApplication", "Starcraft2.ReplayParser.TestApplication\Starcraft2.ReplayParser.TestApplication.VS2010.csproj", "{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.TestApplication.VS2010", "Starcraft2.ReplayParser.TestApplication\Starcraft2.ReplayParser.TestApplication.VS2010.csproj", "{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.DataCompiler", "Starcraft2.ReplayParser.DataCompiler\Starcraft2.ReplayParser.DataCompiler.csproj", "{6582781B-BB53-4AB2-8676-61FC30286BA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,16 @@ Global
 		{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}.Release|Mixed Platforms.Build.0 = Release|x86
 		{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}.Release|x86.ActiveCfg = Release|x86
 		{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}.Release|x86.Build.0 = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|x86.ActiveCfg = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Debug|x86.Build.0 = Debug|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|Any CPU.ActiveCfg = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|x86.ActiveCfg = Release|x86
+		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

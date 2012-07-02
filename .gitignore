@@ -3,6 +3,8 @@ Starcraft2.ReplayParser/bin
 Starcraft2.ReplayParser/obj
 Starcraft2.ReplayParser.TestApplication/bin
 Starcraft2.ReplayParser.TestApplication/obj
+Starcraft2.ReplayParser.DataCompiler/bin
+Starcraft2.ReplayParser.DataCompiler/obj
 *.suo
 *.ReSharper.user
 *StyleCop.Cache
@@ -10,3 +12,6 @@ Starcraft2.ReplayParser.TestApplication/obj
 *.dotCover
 *.DotSettings
 *.DotSettings.*
+*.SC2Replay
+*.7z
+*.sql

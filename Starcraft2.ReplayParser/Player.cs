@@ -9,6 +9,8 @@
 
 namespace Starcraft2.ReplayParser
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Describes an individual player in a replay.
     /// </summary>
@@ -71,6 +73,24 @@ namespace Starcraft2.ReplayParser
         /// Gets or sets the player's team number.
         /// </summary>
         public int Team { get; set; }
+
+        public override string ToString()
+        {
+            return Name.ToString();
+        }
+
+        /// <summary> The player's current wireframe </summary>
+        internal List<Unit> Wireframe;
+
+        /// <summary> Currently selected wireframe subgroup </summary>
+        internal int WireframeSubgroup;
+
+        /// <summary>
+        /// The player's current control group setup.
+        /// </summary>
+        internal List<Unit>[] Hotkeys;
+
+        internal static Player Global = new Player();
 
         #endregion
     }

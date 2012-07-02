@@ -26,6 +26,8 @@ namespace Starcraft2.ReplayParser
         /// <summary> Initializes a new instance of the <see cref = "Replay" /> class. </summary>
         internal Replay()
         {
+            GameUnits = new Dictionary<int, Unit>();
+            Players = new Player[0x10];
         }
 
         #endregion
@@ -55,6 +57,9 @@ namespace Starcraft2.ReplayParser
 
         /// <summary> Gets the list of game events occuring during the course of the replay. </summary>
         public List<IGameEvent> PlayerEvents { get; internal set; }
+
+        /// <summary> Gets the list of units appearing throughout the replay. </summary>
+        public Dictionary<int, Unit> GameUnits { get; internal set; }
 
         /// <summary> Gets the details of all players in the replay. </summary>
         public Player[] Players { get; internal set; }
@@ -88,8 +93,9 @@ namespace Starcraft2.ReplayParser
 
         /// <summary> Parses a .SC2Replay file and returns relevant replay information.  </summary>
         /// <param name="fileName"> Full path to a .SC2Replay file.  </param>
+        /// <param name="noEvents"> True if you don't want to parse events (uses about 5~10 MB on a pro replay, half on an amateur replay) </param>
         /// <returns> Returns the fully parsed Replay object. </returns>
-        public static Replay Parse(string fileName)
+        public static Replay Parse(string fileName, bool noEvents = false)
         {
             if (File.Exists(fileName) == false)
             {
@@ -163,27 +169,37 @@ namespace Starcraft2.ReplayParser
                     var buffer = new byte[fileSize];
 
                     archive.ExportFile(CurFile, buffer);
-
-                    replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
+                    try
+                    {
+                        replay.ChatMessages = ReplayMessageEvents.Parse(buffer);
+                    }
+                    catch // Chat may have been removed without maintaining the structure
+                          // Example:  LiquidHayPro vs MFTarga.SC2Replay from TLPro pack #36
+                          // You can see a date on the file in MPQ editor, and viewing the
+                          // replay in SC2 results in no chat at all.
+                    {
+                        replay.ChatMessages = new List<ChatMessage>();
+                    }
                 }
 
                 try
                 {
-                    const string CurFile = "replay.game.events";
+                    if (!noEvents)
+                    {
+                        const string CurFile = "replay.game.events";
 
-                    var fileSize = (from f in files where f.FileName.Equals(CurFile) select f).Single().Size;
+                        var fileSize = (from f in files where f.FileName.Equals(CurFile) select f).Single().Size;
 
-                    var buffer = new byte[fileSize];
+                        var buffer = new byte[fileSize];
 
-                    archive.ExportFile(CurFile, buffer);
+                        archive.ExportFile(CurFile, buffer);
 
-                    replay.PlayerEvents = ReplayGameEvents.Parse(replay, buffer);
+                        replay.PlayerEvents = ReplayGameEvents.Parse(replay, buffer);
+                    }
                 }
                 catch (Exception)
                 {
-                    // In the current state, the parsing commonly fails.
-                    // Incase of failing, we should probably just ignore the results of the parse
-                    // And return.
+                    // Likely to happen with any non-standard (i.e. format isn't melee nvn, locked alliances) replay.
                 }
             }
             finally
@@ -201,14 +217,22 @@ namespace Starcraft2.ReplayParser
         /// <returns> Returns the appropriate Player from the Players array. </returns>
         public Player GetPlayerById(int playerId)
         {
-            int playerIndex = playerId - 1;
-
-            if (playerIndex < this.Players.Length)
+            if (16 > playerId)
             {
-                return this.Players[playerIndex];
+                return this.Players[playerId];
             }
 
             return null;
+        }
+
+        /// <summary> Retrieves a unit by its long (32-bit) id </summary>
+        /// <param name="unitId"> The unit's long id </param>
+        /// <returns> Returns the unit </returns>
+        public Unit GetUnitById(int unitId)
+        {
+            Unit unit = null;
+            GameUnits.TryGetValue(unitId, out unit);
+            return unit;
         }
 
         #endregion

@@ -1,0 +1,592 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        "MpqLib"
+    </assembly>
+    <members>
+        <member name="P:MpqLib.Mpq.CFileStream.IsDisposed">
+            <summary>
+Checks if the file has been disposed.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.Tag">
+            <summary>
+Gets or sets the tag data of the file.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.Archive">
+            <summary>
+Retrieves the archive the file is located in.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.FileName">
+            <summary>
+Retrieves the file filename.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.Handle">
+            <summary>
+Retrieves the file handle.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.Locale">
+            <summary>
+Gets or sets the file locale (for language specific files).
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.CompressedLength">
+            <summary>
+Retrieves the length (size) of the file when stored in the archive.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.Position">
+            <summary>
+Gets or sets the current position in the file.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.Length">
+            <summary>
+Retrieves the length (size) of the file.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.CanWrite">
+            <summary>
+Checks if the stream can be written to.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.CanRead">
+            <summary>
+Checks if the stream can be read from.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileStream.CanSeek">
+            <summary>
+Checks if seeking can be performed on the stream.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.ToString">
+            <summary>
+Generates a string version of the file.
+</summary>
+            <returns>The generated string</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Flush">
+            <summary>
+Flushes the file, committing unsaved changes.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.SetLength(System.Int64)">
+            <summary>
+Changes the length (size) of the file, either extending or cutting off from the end.
+</summary>
+            <param name="Length">The new length of the file</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+Updates the current position (no reading or writing performed).
+</summary>
+            <param name="Position">The new position to set, an offset relative to SeekOrigin</param>
+            <param name="SeekOrigin">Where the new position should be relative from</param>
+            <returns>The new position</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+Writes a number of bytes to the file from a buffer, starting at the current position.
+</summary>
+            <param name="Buffer">The buffer to write from</param>
+            <param name="Index">The index in the buffer to start reading from</param>
+            <param name="Size">The number of bytes to write</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+Reads a number of bytes from the file to a buffer, starting at the current position.
+</summary>
+            <param name="Buffer">The buffer to read into</param>
+            <param name="Index">The index in the buffer to start writing at</param>
+            <param name="Size">The (maximum) number of bytes to read</param>
+            <returns>The number of bytes read</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Read(System.Int32,System.Int32)">
+            <summary>
+Reads a number of bytes from the file, starting at the specified position.
+</summary>
+            <param name="Position">The position to start reading at</param>
+            <param name="Size">The (maximum) number of bytes to read</param>
+            <returns>An array containing the bytes read</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Read(System.Int32)">
+            <summary>
+Reads a number of bytes from the file, starting at the current position.
+</summary>
+            <param name="Size">The (maximum) number of bytes to read</param>
+            <returns>An array containing the bytes read</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Close">
+            <summary>
+Closes the file.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Finalize">
+            <summary>
+Releases all resources used by the MpqLib.Mpq.CFileStream.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.Dispose">
+            <summary>
+Releases all resources used by the MpqLib.Mpq.CFileStream.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileStream.#ctor(MpqLib.Mpq.CArchive,System.String)">
+            <summary>
+Parameterized constructor.
+</summary>
+            <param name="Archive">The archive to stream a file from</param>
+            <param name="FileName">The file to stream</param>
+        </member>
+        <member name="T:MpqLib.Mpq.CFileStream">
+            <summary>
+Represents a file inside an MPQ archive. The stream is readonly.
+Use the archive Import-methods to update files in the archive.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CArchive.IsDisposed">
+            <summary>
+Checks if the archive has been disposed.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CArchive.Tag">
+            <summary>
+Gets or sets the tag data of the archive.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CArchive.FileName">
+            <summary>
+Retrieves the archive filename.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CArchive.Handle">
+            <summary>
+Retrieves the archive handle.
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CArchive.Locale">
+            <summary>
+Gets or sets the archive locale (for language specific files).
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CArchive.FileCount">
+            <summary>
+Retrieves the number of files in the archive.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ToString">
+            <summary>
+Generates a string version of the archive.
+</summary>
+            <returns>The generated string</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.FindFiles(System.String,System.String,System.Boolean)">
+            <summary>
+Retrieves information about the files in the archive, only relying on the listfile. Uses an external listfile instead of an included one.
+</summary>
+            <param name="Mask">A wildcard filter deciding which files to include in the search</param>
+            <param name="ExternalListFile">A path to an external listfile to use</param>
+            <param name="TraverseListFileOnly">Decides whether to only rely on the files in the listfile or not</param>
+            <returns>A collection of the files found</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.FindFiles(System.String,System.String)">
+            <summary>
+Retrieves information about the files in the archive. Uses an external listfile instead of an included one.
+</summary>
+            <param name="Mask">A wildcard filter deciding which files to include in the search</param>
+            <param name="ExternalListFile">A path to an external listfile to use</param>
+            <returns>A collection of the files found</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.FindFiles(System.String,System.Boolean)">
+            <summary>
+Retrieves information about the files in the archive, only relying on the listfile.
+</summary>
+            <param name="Mask">A wildcard filter deciding which files to include in the search</param>
+            <param name="TraverseListFileOnly">Decides whether to only rely on the files in the listfile or not</param>
+            <returns>A collection of the files found</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.FindFiles(System.String)">
+            <summary>
+Retrieves information about the files in the archive.
+</summary>
+            <param name="Mask">A wildcard filter deciding which files to include in the search</param>
+            <returns>A collection of the files found</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.RemoveFile(System.String)">
+            <summary>
+Removes a file from the archive.
+</summary>
+            <param name="FileName">The file to remove</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.RenameFile(System.String,System.String)">
+            <summary>
+Renames a file in the archive.
+</summary>
+            <param name="FileName">The file to rename</param>
+            <param name="NewFileName">the new name for the file</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ExportFile(System.String,System.Byte[],System.Int32)">
+            <summary>
+Exports a file from the archive, saving it to a buffer.
+</summary>
+            <param name="FileName">The file to export</param>
+            <param name="FileData">The buffer to save to</param>
+            <param name="Index">The index in the buffer to start writing at</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ExportFile(System.String,System.Byte[])">
+            <summary>
+Exports a file from the archive, saving it to a buffer.
+</summary>
+            <param name="FileName">The file to export</param>
+            <param name="FileData">The buffer to save to</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ExportFile(System.String,System.String)">
+            <summary>
+Exports a file from the archive, saving it to a physical file.
+</summary>
+            <param name="FileName">The file to export</param>
+            <param name="RealFileName">The physical file to save to</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportListFile(System.Byte[])">
+            <summary>
+Imports a listfile to the archive, merging it with existing listfiles.
+</summary>
+            <param name="FileData">The listfile to import, stored in a buffer</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportListFile(System.String)">
+            <summary>
+Imports a listfile to the archive, merging it with existing listfiles.
+</summary>
+            <param name="FileName">The listfile to import</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportWaveFile(System.String,System.Byte[],MpqLib.Mpq.EQuality,MpqLib.Mpq.ECompression,MpqLib.Mpq.EEncryption)">
+            <summary>
+Imports a wave file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="FileData">The file to import, stored in a buffer</param>
+            <param name="Quality">Which quality to use on the file when importing</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+            <param name="Encryption">Which encryption to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportWaveFile(System.String,System.Byte[],MpqLib.Mpq.EQuality,MpqLib.Mpq.ECompression)">
+            <summary>
+Imports a wave file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="FileData">The file to import, stored in a buffer</param>
+            <param name="Quality">Which quality to use on the file when importing</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportWaveFile(System.String,System.Byte[],MpqLib.Mpq.EQuality)">
+            <summary>
+Imports a wave file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="FileData">The file to import, stored in a buffer</param>
+            <param name="Quality">Which quality to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportWaveFile(System.String,System.String,MpqLib.Mpq.EQuality,MpqLib.Mpq.ECompression,MpqLib.Mpq.EEncryption)">
+            <summary>
+Imports a wave file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="RealFileName">The file to import</param>
+            <param name="Quality">Which quality to use on the file when importing</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+            <param name="Encryption">Which encryption to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportWaveFile(System.String,System.String,MpqLib.Mpq.EQuality,MpqLib.Mpq.ECompression)">
+            <summary>
+Imports a wave file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="RealFileName">The file to import</param>
+            <param name="Quality">Which quality to use on the file when importing</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportWaveFile(System.String,System.String,MpqLib.Mpq.EQuality)">
+            <summary>
+Imports a wave file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="RealFileName">The file to import</param>
+            <param name="Quality">Which quality to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportFile(System.String,System.Byte[],MpqLib.Mpq.ECompression,MpqLib.Mpq.EEncryption)">
+            <summary>
+Imports a file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="FileData">The file to import, stored in a buffer</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+            <param name="Encryption">Which encryption to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportFile(System.String,System.Byte[],MpqLib.Mpq.ECompression)">
+            <summary>
+Imports a file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="FileData">The file to import, stored in a buffer</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportFile(System.String,System.Byte[])">
+            <summary>
+Imports a file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="FileData">The file to import, stored in a buffer</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportFile(System.String,System.String,MpqLib.Mpq.ECompression,MpqLib.Mpq.EEncryption)">
+            <summary>
+Imports a file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="RealFileName">The file to import</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+            <param name="Encryption">Which encryption to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportFile(System.String,System.String,MpqLib.Mpq.ECompression)">
+            <summary>
+Imports a file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="RealFileName">The file to import</param>
+            <param name="Compression">Which compression to use on the file when importing</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.ImportFile(System.String,System.String)">
+            <summary>
+Imports a file to the archive.
+</summary>
+            <param name="FileName">The filename to save as in the archive</param>
+            <param name="RealFileName">The file to import</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.FileExists(System.String)">
+            <summary>
+Checks if a file exists in the archive.
+</summary>
+            <param name="FileName">The file to check</param>
+            <returns>True if the file exists, False otherwise</returns>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.Compact">
+            <summary>
+Compacts the archive, potentially reducing its size.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.Flush">
+            <summary>
+Flushes the archive, committing unsaved changes.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.Close">
+            <summary>
+Closes the archive.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.Finalize">
+            <summary>
+Releases all resources used by the MpqLib.Mpq.CArchive.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.Dispose">
+            <summary>
+Releases all resources used by the MpqLib.Mpq.CArchive.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.#ctor(System.String,System.Boolean,MpqLib.Mpq.EArchiveFormat,System.UInt32)">
+            <summary>
+Parameterized constructor.
+</summary>
+            <param name="FileName">The archive to open or create</param>
+            <param name="CreateIfNotExists">Decides if a new archive should be created if none exists</param>
+            <param name="ArchiveFormat">Which MPQ format to use (higher version supports larger files)</param>
+            <param name="HashTableSize">The initial size of the hashtable</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.#ctor(System.String,System.Boolean,MpqLib.Mpq.EArchiveFormat)">
+            <summary>
+Parameterized constructor.
+</summary>
+            <param name="FileName">The archive to open or create</param>
+            <param name="CreateIfNotExists">Decides if a new archive should be created if none exists</param>
+            <param name="ArchiveFormat">Which MPQ format to use (higher version supports larger files)</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.#ctor(System.String,System.Boolean)">
+            <summary>
+Parameterized constructor.
+</summary>
+            <param name="FileName">The archive to open or create</param>
+            <param name="CreateIfNotExists">Decides if a new archive should be created if none exists</param>
+        </member>
+        <member name="M:MpqLib.Mpq.CArchive.#ctor(System.String)">
+            <summary>
+Parameterized constructor.
+</summary>
+            <param name="FileName">The archive to open</param>
+        </member>
+        <member name="T:MpqLib.Mpq.CArchive">
+            <summary>
+Represents an MPQ archive which contains a number of files.
+Files can be imported/exported.
+</summary>
+        </member>
+        <member name="T:MpqLib.Mpq.EArchiveFormat">
+            <summary>
+Enumerates the available MPQ formats.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EArchiveFormat.Version4">
+            <summary>
+Added with Cataclym
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EArchiveFormat.Version3">
+            <summary>
+Added with Cataclym
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EArchiveFormat.Version2">
+            <summary>
+Represents later MPQ version (archive &gt; 4Gb).
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EArchiveFormat.Version1">
+            <summary>
+Represents early MPQ version (archive &lt; 4Gb).
+</summary>
+        </member>
+        <member name="T:MpqLib.Mpq.EEncryption">
+            <summary>
+Enumerates the available encryption formats.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EEncryption.EncryptedWithFixedSeed">
+            <summary>
+Represents encryption using a fixed seed based on filename and hashtable location.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EEncryption.Encrypted">
+            <summary>
+Represents encryption.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EEncryption.None">
+            <summary>
+Represents no encryption.
+</summary>
+        </member>
+        <member name="T:MpqLib.Mpq.ECompression">
+            <summary>
+Enumerates the available compression formats.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.WaveStereo">
+            <summary>
+Represents extended wave (stereo) compression.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.WaveMono">
+            <summary>
+Represents extended wave (mono) compression.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.BZip2">
+            <summary>
+Represents extended BZip2 compression.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.PKWareDCL">
+            <summary>
+Represents extended PKWare DCL compression.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.ZLib">
+            <summary>
+Represents extended ZLIB compression.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.Huffman">
+            <summary>
+Represents extended huffman compression (used for wave files only).
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.Implode">
+            <summary>
+Represents implode compression, PKWARE Data Compression Library.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.ECompression.None">
+            <summary>
+Represents no compression.
+</summary>
+        </member>
+        <member name="T:MpqLib.Mpq.EQuality">
+            <summary>
+Enumerates the available quality formats.
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EQuality.High">
+            <summary>
+Represents high quality (large filesize).
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EQuality.Medium">
+            <summary>
+Represents medium quality (normal filesize).
+</summary>
+        </member>
+        <member name="F:MpqLib.Mpq.EQuality.Low">
+            <summary>
+Represents low quality (small filesize).
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileInfo.CompressedSize">
+            <summary>
+Retrieves the compressed size (the size of the file stored in the archive).
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileInfo.Size">
+            <summary>
+Retrieves the size (the size of the real, exported file).
+</summary>
+        </member>
+        <member name="P:MpqLib.Mpq.CFileInfo.FileName">
+            <summary>
+Retrieves the filename.
+</summary>
+        </member>
+        <member name="M:MpqLib.Mpq.CFileInfo.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+Parameterized constructor.
+</summary>
+            <param name="FileName">The filename to use</param>
+            <param name="Size">The size to use</param>
+            <param name="CompressedSize">The compressed size to use</param>
+        </member>
+        <member name="T:MpqLib.Mpq.CFileInfo">
+            <summary>
+An immutable file information. Is used to retrieve information
+about files in the archive without explicitly opening them.
+</summary>
+        </member>
+        <member name="F:MpqLib.CConstants.InvalidIndex">
+            <summary>
+Represents an invalid index.
+</summary>
+        </member>
+        <member name="F:MpqLib.CConstants.InvalidId">
+            <summary>
+Represents an invalid ID.
+</summary>
+        </member>
+        <member name="T:MpqLib.CConstants">
+            <summary>
+Contains all (global) constants.
+</summary>
+        </member>
+    </members>
+</doc>
