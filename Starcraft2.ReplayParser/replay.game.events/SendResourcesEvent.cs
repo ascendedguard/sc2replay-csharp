@@ -1,15 +1,18 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="SendResourcesEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SendResourcesEvent.cs" company="SC2ReplayParser">
+//   Copyright © 2012 All Rights Reserved
 // </copyright>
-// -----------------------------------------------------------------------
+// <summary>
+//   In-Game event triggered when a player sends resources.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
     using Streams;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// In-Game event triggered when a player sends resources.
     /// </summary>
     public class SendResourcesEvent : GameEventBase
     {

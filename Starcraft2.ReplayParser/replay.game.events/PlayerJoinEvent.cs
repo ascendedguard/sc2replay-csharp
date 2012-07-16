@@ -1,8 +1,11 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="PlayerJoinEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PlayerJoinEvent.cs" company="SC2ReplayParser">
+//   Copyright © 2012 All Rights Reserved
 // </copyright>
-// -----------------------------------------------------------------------
+// <summary>
+//   In-game event signalling when a player has joined.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser
 {
@@ -11,7 +14,7 @@ namespace Starcraft2.ReplayParser
     using Streams;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// In-game event signalling when a player has joined.
     /// </summary>
     public class PlayerJoinEvent : GameEventBase
     {
@@ -27,8 +30,7 @@ namespace Starcraft2.ReplayParser
             Player player = replay.GetPlayerById(playerIndex);
             if (player == null)
             {
-                Player p = new Player();
-                p.PlayerType = PlayerType.Spectator;
+                var p = new Player { PlayerType = PlayerType.Spectator };
                 replay.Players[playerIndex] = player = p;
             }
 

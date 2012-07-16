@@ -1,12 +1,11 @@
 ﻿namespace Starcraft2.ReplayParser
 {
-    using System.Diagnostics;
-    using System.IO;
     using System;
     using System.Collections.Generic;
+    using System.IO;
 
-    using Streams;
-    using Version;
+    using Starcraft2.ReplayParser.Streams;
+    using Starcraft2.ReplayParser.Version;
 
     public class ReplayGameEvents
     {
