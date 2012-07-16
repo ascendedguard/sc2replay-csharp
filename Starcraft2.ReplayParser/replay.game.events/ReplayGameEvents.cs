@@ -172,7 +172,7 @@
 
             if (winCandidate > 0)
             {
-                foreach (var player in replay.Players)
+                foreach (var player in replay.ClientList)
                 {
                     if (player != null && player.Team == winCandidate)
                     {

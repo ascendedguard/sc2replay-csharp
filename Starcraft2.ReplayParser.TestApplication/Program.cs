@@ -42,6 +42,13 @@ namespace Starcraft2.ReplayParser.TestApplication
 
             foreach (string replay in replayFiles)
             {
+                // Simply a version of the benchmarking code without the try/catch,
+                // for debugging exceptions thrown by the parser.
+                /*
+                BenchmarkReplay(replay);
+                filesSucceeded++;
+                 */
+                
                 try
                 {
                     BenchmarkReplay(replay);
@@ -51,6 +58,7 @@ namespace Starcraft2.ReplayParser.TestApplication
                 {
                     Console.WriteLine("Failed to parse: " + Path.GetFileName(replay));
                 }
+                 
             }
             
             Console.WriteLine(string.Format("Total Parsed: {0}/{1} ({2}%)", filesSucceeded, filesTotal, filesSucceeded * 100 / filesTotal));

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ReplayInitData.cs" company="SC2ReplayParser">
-//   Copyright © 2011 All Rights Reserved
+//   Copyright © 2012 All Rights Reserved
 // </copyright>
 // <summary>
 //   Parses the replay.Initdata file in the replay file.
@@ -38,7 +38,8 @@ namespace Starcraft2.ReplayParser
                     }
 
                     // Save the full list of clients.
-                    replay.ClientList = playerList;
+                    // This is no longer necessary since we get the client list elsewhere.
+                    //// replay.ClientList = playerList;
 
                     if (PositionAfter(reader, new byte[] { 115, 50, 109, 97 }))
                     {

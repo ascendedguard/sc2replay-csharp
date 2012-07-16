@@ -46,11 +46,20 @@ namespace Starcraft2.ReplayParser
                 reader.ReadBytes(6);
                 var playerCount = reader.ReadByte() >> 1;
 
+                var players = new Player[playerCount];
+
                 // Parsing Player Info
                 for (int i = 0; i < playerCount; i++)
                 {
-                    replay.Players[i + 1] = PlayerDetails.Parse(reader);
+                    var parsedPlayer = PlayerDetails.Parse(reader);
+
+                    // The references between both of these classes are the same on purpose.
+                    // We want updates to one to propogate to the other.
+                    players[i] = parsedPlayer;
+                    replay.ClientList[i + 1] = parsedPlayer;
                 }
+
+                replay.Players = players;
 
                 var mapNameLength = KeyValueStruct.Parse(reader).Value;
 

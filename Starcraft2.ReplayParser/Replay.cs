@@ -27,7 +27,7 @@ namespace Starcraft2.ReplayParser
         internal Replay()
         {
             GameUnits = new Dictionary<int, Unit>();
-            Players = new Player[0x10];
+            ClientList = new Player[0x10];
         }
 
         #endregion
@@ -80,12 +80,9 @@ namespace Starcraft2.ReplayParser
         public TimeSpan GameLength { get; internal set; }
 
         /// <summary>
-        /// Gets the list of clients connected to the game.
+        /// Gets the list of all clients connected to the game.
         /// </summary>
-        /// <remarks>
-        /// The list of observers can be determined by removing any players from the Players array.
-        /// </remarks>
-        public string[] ClientList { get; internal set; }
+        public Player[] ClientList { get; internal set; }
 
         #endregion
 
@@ -219,7 +216,7 @@ namespace Starcraft2.ReplayParser
         {
             if (16 > playerId)
             {
-                return this.Players[playerId];
+                return this.ClientList[playerId];
             }
 
             return null;

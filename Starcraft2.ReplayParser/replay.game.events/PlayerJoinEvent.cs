@@ -31,7 +31,7 @@ namespace Starcraft2.ReplayParser
             if (player == null)
             {
                 var p = new Player { PlayerType = PlayerType.Spectator };
-                replay.Players[playerIndex] = player = p;
+                replay.ClientList[playerIndex] = player = p;
             }
 
             // Initialize wireframe

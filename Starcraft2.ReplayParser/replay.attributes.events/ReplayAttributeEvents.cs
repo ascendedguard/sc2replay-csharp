@@ -60,11 +60,11 @@ namespace Starcraft2.ReplayParser
 
                             if (type.ToLower().Equals("comp"))
                             {
-                                replay.Players[attribute.PlayerId].PlayerType = PlayerType.Computer;
+                                replay.ClientList[attribute.PlayerId].PlayerType = PlayerType.Computer;
                             }
                             else if (type.ToLower().Equals("humn"))
                             {
-                                replay.Players[attribute.PlayerId].PlayerType = PlayerType.Human;
+                                replay.ClientList[attribute.PlayerId].PlayerType = PlayerType.Human;
                             }
                             else
                             {
@@ -88,7 +88,7 @@ namespace Starcraft2.ReplayParser
                             string diffLevel = encoding.GetString(attribute.Value.Reverse().ToArray());
                             diffLevel = diffLevel.ToLower();
 
-                            var player = replay.Players[attribute.PlayerId];
+                            var player = replay.ClientList[attribute.PlayerId];
 
                             switch (diffLevel)
                             {
@@ -146,7 +146,7 @@ namespace Starcraft2.ReplayParser
                     case PlayerRaceAttribute:
                         {
                             var race = encoding.GetString(attribute.Value.Reverse().ToArray()).ToLower();
-                            var player = replay.Players[attribute.PlayerId];
+                            var player = replay.ClientList[attribute.PlayerId];
 
                             switch (race)
                             {
@@ -248,7 +248,7 @@ namespace Starcraft2.ReplayParser
                 {
                     // Reverse the values then parse, you don't notice the effects of this until theres 10+ teams o.o
                     var team = encoding.GetString(att.Value.Reverse().ToArray()).Trim('\0', 'T');
-                    replay.Players[att.PlayerId].Team = int.Parse(team);
+                    replay.ClientList[att.PlayerId].Team = int.Parse(team);
                 }
             }
 
