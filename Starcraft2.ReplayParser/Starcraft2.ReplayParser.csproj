@@ -111,6 +111,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Version\events.dat" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Version\abil22612.dat" />
+    <EmbeddedResource Include="Version\unit22612.dat" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

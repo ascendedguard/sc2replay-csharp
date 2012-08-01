@@ -19,9 +19,15 @@ namespace Starcraft2.ReplayParser
     {
         public SelectionEvent(BitReader bitReader, Replay replay, Player player, UnitData data)
         {
+            int wireframeLength = 8;
+            if (replay.ReplayBuild >= 22612)
+            {
+                wireframeLength = 9; // Maximum selection size has been increased to 500, up from 255.
+            }
+
             // Parse select event and update player wireframe accordingly
             WireframeIndex = (int)bitReader.Read(4);
-            player.WireframeSubgroup = SubgroupIndex = (int)bitReader.Read(8);
+            player.WireframeSubgroup = SubgroupIndex = (int)bitReader.Read(wireframeLength);
 
             if (WireframeIndex == 10)
             {
@@ -50,7 +56,7 @@ namespace Starcraft2.ReplayParser
 
             if (updateFlags == 1)
             {
-                var numBits = (int)bitReader.Read(8);
+                var numBits = (int)bitReader.Read(wireframeLength);
                 var unitsRemoved = new bool[numBits];
 
                 var wireframeIndex = 0;
@@ -84,24 +90,24 @@ namespace Starcraft2.ReplayParser
             }
             else if (updateFlags == 2)
             {
-                var indexArrayLength = (int)bitReader.Read(8);
+                var indexArrayLength = (int)bitReader.Read(wireframeLength);
                 if (indexArrayLength > 0)
                 {
                     for (int i = 0; i < indexArrayLength; i++)
                     {
-                        RemovedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
+                        RemovedUnits.Add(affectedWireframe[(int)bitReader.Read(wireframeLength)]);
                     }
                 }
             }
             else if (updateFlags == 3)
             {
-                var indexArrayLength = (int)bitReader.Read(8);
+                var indexArrayLength = (int)bitReader.Read(wireframeLength);
                 if (indexArrayLength > 0)
                 {
                     AddedUnits = new List<Unit>(indexArrayLength);
                     for (int i = 0; i < indexArrayLength; i++)
                     {
-                        AddedUnits.Add(affectedWireframe[(int)bitReader.Read(8)]);
+                        AddedUnits.Add(affectedWireframe[(int)bitReader.Read(wireframeLength)]);
                     }
                 }
 
@@ -139,7 +145,13 @@ namespace Starcraft2.ReplayParser
         /// </summary>
         void HandleUnitArrays(BitReader bitReader, Replay replay, UnitData data)
         {
-            var typesLength = (int)bitReader.Read(8);
+            int wireframeLength = 8;
+            if (replay.ReplayBuild >= 22612)
+            {
+                wireframeLength = 9; // Maximum selection size has been increased to 500, up from 255.
+            }
+
+            var typesLength = (int)bitReader.Read(wireframeLength);
             AddedUnitTypes = new Dictionary<UnitType, int>(typesLength);
 
             // Guarantee order is maintained
@@ -152,7 +164,7 @@ namespace Starcraft2.ReplayParser
 
                 var unknown = bitReader.Read(8);
 
-                var unitCountType = (int)bitReader.Read(8);
+                var unitCountType = (int)bitReader.Read(wireframeLength);
                 if (unitType == UnitType.Unknown && AddedUnitTypes.ContainsKey(UnitType.Unknown))
                 {
                     AddedUnitTypes[UnitType.Unknown] += unitCountType;
@@ -164,7 +176,7 @@ namespace Starcraft2.ReplayParser
                 subgroups.Add(new KeyValuePair<UnitType, int>(unitType, unitCountType));
             }
 
-            var idsLength = (int)bitReader.Read(8);
+            var idsLength = (int)bitReader.Read(wireframeLength);
             AddedUnits = AddedUnits ?? new List<Unit>(idsLength);
             if (idsLength == 0) return;
 

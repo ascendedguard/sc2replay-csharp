@@ -18,6 +18,11 @@ namespace Starcraft2.ReplayParser
     {
         public HotkeyEvent(BitReader bitReader, Replay replay, Player player)
         {
+            int wireframeLength = 8;
+            if (replay.ReplayBuild >= 22612)
+            {
+                wireframeLength = 9; // Maximum selection size has been increased to 500, up from 255.
+            }
             this.EventType = GameEventType.Selection;
 
             ControlGroup = (int)bitReader.Read(4);
@@ -32,7 +37,7 @@ namespace Starcraft2.ReplayParser
             var unitsRemovedList = new List<Unit>();
             if (updateType == 1) // Remove by flags
             {
-                var numBits = (int)bitReader.Read(8);
+                var numBits = (int)bitReader.Read(wireframeLength);
                 var unitsRemoved = new bool[numBits];
                 var wireframeIndex = 0;
 
@@ -66,10 +71,10 @@ namespace Starcraft2.ReplayParser
             }
             else if (updateType == 2)
             {
-                var numIndices = (int)bitReader.Read(8);
+                var numIndices = (int)bitReader.Read(wireframeLength);
                 for (int i = 0; i < numIndices; i++)
                 {
-                    unitsRemovedList.Add(player.Hotkeys[ControlGroup][(int)bitReader.Read(8)]);
+                    unitsRemovedList.Add(player.Hotkeys[ControlGroup][(int)bitReader.Read(wireframeLength)]);
                 }
             }
             else if (updateType == 3) // Replace control group with portion of control group
@@ -77,10 +82,10 @@ namespace Starcraft2.ReplayParser
                 // This happens fairly rarely, so I'll just invert the output
                 unitsRemovedList = new List<Unit>(player.Hotkeys[ControlGroup]);
 
-                var numIndices = (int)bitReader.Read(8);
+                var numIndices = (int)bitReader.Read(wireframeLength);
                 for (int i = 0; i < numIndices; i++)
                 {
-                    unitsRemovedList.Remove(player.Hotkeys[ControlGroup][(int)bitReader.Read(8)]);
+                    unitsRemovedList.Remove(player.Hotkeys[ControlGroup][(int)bitReader.Read(wireframeLength)]);
                 }
             }
 

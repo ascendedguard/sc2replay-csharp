@@ -123,6 +123,11 @@
                             gameEvent = new GameEventBase();
                             gameEvent.EventType = GameEventType.Inactive;
                             break;
+                        case 0x59: // ?? -- sync flags maybe?
+                            bitReader.Read(32);
+                            gameEvent = new GameEventBase();
+                            gameEvent.EventType = GameEventType.Inactive;
+                            break;
                         default: // debug
                             throw new InvalidOperationException(String.Format(
                                 "Unknown event type {0:x} at {1:x} in replay.game.events",

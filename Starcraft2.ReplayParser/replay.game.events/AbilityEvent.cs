@@ -28,9 +28,13 @@ namespace Starcraft2.ReplayParser
             {
                 flags = bitReader.Read(17);
             }
-            else
+            else if (replay.ReplayBuild < 22612) // < 1.5.0
             {
                 flags = bitReader.Read(18);
+            }
+            else
+            {
+                flags = bitReader.Read(20);
             }
             Queued = (flags & 2) != 0;
             RightClick = (flags & 8) != 0;

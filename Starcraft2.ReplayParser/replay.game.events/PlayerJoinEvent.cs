@@ -21,7 +21,14 @@ namespace Starcraft2.ReplayParser
 
             // This should probably be a series of {shl; or} on .Read(1)
             // to make it version-independent
-            this.JoinFlags = (int)bitReader.Read(4);
+            if (replay.ReplayBuild < 22612)
+            {
+                this.JoinFlags = (int)bitReader.Read(4);
+            }
+            else
+            {
+                this.JoinFlags = (int)bitReader.Read(12); // unknown
+            }
 
             // Initialize player if not exists (true for observers)
             Player player = replay.GetPlayerById(playerIndex);
