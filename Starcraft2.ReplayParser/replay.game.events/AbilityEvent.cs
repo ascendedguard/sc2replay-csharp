@@ -64,7 +64,7 @@ namespace Starcraft2.ReplayParser
                     throw new InvalidOperationException("Unsupported: non-default actor");
                 }
             }
-            else if (DefaultActor)
+            if (DefaultActor)
             {
                 // Deep copy the current wireframe as the actor list
                 // -----
