@@ -13,7 +13,7 @@ namespace Starcraft2.ReplayParser
     /// </summary>
     public class SendResourcesEvent : GameEventBase
     {
-        public SendResourcesEvent(BitReader bitReader, Replay replay, bool newFormat = false)
+        public SendResourcesEvent(BitReader bitReader, Replay replay)
         {
             this.EventType = GameEventType.Other;
 
