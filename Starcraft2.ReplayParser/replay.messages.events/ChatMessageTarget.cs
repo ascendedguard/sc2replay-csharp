@@ -23,5 +23,8 @@ namespace Starcraft2.ReplayParser
 
         /// <summary> Chat message only delivered to allied players. </summary>
         Allies = 2, 
+
+        /// <summary> Chat message delivered to observers. </summary>
+        Observers = 4,
     }
 }

@@ -157,7 +157,7 @@ namespace Starcraft2.ReplayParser
                         }
                         else if ((opCode & 0x80) == 0)
                         {
-                            message.MessageTarget = (ChatMessageTarget)(opCode & 3);
+                            message.MessageTarget = (ChatMessageTarget)(opCode & 7);
                             var length = reader.ReadByte();
 
                             if ((opCode & 8) == 8)
