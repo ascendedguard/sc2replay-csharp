@@ -115,8 +115,18 @@
                             bitReader.Read(32);
                             bitReader.Read(32);
                             break;
+                        case 0x3c: // ???
+                            gameEvent = new GameEventBase();
+                            gameEvent.EventType = GameEventType.Inactive;
+                            bitReader.Read(16);
+                            break;
                         case 0x46: // Request resources
                             gameEvent = new RequestResourcesEvent(bitReader, replay);
+                            break;
+                        case 0x47: // ?? -- associated with send minerals
+                            gameEvent = new GameEventBase();
+                            gameEvent.EventType = GameEventType.Inactive;
+                            bitReader.Read(32);
                             break;
                         case 0x4C: // ?? -- seen with spectator
                             bitReader.Read(4);
