@@ -28,9 +28,13 @@ namespace Starcraft2.ReplayParser
             {
                 flags = bitReader.Read(17);
             }
-            else
+            else if (replay.ReplayBuild < 22612) // < 1.5.0
             {
                 flags = bitReader.Read(18);
+            }
+            else
+            {
+                flags = bitReader.Read(20);
             }
             Queued = (flags & 2) != 0;
             RightClick = (flags & 8) != 0;
@@ -60,7 +64,7 @@ namespace Starcraft2.ReplayParser
                     throw new InvalidOperationException("Unsupported: non-default actor");
                 }
             }
-            else if (DefaultActor)
+            if (DefaultActor)
             {
                 // Deep copy the current wireframe as the actor list
                 // -----
