@@ -109,7 +109,10 @@ namespace Starcraft2.ReplayParser
 
                 foreach (Unit unit in player.Wireframe)
                 {
-                    newControlgroup.Add(unit);
+                    if (!oldControlgroup.Contains(unit))
+                    {
+                        newControlgroup.Add(unit);
+                    }
                 }
                 newControlgroup.Sort((m, n) => m.Id - n.Id);
 

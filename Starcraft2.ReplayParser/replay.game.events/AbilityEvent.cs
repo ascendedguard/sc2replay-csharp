@@ -112,7 +112,7 @@ namespace Starcraft2.ReplayParser
                 }
 
                 // 1.4.0 -- Don't really know what this was meant to fix
-                if (replay.ReplayBuild >= 19679)
+                if (replay.ReplayBuild >= 19595)
                 {
                     var targetHasTeam = bitReader.Read(1) == 1;
                     if (targetHasTeam)

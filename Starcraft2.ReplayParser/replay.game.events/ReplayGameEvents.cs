@@ -115,6 +115,20 @@
                             bitReader.Read(32);
                             bitReader.Read(32);
                             break;
+                        case 0x38: // weird sync event
+                            {
+                                gameEvent = new GameEventBase();
+                                gameEvent.EventType = GameEventType.Other;
+                                for (var j = 0; j < 2; j++)
+                                {
+                                    var length = bitReader.Read(8);
+                                    for (var i = 0; i < length; i++)
+                                    {
+                                        bitReader.Read(32);
+                                    }
+                                }
+                                break;
+                            }
                         case 0x3c: // ???
                             gameEvent = new GameEventBase();
                             gameEvent.EventType = GameEventType.Inactive;
