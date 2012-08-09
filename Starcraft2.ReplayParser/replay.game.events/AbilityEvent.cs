@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AbilityEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="AbilityEvent.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 

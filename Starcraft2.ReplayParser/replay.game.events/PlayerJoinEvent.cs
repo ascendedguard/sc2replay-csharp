@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="PlayerJoinEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="PlayerJoinEvent.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 

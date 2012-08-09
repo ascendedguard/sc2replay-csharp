@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SelectionEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="SelectionEvent.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 

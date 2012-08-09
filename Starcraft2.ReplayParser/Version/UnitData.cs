@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="UnitData.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="UnitData.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 

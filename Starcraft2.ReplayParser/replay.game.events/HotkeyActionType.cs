@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="HotkeyActionType.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="HotkeyActionType.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SendResourcesEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="SendResourcesEvent.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 
