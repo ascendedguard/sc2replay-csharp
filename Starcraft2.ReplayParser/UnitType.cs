@@ -86,6 +86,19 @@ namespace Starcraft2.ReplayParser
         Carrier,
         Interceptor,
 
+        // Protoss hallucinations
+        ProbeHallucination,
+        ZealotHallucination,
+        StalkerHallucination,
+        HighTemplarHallucination,
+        ArchonHallucination,
+        ImmortalHallucination,
+        WarpPrismHallucination,
+        WarpPrismPhasingHallucination,
+        ColossusHallucination,
+        PhoenixHallucination,
+        VoidRayHallucination,
+
         // Zerg units
         Larva,
         Egg,
