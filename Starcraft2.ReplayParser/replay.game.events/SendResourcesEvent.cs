@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SendResourcesEvent.cs" company="SC2ReplayParser">
-//   Copyright © 2012 All Rights Reserved
+﻿// -----------------------------------------------------------------------
+// <copyright file="SendResourcesEvent.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // <summary>
 //   In-Game event triggered when a player sends resources.

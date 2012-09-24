@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="CameraEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="CameraEvent.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 

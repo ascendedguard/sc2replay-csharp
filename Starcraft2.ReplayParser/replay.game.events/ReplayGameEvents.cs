@@ -141,6 +141,11 @@
                             gameEvent.EventType = GameEventType.Inactive;
                             bitReader.Read(32);
                             break;
+                        case 0x48: // ?? -- sync event
+                            gameEvent = new GameEventBase();
+                            gameEvent.EventType = GameEventType.Inactive;
+                            bitReader.Read(32);
+                            break;
                         case 0x4C: // ?? -- seen with spectator
                             bitReader.Read(4);
                             gameEvent = new GameEventBase();

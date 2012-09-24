@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="UnitType.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="UnitType.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -85,6 +85,19 @@ namespace Starcraft2.ReplayParser
         Mothership,
         Carrier,
         Interceptor,
+
+        // Protoss hallucinations
+        ProbeHallucination,
+        ZealotHallucination,
+        StalkerHallucination,
+        HighTemplarHallucination,
+        ArchonHallucination,
+        ImmortalHallucination,
+        WarpPrismHallucination,
+        WarpPrismPhasingHallucination,
+        ColossusHallucination,
+        PhoenixHallucination,
+        VoidRayHallucination,
 
         // Zerg units
         Larva,

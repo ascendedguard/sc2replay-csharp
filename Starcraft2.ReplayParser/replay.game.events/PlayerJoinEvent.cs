@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PlayerJoinEvent.cs" company="SC2ReplayParser">
+// <copyright file="PlayerJoinEvent.cs">
 //   Copyright © 2012 All Rights Reserved
 // </copyright>
 // <summary>

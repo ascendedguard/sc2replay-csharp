@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Location.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="Location.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 

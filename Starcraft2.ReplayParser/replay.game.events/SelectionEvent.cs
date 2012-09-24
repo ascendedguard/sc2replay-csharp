@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SelectionEvent.cs" company="Microsoft">
-// TODO: Update copyright text.
+// <copyright file="SelectionEvent.cs">
+// Copyright 2012 Robert Nix, Will Eddins
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -162,7 +162,11 @@ namespace Starcraft2.ReplayParser
                 var unitTypeId = (int)bitReader.Read(16);
                 var unitType = data.GetUnitType(unitTypeId);
 
-                var unknown = bitReader.Read(8);
+                var unitSubtype = bitReader.Read(8);
+                if (unitSubtype == 2) // hallucination -- cheers, Graylin
+                {
+                    unitType = data.GetHallucination(unitType);
+                }
 
                 var unitCountType = (int)bitReader.Read(wireframeLength);
                 if (unitType == UnitType.Unknown && AddedUnitTypes.ContainsKey(UnitType.Unknown))
