@@ -58,18 +58,15 @@ namespace Starcraft2.ReplayParser
             {
                 throw new ArgumentOutOfRangeException("value", "Timestamp value cannot be greater than 2^30");
             }
-
-            if (value > Math.Pow(2, 22))
+            else if (value > Math.Pow(2, 22))
             {
                 bytesNeeded = 3;
             }
-
-            if (value > Math.Pow(2, 14))
+            else if (value > Math.Pow(2, 14))
             {
                 bytesNeeded = 2;
             }
-
-            if (value > Math.Pow(2, 6))
+            else if (value > Math.Pow(2, 6))
             {
                 bytesNeeded = 1;
             }
