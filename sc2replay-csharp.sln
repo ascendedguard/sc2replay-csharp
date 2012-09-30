@@ -1,11 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser", "Starcraft2.ReplayParser\Starcraft2.ReplayParser.csproj", "{AAF78D53-A1DA-424A-B1AA-09895EAB3B2B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.TestApplication", "Starcraft2.ReplayParser.TestApplication\Starcraft2.ReplayParser.TestApplication.csproj", "{84FA2C3D-6B87-4FF3-8887-DA633AEB82F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.DataCompiler", "Starcraft2.ReplayParser.DataCompiler\Starcraft2.ReplayParser.DataCompiler.csproj", "{6582781B-BB53-4AB2-8676-61FC30286BA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starcraft2.ReplayParser.Tests", "Starcraft2.ReplayParser.Tests\Starcraft2.ReplayParser.Tests.csproj", "{A4496970-AF23-4068-BCDD-18631AABCD84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,16 @@ Global
 		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|x86.ActiveCfg = Release|x86
 		{6582781B-BB53-4AB2-8676-61FC30286BA6}.Release|x86.Build.0 = Release|x86
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A4496970-AF23-4068-BCDD-18631AABCD84}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
