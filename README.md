@@ -14,6 +14,41 @@ Current Abilities
 * Can insert lines of text into the chat log for any player.
 * Can clear the in-game chat for a "clean" replay.
 
+Replay Parsers for other languages
+======================
+* C#: [sc2replay-csharp](https://github.com/ascendedguard/sc2replay-csharp) (You're Here!)
+* Python: [sc2reader](https://github.com/GraylinKim/sc2reader)
+* C++: [sc2pp](https://github.com/zsol/sc2pp)
+* Javascript: [comsat](https://github.com/tec27/comsat)
+* PHP: [phpsc2replay](http://code.google.com/p/phpsc2replay/)
+
+Example
+======================
+```csharp
+    // Parse the replay.
+    Replay replay = Replay.Parse(filename);
+
+    // Basic information
+    string map = replay.Map;
+    TimeSpan length = replay.GameLength;
+
+    // Print out players and mark winners with a *
+    foreach (var player in replay.Players)
+    {
+      Console.Out.Write(string.Format("{0}{1} ", player.Name, player.IsWinner ? "*" : string.Empty));
+    }
+
+    // Write out chat messages to console
+    Console.Out.WriteLine("Chat Messages:");
+    foreach (var chatMessage in replay.ChatMessages)
+    {
+        Console.Out.WriteLine("[{0}]{1}: {2}",
+            chatMessage.MessageTarget.ToString(),
+            replay.Players[chatMessage.PlayerId - 1], 
+            chatMessage.Message);
+    }
+```
+
 You can find and contribute information in deconstructing the file format in the wiki: <https://github.com/ascendedguard/sc2replay-csharp/wiki>
 
 ### Events parser
