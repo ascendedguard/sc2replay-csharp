@@ -8,7 +8,7 @@ This is an easy-to-use library to quickly parse and extract information from the
 
 **Current Version:** 1.4.2 (3/17/2013)  
 **Supports Replays Up To:** 1.2.0.3  
-**Latest Compiled:** http://willeddins.com/apps/Starcraft2.ReplayParser-1.4.2.zip
+**Latest Compiled:** http://willeddins.com/apps/sc2-replayparser/Starcraft2.ReplayParser-1.4.2.zip
 
 Current Abilities
 ================
