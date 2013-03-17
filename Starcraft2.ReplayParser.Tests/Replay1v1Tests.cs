@@ -18,7 +18,8 @@
                     "./Replays/testReplay.1.2.SC2Replay", 
                     "./Replays/testReplay.1.3.4.SC2Replay", 
                     "./Replays/testReplay.1.4.3.SC2Replay", 
-                    "./Replays/testReplay.1.5.3.SC2Replay", 
+                    "./Replays/testReplay.1.5.3.SC2Replay",
+                    "./Replays/testReplay.2.0.3.SC2Replay", 
                 };
 
         /// <summary>
@@ -78,6 +79,18 @@
                 Assert.IsNotNullOrEmpty(player.Name, "Player had an empty name.");
                 Assert.IsNotNullOrEmpty(player.Color, "Player color was missing.");
             }
+        }
+
+        /// <summary>
+        /// Asserts that there are only 2 active players. We are only testing 1v1 in this test class.
+        /// </summary>
+        /// <param name="filename">Path to replay.</param>
+        [Test, TestCaseSource("TestReplays")]
+        public void ReplayHasEvents(string filename)
+        {
+            Replay replay = Replay.Parse(filename);
+
+            Assert.That(replay.PlayerEvents != null, "Events failed to parse.");
         }
     }
 }
