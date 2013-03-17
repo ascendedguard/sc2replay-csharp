@@ -57,6 +57,11 @@ namespace Starcraft2.ReplayParser
                     // We want updates to one to propogate to the other.
                     players[i] = parsedPlayer;
                     replay.ClientList[i + 1] = parsedPlayer;
+
+                    if (replay.ReplayBuild >= 25180)
+                    {
+                        reader.ReadBytes(5);
+                    }
                 }
 
                 replay.Players = players;
@@ -77,7 +82,7 @@ namespace Starcraft2.ReplayParser
                 var mapPreviewNameLength = KeyValueStruct.Parse(reader).Value;
                 var mapPreviewNameBytes = reader.ReadBytes(mapPreviewNameLength);
 
-				replay.MapPreviewName = Encoding.UTF8.GetString(mapPreviewNameBytes);
+                replay.MapPreviewName = Encoding.UTF8.GetString(mapPreviewNameBytes);
 
                 reader.ReadBytes(3);
 
@@ -91,28 +96,31 @@ namespace Starcraft2.ReplayParser
                 // We create a new timestamp so we can properly set this as UTC time.
                 replay.Timestamp = new DateTime(time.Ticks, DateTimeKind.Utc);
 
-				// don't know what the next 14 bytes are for, so we skip them
-            	reader.ReadBytes(14);
+                // don't know what the next 14 bytes are for, so we skip them
+                reader.ReadBytes(14);
 
-            	var resources =  new List<ResourceInfo>();
-            	reader.ReadBytes(2); // there are 2 bytes before each "s2ma" string
-            	var s2ma = Encoding.UTF8.GetString(reader.ReadBytes(4));
+                var resources = new List<ResourceInfo>();
+                reader.ReadBytes(2); // there are 2 bytes before each "s2ma" string
+                var s2ma = Encoding.UTF8.GetString(reader.ReadBytes(4));
 
-				while(s2ma == "s2ma") {
-					reader.ReadBytes(2); // 0x00, 0x00
+                while (s2ma == "s2ma")
+                {
+                    reader.ReadBytes(2); // 0x00, 0x00
 
-					resources.Add(new ResourceInfo {
-						Gateway = Encoding.UTF8.GetString(reader.ReadBytes(2)),
-						Hash = reader.ReadBytes(32),
-					});
+                    resources.Add(
+                        new ResourceInfo
+                            {
+                                Gateway = Encoding.UTF8.GetString(reader.ReadBytes(2)),
+                                Hash = reader.ReadBytes(32),
+                            });
 
-					reader.ReadBytes(2);
-					s2ma = Encoding.UTF8.GetString(reader.ReadBytes(4));
-				}
+                    reader.ReadBytes(2);
+                    s2ma = Encoding.UTF8.GetString(reader.ReadBytes(4));
+                }
 
-            	var map = resources.Last();
-            	replay.MapGateway = map.Gateway;
-            	replay.MapHash = map.Hash;
+                var map = resources.Last();
+                replay.MapGateway = map.Gateway;
+                replay.MapHash = map.Hash;
 
                 reader.Close();
             }
@@ -120,9 +128,9 @@ namespace Starcraft2.ReplayParser
 
         #endregion
 
-		private class ResourceInfo {
-			public string Gateway { get; set; }
-			public byte[] Hash { get; set; }
-		}
+        private class ResourceInfo {
+            public string Gateway { get; set; }
+            public byte[] Hash { get; set; }
+        }
     }
 }
