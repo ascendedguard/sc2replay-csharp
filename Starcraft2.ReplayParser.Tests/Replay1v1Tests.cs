@@ -1,5 +1,7 @@
 ﻿namespace Starcraft2.ReplayParser.Tests
 {
+    using System.IO;
+
     using NUnit.Framework;
 
     [TestFixture]
@@ -9,18 +11,9 @@
         /// The list of replays checked in each test.
         /// </summary>
         /// <remarks>
-        /// Add replays to the /Replays/ directory in this project. Add the replay in visual studio,
-        /// and ensure 'Copy to Output Directory' is set to 'Copy if newer'.
+        /// Add replays to the /Replays/ directory in this project.
         /// </remarks>
-        public static string[] TestReplays = 
-                { 
-                    "./Replays/testReplay.1.1.3.SC2Replay", 
-                    "./Replays/testReplay.1.2.SC2Replay", 
-                    "./Replays/testReplay.1.3.4.SC2Replay", 
-                    "./Replays/testReplay.1.4.3.SC2Replay", 
-                    "./Replays/testReplay.1.5.3.SC2Replay",
-                    "./Replays/testReplay.2.0.3.SC2Replay", 
-                };
+        public static string[] TestReplays = Directory.GetFiles("../../Replays/", "*.SC2Replay");
 
         /// <summary>
         /// A basic test ensuring that a replay parses without throwing an exception.

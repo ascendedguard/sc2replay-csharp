@@ -24,7 +24,7 @@ namespace Starcraft2.ReplayParser
         /// <returns> Returns a Player filled with the parsed information. </returns>
         public static Player Parse(BinaryReader reader)
         {
-            reader.ReadBytes(2); // playerHeader
+            var header = reader.ReadBytes(2); // playerHeader
             int shortNameLength = KeyValueStruct.Parse(reader).Value;
 
             byte[] nameBytes = reader.ReadBytes(shortNameLength);
