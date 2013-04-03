@@ -12,6 +12,8 @@ namespace Starcraft2.ReplayParser
     using System.IO;
     using System.Text;
 
+    using Starcraft2.ReplayParser.Streams;
+
     /// <summary> Parses the replay.Initdata file in the replay file. </summary>
     public class ReplayInitData
     {
@@ -22,36 +24,84 @@ namespace Starcraft2.ReplayParser
         /// <param name="buffer"> The buffer containing the replay.initdata file. </param>
         public static void Parse(Replay replay, byte[] buffer)
         {
+            
             using (var stream = new MemoryStream(buffer))
             {
-                using (var reader = new BinaryReader(stream))
+                var reader = new BitReader(stream);
+                
+                var i = reader.ReadByte();
+
+                var playerList = new string[i];
+                for (int j = 0; j < i; j++)
                 {
-                    var i = reader.ReadByte();
+                    var nameLength = reader.ReadByte();
+                    reader.AlignToByte();
+                    var str = reader.ReadString(nameLength);
 
-                    var playerList = new string[i];
-                    for (int j = 0; j < i; j++)
+                    playerList[j] = str;
+
+                    if (replay.ReplayBuild < 24764)
                     {
-                        var str = ReadString(reader);
-
-                        playerList[j] = str;
                         reader.ReadBytes(5);
-                    }
-
-                    // Save the full list of clients.
-                    // This is no longer necessary since we get the client list elsewhere.
-                    //// replay.ClientList = playerList;
-
-                    if (PositionAfter(reader, new byte[] { 115, 50, 109, 97 }))
-                    {
-                        reader.ReadBytes(2);
-                        var gatewayStr = reader.ReadBytes(2);
-
-                        var gateway = Encoding.UTF8.GetString(gatewayStr);
-                        replay.Gateway = gateway;
                     }
                     else
                     {
-                        replay.GameType = GameType.SinglePlayer;
+                        if (reader.ReadBoolean())
+                        {
+                            var strLength = reader.ReadByte();
+                            reader.AlignToByte();
+                            var clanTag = reader.ReadString(strLength);                                
+                        }
+
+                        if (reader.ReadBoolean())
+                        {
+                            reader.ReadByte(); // Highest league
+                        }
+
+                        if (reader.ReadBoolean())
+                        {
+                            var swarmLevel = reader.ReadInt32(); // Swarm level
+                        }
+
+                        reader.ReadInt32(); // Random seed
+
+                        if (reader.ReadBoolean())
+                        {
+                            reader.ReadByte(); // Race Preference
+                        }
+
+                        if (reader.ReadBoolean())
+                        {
+                            reader.ReadByte(); // Team Preference
+                        }
+
+                        reader.ReadBoolean(); //test map
+                        reader.ReadBoolean(); //test auto
+                        reader.ReadBoolean(); //examine
+                        reader.ReadBoolean(); //custom interface
+                        reader.Read(2);   //observer
+                    }
+                }
+
+                if (replay.ReplayBuild < 24764)
+                {
+                    using (var binaryReader = new BinaryReader(stream))
+                    {
+                        // Save the full list of clients.
+                        // This is no longer necessary since we get the client list elsewhere.
+                        //// replay.ClientList = playerList;   
+                        if (PositionAfter(binaryReader, new byte[] { 115, 50, 109, 97 }))
+                        {
+                            reader.ReadBytes(2);
+                            var gatewayStr = reader.ReadBytes(2);
+
+                            var gateway = Encoding.UTF8.GetString(gatewayStr);
+                            replay.Gateway = gateway;
+                        }
+                        else
+                        {
+                            replay.GameType = GameType.SinglePlayer;
+                        }
                     }
                 }
             }
