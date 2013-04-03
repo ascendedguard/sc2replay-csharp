@@ -1,13 +1,11 @@
-﻿// -----------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="BitReader.cs" company="SC2ReplayParser">
-//     2012 SC2ReplayParser
+//   Copyright © 2012 All Rights Reserved
 // </copyright>
-// -----------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Starcraft2.ReplayParser.Streams
 {
-    using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text;
 
@@ -84,6 +82,43 @@ namespace Starcraft2.ReplayParser.Streams
         public int Cursor
         {
             get { return bitCursor; }
+        }
+
+        public byte ReadByte()
+        {
+            return (byte)this.Read(8);
+        }
+
+        public bool ReadBoolean()
+        {
+            return this.Read(1) == 1;
+        }
+
+        public short ReadInt16()
+        {
+            return (short)this.Read(16);
+        }
+
+        public int ReadInt32()
+        {
+            return (int)this.Read(32);
+        }
+
+        public byte[] ReadBytes(int bytes)
+        {
+            var buffer = new byte[bytes];
+            for (int i = 0; i < bytes; i++)
+            {
+                buffer[i] = this.ReadByte();
+            }
+
+            return buffer;
+        }
+
+        public string ReadString(int length)
+        {
+            var buffer = this.ReadBytes(length);
+            return Encoding.UTF8.GetString(buffer);
         }
     }
 }
