@@ -5,7 +5,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class Replay1v1Tests
+    public class ReplayTests
     {
         /// <summary>
         /// The list of replays checked in each test.
@@ -60,13 +60,27 @@
         /// </summary>
         /// <param name="filename">Path to replay.</param>
         [Test, TestCaseSource("TestReplays")]
-        public void ReplayHasTwoPlayers(string filename)
+        public void ReplayHasCorrectNumberOfPlayers(string filename)
         {
             Replay replay = Replay.Parse(filename);
 
-            Assert.That(replay.Players.Length == 2, "Replay didn't have 2 players in a 1v1.");
-            Assert.That(replay.TeamSize.Equals("1v1"));
-
+            if (replay.TeamSize.Equals("1v1"))
+            {
+                Assert.That(replay.Players.Length == 2, "Replay didn't have 2 players in a 1v1.");
+            }
+            else if (replay.TeamSize.Equals("2v2"))
+            {
+                Assert.That(replay.Players.Length == 4, "Replay didn't have 4 players in a 2v2.");
+            }
+            else if (replay.TeamSize.Equals("3v3"))
+            {
+                Assert.That(replay.Players.Length == 6, "Replay didn't have 6 players in a 3v3.");
+            }
+            else if (replay.TeamSize.Equals("4v4"))
+            {
+                Assert.That(replay.Players.Length == 8, "Replay didn't have 8 players in a 4v4.");
+            }
+            
             foreach (var player in replay.Players)
             {
                 Assert.IsNotNullOrEmpty(player.Name, "Player had an empty name.");
@@ -75,7 +89,7 @@
         }
 
         /// <summary>
-        /// Asserts that there are only 2 active players. We are only testing 1v1 in this test class.
+        /// Asserts that the replay has an array of events, meaning the events were parsed correctly.
         /// </summary>
         /// <param name="filename">Path to replay.</param>
         [Test, TestCaseSource("TestReplays")]
