@@ -4,6 +4,7 @@
       <AnalyzerSettings>
         <StringProperty Name="CompanyName">SC2ReplayParser</StringProperty>
         <StringProperty Name="Copyright">Copyright © 2012 All Rights Reserved</StringProperty>
+        <BooleanProperty Name="IgnorePrivates">True</BooleanProperty>
       </AnalyzerSettings>
     </Analyzer>
   </Analyzers>
