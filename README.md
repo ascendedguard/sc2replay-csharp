@@ -6,9 +6,9 @@ This is an easy-to-use library to quickly parse and extract information from the
 
 **Requirements:** Visual C++ 2010 Runtime Redistributable as a requirement to MpqLib.dll
 
-**Current Version:** 1.4.2 (3/17/2013)  
-**Supports Replays Up To:** 1.2.0.3  
-**Latest Compiled:** http://willeddins.com/apps/sc2-replayparser/Starcraft2.ReplayParser-1.4.2.zip
+**Current Version:** 1.4.3 (4/3/2013)  
+**Supports Replays Up To:** 1.2.0.7  
+**Latest Compiled:** http://willeddins.com/apps/sc2-replayparser/Starcraft2.ReplayParser-1.4.3.zip
 
 Current Abilities
 ================
